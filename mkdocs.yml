@@ -1,0 +1,80 @@
+---
+dev_addr: "127.0.0.1:8001"
+edit_uri: "edit/main/nautobot-app-fsus/docs"
+site_dir: "nautobot_fsus/static/nautobot_fsus/docs"
+site_name: "Nautobot Field Serviceable Units"
+site_url: "https://github.com/NVIDIA/nautobot-app-fsus"
+repo_url: "https://github.com/NVIDIA/nautobot-app-fsus"
+theme:
+  name: "material"
+  navigation_depth: 4
+  hljs_languages:
+    - "django"
+    - "yaml"
+  features:
+    - "content.code.copy"
+    - "navigation.tabs"
+    - "navigation.tabs.sticky"
+    - "navigation.tracking"
+    - "search.highlight"
+    - "search.share"
+    - "search.suggest"
+  favicon: "assets/favicon.ico"
+  logo: "assets/nvidia-logo-vert-rgb-wht-for-screen.png"
+  icon:
+    repo: "fontawesome/brands/gitlab"
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+extra_css:
+  - "extra.css"
+
+markdown_extensions:
+  - "admonition"
+  - "attr_list"
+  - "def_list"
+  - toc:
+      permalink: true
+  - "footnotes"
+  - "md_in_html"
+  - "pymdownx.details"
+  - "pymdownx.highlight":
+      anchor_linenums: true
+  - "pymdownx.inlinehilite"
+  - "pymdownx.snippets"
+  - "pymdownx.superfences"
+  - "sane_lists"
+
+plugins:
+  - "search"
+  - "include-markdown"
+  - "mkdocs-version-annotations"
+  - "mkdocstrings":
+      default_handler: "python"
+      handlers:
+        python:
+          paths: ["."]
+          options:
+            show_root_heading: true
+
+watch:
+  - "README.md"
+
+nav:
+  - Introduction: "index.md"

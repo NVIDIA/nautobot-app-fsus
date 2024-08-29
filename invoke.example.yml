@@ -1,0 +1,13 @@
+---
+nautobot_fsus:
+  project_name: "nautobot-fsus"
+  project_source: "nautobot_fsus"
+  nautobot_ver: "1.6.21"
+  local: false
+  python_ver: "3.10"
+  compose_dir: "development"
+  compose_files:
+    - "docker-compose.base.yml"
+    - "docker-compose.redis.yml"
+    - "docker-compose.postgres.yml"
+    - "docker-compose.dev.yml"
