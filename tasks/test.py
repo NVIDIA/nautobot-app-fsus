@@ -33,10 +33,10 @@ def pylint(context: Context, path: str = "nautobot_fsus", verbose: bool = False,
 
     if verbose is True:
         command.append("--verbose")
+    if disable is not None:
+        command.extend([f"--disable={value}" for value in disable])
     if enable is not None:
         command.extend([f"--enable={value}" for value in enable])
-    if disable is not None:
-        command.extend([f"--enable={value}" for value in disable])
 
     command.append(path)
 
