@@ -14,7 +14,9 @@
 #  limitations under the License.
 
 """Routes and url patterns for the Nautobot FSUs app."""
+from django.templatetags.static import static
 from django.urls import path
+from django.views.generic import RedirectView
 from nautobot.core.views.routers import NautobotUIViewSetRouter
 
 from nautobot_fsus import views
@@ -57,6 +59,7 @@ router.register("rammodule-types", views.RAMModuleTypeUIViewSet)
 urlpatterns = [
     path("cpus/rename/", views.CPUBulkRenameView.as_view(), name="cpu_bulk_rename"),
     path("devices/<uuid:pk>/fsus/", views.DeviceFSUViewTab.as_view(), name="device_fsus_tab"),
+    path("docs/", RedirectView.as_view(url=static("nautobot_fsus/docs/index.html")), name="docs"),
     path("disks/rename/", views.DiskBulkRenameView.as_view(), name="disk_bulk_rename"),
     path("fans/rename/", views.FanBulkRenameView.as_view(), name="fan_bulk_rename"),
     path("gpus/rename/", views.GPUBulkRenameView.as_view(), name="gpu_bulk_rename"),

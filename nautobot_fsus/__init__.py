@@ -35,6 +35,7 @@ class NautobotFSUsConfig(NautobotAppConfig):
     author_email: str = dist.metadata.get("Author-email")  # type: ignore[attr-defined]
     description: str = dist.metadata.get("Summary")  # type: ignore[attr-defined]
     base_url = "fsus"
+    docs_view_name = "plugins:nautobot_fsus:docs"
     required_settings: list[str] = []
     min_version: str = "1.6.1"
     max_version: str = "1.9999"
