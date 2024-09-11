@@ -14,7 +14,11 @@
 #  limitations under the License.
 
 """Table mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
+from typing import Any
+
 import django_tables2 as tables
+from django.urls import reverse
+from django.utils.html import format_html
 from nautobot.apps.tables import (
     BaseTable,
     ButtonsColumn,
@@ -84,6 +88,45 @@ class FSUTemplateModelTable(BaseTable):
             "description",
             "actions",
         ]
+
+
+class KludgeLinkedCountColumn(LinkedCountColumn):
+    """
+    Fixed version of LinkedCountColumn to deal with the bug in Nautobot 2.3.x.
+
+    Here's the deal. Nautobot 2.3 broke the LinkedCountColumn for apps/plugins by changing a
+    lookup so that mapping the columns view to its model only works for non-plugin models.
+    Setting the `viewname` parameter without "plugins:" fixes the mapping, in theory, but doing
+    that breaks the view lookup for the link in the column. This hijacked class is the only way
+    to work around it.
+    """
+
+    def __init__(self, viewname: str, *args: Any, view_kwargs: dict[str, Any] | None = None,
+                 url_params: dict[str, str] | None = None, default: int = 0, **kwargs: Any) -> None:
+        """Initialize the column with view name fix."""
+        # drop the "plugins:" from the front of the view name, since it's easier to deal with the
+        # column render method than the table lookup to map the view to a model.
+        viewname = ":".join(viewname.split(":")[1:])
+        super().__init__(
+            viewname,
+            *args,
+            view_kwargs=view_kwargs,
+            url_params=url_params,
+            default=default,
+            **kwargs
+        )
+
+    def render(self, record: Any, value: str | None) -> str | None:
+        """Render the field value in the column."""
+        if value:
+            url = [reverse(f"plugins:{self.viewname}", kwargs=self.view_kwargs)]
+            if self.url_params:
+                url.append("?")
+                url.append(
+                    "&".join([f"{k}={getattr(record, v)}" for k, v in self.url_params.items()])
+                )
+                return format_html('<a href="{}">{}</a>', "".join(url), value)
+        return value
 
 
 class FSUTypeModelTable(BaseTable):

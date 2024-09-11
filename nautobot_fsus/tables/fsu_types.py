@@ -14,10 +14,13 @@
 #  limitations under the License.
 
 """Table definitions for FSUType models."""
-from nautobot.apps.tables import ButtonsColumn, LinkedCountColumn, TagColumn
+from nautobot.apps.tables import ButtonsColumn, TagColumn
 
 from nautobot_fsus import models
-from nautobot_fsus.tables.mixins import FSUTypeModelTable
+from nautobot_fsus.tables.mixins import (
+    FSUTypeModelTable,
+    KludgeLinkedCountColumn as LinkedCountColumn,
+)
 
 
 class CPUTypeTable(FSUTypeModelTable):
