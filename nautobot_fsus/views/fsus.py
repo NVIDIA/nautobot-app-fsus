@@ -18,7 +18,7 @@ from typing import Any
 
 from django.db.models import Prefetch
 from nautobot.dcim.models import Interface, PowerPort
-from nautobot.dcim.tables import DeviceInterfaceTable, DevicePowerPortTable
+from nautobot.dcim.tables import DeviceModuleInterfaceTable, DeviceModulePowerPortTable
 from nautobot.ipam.models import IPAddress
 
 from nautobot_fsus import filters, forms, models, tables
@@ -242,7 +242,7 @@ class NICUIViewSet(FSUModelViewSet):
                 "_path__destination",
                 "tags",
             ).select_related("lag", "cable")
-            interfaces_table = DeviceInterfaceTable(
+            interfaces_table = DeviceModuleInterfaceTable(
                 data=interfaces,
                 user=request.user,
                 orderable=False,
@@ -302,7 +302,7 @@ class PSUUIViewSet(FSUModelViewSet):
         if self.action == "retrieve":
             power_ports = PowerPort.objects.restrict(request.user, "view").filter(
                 parent_psu=instance).select_related("cable").prefetch_related("_path__destination")
-            power_ports_table = DevicePowerPortTable(
+            power_ports_table = DeviceModulePowerPortTable(
                 data=power_ports,
                 user=request.user,
                 orderable=False,

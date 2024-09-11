@@ -19,7 +19,7 @@ from typing import Type
 from django.urls import reverse
 from nautobot.core.testing.api import APIViewTestCases
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
-from nautobot.dcim.models.device_components import ComponentModel
+from nautobot.dcim.models.device_components import ModularComponentModel
 from nautobot.extras.models import Status
 from rest_framework import status
 
@@ -355,9 +355,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
     class ParentNonFSUChildAPIViewTestCase(FSUAPIViewTestCase):
         """Additional tests for a parent FSU where the children are not FSUs."""
 
-        child_model: Type[ComponentModel]
+        child_model: Type[ModularComponentModel]
         child_field: str
-        children: list[ComponentModel]
+        children: list[ModularComponentModel]
 
         def test_create_parent_with_child_in_wrong_device(self):
             """Test that creating a parent FSU with a child in a different device fails."""
