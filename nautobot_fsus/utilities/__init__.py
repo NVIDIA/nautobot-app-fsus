@@ -18,7 +18,7 @@ from django.core.exceptions import ValidationError
 from nautobot.dcim.models import Device
 from nautobot.dcim.models.device_components import ComponentModel
 
-from nautobot_fsus.models.fsus import FSUModel
+from nautobot_fsus.models.mixins import FSUModel
 
 
 def validate_parent_device(
