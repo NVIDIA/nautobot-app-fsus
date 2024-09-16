@@ -10,7 +10,7 @@ homepage = "https://github.com/NVIDIA/nautobot-app-fsus"
 repository = "https://github.com/NVIDIA/nautobot-app-fsus"
 keywords = ["nautobot", "nautobot-plugin"]
 include = [
-    "README.md",
+    "nautobot_fsus/static/nautobot_fsus/**/*",
 ]
 packages = [
     { include = "nautobot_fsus" },

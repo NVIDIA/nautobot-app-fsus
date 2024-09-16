@@ -119,6 +119,7 @@ nav:
       - Install: "admin/install.md"
       - Upgrade: "admin/upgrade.md"
       - Uninstall: "admin/uninstall.md"
+      - Compatibility Matrix: "admin/compatibility_matrix.md"
       - Release Notes:
           - "admin/release_notes/index.md"
           - v1.0: "admin/release_notes/version_1.0.md"
