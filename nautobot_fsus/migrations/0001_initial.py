@@ -20,10 +20,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MinValueValidator
 from django.db import migrations, models
 from django.db.models import deletion
+from nautobot.core.models.fields import NaturalOrderingField
+from nautobot.core.models.ordering import naturalize
 from nautobot.extras.models.mixins import DynamicGroupMixin, NotesMixin
 from nautobot.extras.models.statuses import StatusField
-from nautobot.utilities.fields import NaturalOrderingField
-from nautobot.utilities.ordering import naturalize
 from taggit.managers import TaggableManager
 
 
@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'RAM Module Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -168,7 +168,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'PSU Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -199,7 +199,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Other FSU Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -231,7 +231,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'NIC Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -270,7 +270,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Mainboard Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -365,7 +365,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'HBA Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -463,7 +463,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'GPU Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -496,7 +496,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'GPU Baseboard Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -596,7 +596,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Fan Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -637,7 +637,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Disk Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -679,7 +679,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'CPU Types',
                 'ordering': ['manufacturer', '_name', 'part_number'],
                 'abstract': False,
-                'unique_together': {('manufacturer', 'part_number')},
+                'unique_together': {('part_number', 'manufacturer')},
             },
             bases=(models.Model, DynamicGroupMixin, NotesMixin),
         ),
@@ -716,7 +716,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'RAM Module Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -817,7 +817,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'PSU Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -924,7 +924,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'OtherFSU Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1024,7 +1024,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'NIC Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1133,7 +1133,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Mainboard Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1169,7 +1169,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'HBA Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1205,7 +1205,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'GPU Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1240,7 +1240,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'GPU Baseboard Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1350,7 +1350,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Fan Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1449,7 +1449,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Disk Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
@@ -1558,7 +1558,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'CPU Templates',
                 'ordering': ['device_type', '_name'],
                 'abstract': False,
-                'unique_together': {('device_type', 'name')},
+                'unique_together': {('name', 'device_type')},
             },
         ),
         migrations.CreateModel(
