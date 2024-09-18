@@ -402,12 +402,14 @@ class CPUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
         cls.types[0].cpu_speed = 1.5
         cls.types[0].cores = 8
+        cls.types[0].pcie_generation = 5
         cls.types[0].validated_save()
         cls.types[0].refresh_from_db()
 
         cls.types[1].architecture = "arm"
         cls.types[1].cpu_speed = 3.0
         cls.types[1].cores = 32
+        cls.types[1].pcie_generation = 6
         cls.types[1].validated_save()
         cls.types[1].refresh_from_db()
 
@@ -477,6 +479,13 @@ class CPUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
             params = {"cores__gte": [8]}
             filter_result = self.filterset(params, self.queryset).qs
             self.assertEqual(filter_result.count(), 2)
+
+    def test_pcie_generation(self):
+        """Test filtering on PCIe generation."""
+        params = {"pcie_generation": [6]}
+        filter_result = self.filterset(params, self.queryset).qs
+        self.assertEqual(filter_result.count(), 1)
+        self.assertEqual(filter_result.first().name, self.types[1].name)
 
 
 class DiskTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
@@ -589,20 +598,12 @@ class MainboardTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
         """Set up MainboardType-specific test data."""
         super().setUpTestData()
 
-        cls.types[0].pcie_generation = 6
         cls.types[0].cpu_socket_count = 4
         cls.types[0].validated_save()
         cls.types[0].refresh_from_db()
         cls.types[1].cpu_socket_count = 2
         cls.types[1].validated_save()
         cls.types[1].refresh_from_db()
-
-    def test_pcie_generation(self):
-        """Test filtering on PCIe generation."""
-        params = {"pcie_generation": [6]}
-        filter_result = self.filterset(params, self.queryset).qs
-        self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, self.types[0].name)
 
     def test_cpu_socket_count(self):
         """Test filtering on CPU socket count."""

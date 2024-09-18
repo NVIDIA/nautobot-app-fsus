@@ -247,7 +247,6 @@ class Migration(migrations.Migration):
                 ('part_number', models.CharField(max_length=100)),
                 ('description', models.CharField(blank=True, max_length=255)),
                 ('comments', models.TextField(blank=True)),
-                ('pcie_generation', models.PositiveSmallIntegerField(blank=True, null=True)),
                 (
                     'cpu_socket_count',
                     models.PositiveSmallIntegerField(
@@ -664,6 +663,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ('cores', models.PositiveSmallIntegerField(blank=True, null=True)),
+                ('pcie_generation', models.PositiveSmallIntegerField(blank=True, null=True)),
                 (
                     'manufacturer',
                     models.ForeignKey(

@@ -29,67 +29,60 @@ class DiskTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the DiskType model."""
 
     type_model = models.DiskType
-    model_fields = {"architecture": "arm"}
+    model_fields = {"disk_type": "SSD"}
 
 
 class FanTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the FanType model."""
 
     type_model = models.FanType
-    model_fields = {"architecture": "arm"}
 
 
 class GPUTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the GPUType model."""
 
     type_model = models.GPUType
-    model_fields = {"architecture": "arm"}
 
 
 class GPUBaseboardTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the GPUBaseboardType model."""
 
     type_model = models.GPUBaseboardType
-    model_fields = {"architecture": "arm"}
 
 
 class HBATypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the HBAType model."""
 
     type_model = models.HBAType
-    model_fields = {"architecture": "arm"}
 
 
 class MainboardTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the MainboardType model."""
 
     type_model = models.MainboardType
-    model_fields = {"architecture": "arm"}
 
 
 class NICTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the NICType model."""
 
     type_model = models.NICType
-    model_fields = {"architecture": "arm"}
 
 
 class OtherFSUTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the OtherFSUType model."""
 
     type_model = models.OtherFSUType
-    model_fields = {"architecture": "arm"}
 
 
 class PSUTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the PSUType model."""
 
     type_model = models.PSUType
-    model_fields = {"architecture": "arm"}
+    model_fields = {"feed_type": "dc"}
 
 
 class RAMModuleTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
     """Tests for the RAMModuleType model."""
 
     type_model = models.RAMModuleType
-    model_fields = {"architecture": "arm"}
+    model_fields = {"module_type": "u", "technology": "ddr5", "quantity": 1}

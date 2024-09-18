@@ -201,22 +201,22 @@ def everything(context: Context, keepdb: bool = False, verbose: bool = False) ->
     print("\nRunning flake8...")
     flake8(context, verbose=verbose)
 
-    print("\n", ("-" * 70), "\n")
+    print(f"\n{('-' * 70)}\n")
     print("Running pydocstyle...")
     pydocstyle(context, verbose=verbose)
 
-    print("\n", ("-" * 70), "\n")
+    print(f"\n{('-' * 70)}\n")
     print("Running mypy...")
     mypy(context, verbose=verbose)
 
-    print("\n", ("-" * 70), "\n")
+    print(f"\n{('-' * 70)}\n")
     print("Running bandit...")
     bandit(context)
 
-    print("\n", ("-" * 70), "\n")
+    print(f"\n{('-' * 70)}\n")
     print("Running tests...")
     unittests(context, keepdb=keepdb, verbose=verbose)
 
-    print("\n", ("-" * 70), "\n")
+    print(f"\n{('-' * 70)}\n")
     print("Generating coverage report...")
     coverage(context)

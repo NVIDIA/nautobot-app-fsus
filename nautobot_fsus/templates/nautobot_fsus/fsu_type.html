@@ -47,6 +47,10 @@
             <td>Cores</td>
             <td>{{ object.cores | placeholder }}</td>
         </tr>
+        <tr>
+            <td>PCIe Generation</td>
+            <td>{{ object.get_pcie_generation_display }}</td>
+        </tr>
     {% elif verbose_name == "Disk Type" %}
         <tr>
             <td>Type</td>
@@ -62,10 +66,6 @@
             <td>{{ object.slot_count | placeholder }}</td>
         </tr>
     {% elif verbose_name == "Mainboard Type" %}
-        <tr>
-            <td>PCIe Generation</td>
-            <td>{{ object.get_pcie_generation_display }}</td>
-        </tr>
         <tr>
             <td>CPU Socket Count</td>
             <td>{{ object.cpu_socket_count | placeholder }}</td>

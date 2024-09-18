@@ -45,7 +45,7 @@ class CPUTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
     """Test the API views for the CPUType model."""
 
     model = models.CPUType
-    choices_fields = ["architecture"]
+    choices_fields = ["architecture", "pcie_generation"]
 
     @classmethod
     def setUpTestData(cls):
@@ -56,6 +56,7 @@ class CPUTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
             fsu.architecture = "arm"
             fsu.cpu_speed = float(f"1.{index}")
             fsu.cores = (index * 8) + 8
+            fsu.pcie_generation = 5
             fsu.validated_save()
             fsu.refresh_from_db()
 
@@ -63,6 +64,7 @@ class CPUTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
             item["architecture"] = "x86"
             item["cpu_speed"] = float(f"3.{index}")
             item["cores"] = (index * 4) + 4
+            item["pcie_generation"] = 6
 
 
 class DiskAPITestCase(FSUAPITestCases.FSUAPIViewTestCase):
@@ -412,7 +414,6 @@ class MainboardTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
     """Test the API views for the MainboardType model."""
 
     model = models.MainboardType
-    choices_fields = ["pcie_generation"]
 
 
 class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):

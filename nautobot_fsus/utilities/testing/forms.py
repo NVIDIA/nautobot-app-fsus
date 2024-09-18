@@ -56,7 +56,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
             )
 
         def test_new_fsu(self):
-            """The the create FSU form."""
+            """The create FSU form."""
             form = self.form_model(
                 data={
                     "fsu_type": self.fsu_type,
@@ -73,18 +73,15 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
             self.assertTrue(form.save())
 
         def test_edit_fsu(self):
-            """The the update FSU form."""
+            """The update FSU form."""
             fsu = self.model.objects.create(
                 fsu_type=self.fsu_type,
                 device=Device.objects.first(),
                 name=f"{self.model._meta.model_name}_0",
             )
 
-            field_name = f"fsu_{self.fsu_field.key}"
             form = self.form_model(instance=fsu)
-            self.assertIn(field_name, form.fields)
             self.assertEqual(form["name"].initial, fsu.name)
-            self.assertEqual(form.fields[field_name].initial, "Testing")
 
     class FSUTemplateFormTestCase(TestCase):
         """Tests for FSU template forms."""

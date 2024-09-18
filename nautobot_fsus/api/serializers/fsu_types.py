@@ -53,6 +53,7 @@ class CPUTypeSerializer(FSUTypeModelSerializer):
             "architecture",
             "cpu_speed",
             "cores",
+            "pcie_generation",
             "description",
         ]
 
@@ -161,7 +162,6 @@ class MainboardTypeSerializer(FSUTypeModelSerializer):
             "instance_count",
             "manufacturer",
             "part_number",
-            "pcie_generation",
             "cpu_socket_count",
             "description",
         ]

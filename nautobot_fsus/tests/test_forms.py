@@ -59,6 +59,7 @@ class CPUTypeTestCase(FSUFormTestCases.FSUTypeFormTestCase):
                 "architecture": "arm",
                 "cpu_speed": 1.9,
                 "cores": 32,
+                "pcie_generation": 0,
             }
         )
         self.assertTrue(form.is_valid())
@@ -278,7 +279,6 @@ class MainboardTypeTestCase(FSUFormTestCases.FSUTypeFormTestCase):
                 "manufacturer": Manufacturer.objects.first(),
                 "name": f"Test {self.instance_model}",
                 "part_number": "Z0101",
-                "pcie_generation": 0,
                 "cpu_socket_count": 2,
             }
         )

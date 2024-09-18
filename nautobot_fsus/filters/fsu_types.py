@@ -37,6 +37,11 @@ class CPUTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
         label="CPU Architecture",
     )
 
+    pcie_generation = django_filters.MultipleChoiceFilter(
+        choices=PCIeGenerations,
+        label="PCIe Generation",
+    )
+
     class Meta:
         """CPUTypeFilterSet model options."""
 
@@ -49,6 +54,7 @@ class CPUTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "architecture",
             "cpu_speed",
             "cores",
+            "pcie_generation",
             "description",
             "comments",
             "instances",
@@ -163,11 +169,6 @@ class HBATypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
 class MainboardTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
     """Filter set for Mainboard types."""
 
-    pcie_generation = django_filters.MultipleChoiceFilter(
-        choices=PCIeGenerations,
-        label="PCIe Generation",
-    )
-
     class Meta:
         """MainboardTypeFilterSet model options."""
 
@@ -177,7 +178,6 @@ class MainboardTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "manufacturer",
             "name",
             "part_number",
-            "pcie_generation",
             "cpu_socket_count",
             "description",
             "comments",

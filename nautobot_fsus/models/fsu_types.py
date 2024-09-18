@@ -55,6 +55,12 @@ class CPUType(FSUTypeModel):
         null=True,
     )
 
+    pcie_generation = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        choices=choices.PCIeGenerations,
+    )
+
     csv_headers = [
         "manufacturer",
         "name",
@@ -62,6 +68,7 @@ class CPUType(FSUTypeModel):
         "architecture",
         "cpu_speed",
         "cores",
+        "pcie_generation",
         "description",
         "comments",
     ]
@@ -80,6 +87,7 @@ class CPUType(FSUTypeModel):
             self.get_architecture_display,
             str(self.cpu_speed) if self.cpu_speed else "",
             str(self.cores) if self.cores else "",
+            self.get_pcie_generation_display,
             self.description,
             self.comments,
         )
@@ -242,12 +250,6 @@ class HBAType(FSUTypeModel):
 class MainboardType(FSUTypeModel):
     """Represents a Mainboard component type."""
 
-    pcie_generation = models.PositiveSmallIntegerField(
-        blank=True,
-        null=True,
-        choices=choices.PCIeGenerations,
-    )
-
     cpu_socket_count = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
@@ -258,7 +260,6 @@ class MainboardType(FSUTypeModel):
         "manufacturer",
         "name",
         "part_number",
-        "pcie_generation",
         "cpu_socket_count",
         "description",
         "comments",
@@ -275,7 +276,6 @@ class MainboardType(FSUTypeModel):
             self.manufacturer.name,
             self.name,
             self.part_number,
-            self.get_pcie_generation_display,
             str(self.cpu_socket_count) if self.cpu_socket_count else "",
             self.description,
             self.comments,

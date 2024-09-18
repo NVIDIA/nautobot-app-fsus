@@ -47,10 +47,16 @@ class CPUTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         label="CPU Architecture",
     )
 
+    pcie_generation = forms.ChoiceField(
+        choices=choices.PCIeGenerations,
+        initial=choices.PCIeGenerations.gen6,
+        required=False,
+    )
+
     class Meta:
         """CPUTypeBulkEditForm model options."""
 
-        nullable_fields: list[str] = []
+        nullable_fields: list[str] = ["pcie_generation"]
 
 
 class CPUTypeCSVForm(FSUTypeCSVForm):
@@ -67,6 +73,7 @@ class CPUTypeCSVForm(FSUTypeCSVForm):
             "architecture",
             "cpu_speed",
             "cores",
+            "pcie_generation",
             "description",
             "comments",
         ]
@@ -92,6 +99,13 @@ class CPUTypeForm(FSUTypeModelForm):
 
     architecture = forms.ChoiceField(choices=choices.CPUArchitectures, label="CPU Architecture")
 
+    pcie_generation = forms.TypedChoiceField(
+        choices=choices.PCIeGenerations,
+        required=False,
+        label="PCIe Generation",
+        empty_value=None,
+    )
+
     class Meta(FSUTypeModelForm.Meta):
         """CPUTypeForm model options."""
 
@@ -103,6 +117,7 @@ class CPUTypeForm(FSUTypeModelForm):
             "architecture",
             "cpu_speed",
             "cores",
+            "pcie_generation",
             "description",
             "comments",
             "tags",
@@ -123,6 +138,7 @@ class CPUTypeImportForm(FSUTypeImportModelForm):
             "architecture",
             "cpu_speed",
             "cores",
+            "pcie_generation",
             "description",
             "comments",
             "tags",
@@ -507,16 +523,10 @@ class MainboardTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
     manufacturer = DynamicModelChoiceField(queryset=Manufacturer.objects.all(), required=False)
     cpu_socket_count = forms.IntegerField(min_value=1, required=False)
 
-    pcie_generation = forms.ChoiceField(
-        choices=choices.PCIeGenerations,
-        initial=choices.PCIeGenerations.gen6,
-        required=False,
-    )
-
     class Meta:
         """MainboardTypeBulkEditForm model options."""
 
-        nullable_fields: list[str] = ["pcie_generation", "cpu_socket_count"]
+        nullable_fields: list[str] = ["cpu_socket_count"]
 
 
 class MainboardTypeCSVForm(FSUTypeCSVForm):
@@ -530,7 +540,6 @@ class MainboardTypeCSVForm(FSUTypeCSVForm):
             "manufacturer",
             "name",
             "part_number",
-            "pcie_generation",
             "cpu_socket_count",
             "description",
             "comments",
@@ -555,13 +564,6 @@ class MainboardTypeFilterForm(NautobotFilterForm):
 class MainboardTypeForm(FSUTypeModelForm):
     """Form for creating or updating MainboardType instances."""
 
-    pcie_generation = forms.TypedChoiceField(
-        choices=choices.PCIeGenerations,
-        required=False,
-        label="PCIe Generation",
-        empty_value=None,
-    )
-
     class Meta(FSUTypeModelForm.Meta):
         """MainboardTypeForm model options."""
 
@@ -570,7 +572,6 @@ class MainboardTypeForm(FSUTypeModelForm):
             "manufacturer",
             "name",
             "part_number",
-            "pcie_generation",
             "cpu_socket_count",
             "description",
             "comments",
@@ -589,7 +590,6 @@ class MainboardTypeImportForm(FSUTypeImportModelForm):
             "manufacturer",
             "name",
             "part_number",
-            "pcie_generation",
             "cpu_socket_count",
             "description",
             "comments",
