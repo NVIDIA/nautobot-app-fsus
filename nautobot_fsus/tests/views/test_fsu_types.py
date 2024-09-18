@@ -36,20 +36,14 @@ class FSUTypeViewTestCases:  # pylint: disable=too-few-public-methods
             """Set up initial test data."""
             manufacturers = Manufacturer.objects.all()
 
-            for i in range(1, 5):
-                cls.model.objects.create(
-                    manufacturer=manufacturers[i - 1],
-                    name=f"{cls.model._meta.verbose_name} {i}",
-                    part_number=f"000{i}",
-                )
-
             cls.form_data = {
                 "manufacturer": manufacturers[1].pk,
-                "name": f"{cls.model._meta.verbose_name} 5",
+                "name": f"{cls.model._meta.verbose_name} X",
                 "part_number": "X23",
             }
 
-            cls.bulk_edit_data = {"manufacturer": manufacturers.last().pk}
+            new_mfgr = Manufacturer.objects.create(name="Test Manufacturer")
+            cls.bulk_edit_data = {"manufacturer": new_mfgr.pk}
 
             cls.csv_data = (
                 "manufacturer,name,part_number",

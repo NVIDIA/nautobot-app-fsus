@@ -14,102 +14,50 @@
 #  limitations under the License.
 
 """Create test environment object fixtures."""
-from nautobot.dcim.models import (
-    Device,
-    DeviceRole,
-    DeviceType,
-    Location,
-    LocationType,
-    Manufacturer,
-    Site,
-)
+from django.utils.crypto import get_random_string
+import factory.random
+from nautobot.dcim.models import Device, DeviceRole, DeviceType, Location, Manufacturer
 from nautobot.extras.models import Status
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUTypeModel
+from nautobot_fsus.signals import post_migrate_create_defaults
 
 
-def create_site() -> Site:
-    """Add a test Site instance."""
-    site, _ = Site.objects.get_or_create(name="Site 1")
-    return site
+def create_env(seed: str | None = None):
+    """Populate environment with basic test data."""
+    if seed is None:
+        seed = get_random_string(16)
+    factory.random.reseed_random(seed)
 
-
-def create_location_type() -> LocationType:
-    """Add a Building LocationType."""
-    location_type, _ = LocationType.objects.get_or_create(name="Building")
-    return location_type
-
-
-def create_locations(site: Site, location_type: LocationType) -> list[Location]:
-    """Add test Location instances."""
-    locations: list[Location] = []
+    print("Creating Devices...")
     for num in range(1, 6):
-        added, _ = Location.objects.get_or_create(
-            name=f"Location {num}",
-            location_type=location_type,
-            site=site,
-        )
-        locations.append(added)
+        device_type = factory.random.randgen.choice(DeviceType.objects.all())
+        device_role = factory.random.randgen.choice(DeviceRole.objects.all())
+        location = factory.random.randgen.choice(Location.objects.filter(site__isnull=False))
 
-    return locations
-
-
-def create_manufacturers() -> list[Manufacturer]:
-    """Add test Manufacturer instances."""
-    manufacturers: list[Manufacturer] = []
-    for num in range(1, 6):
-        mfgr, _ = Manufacturer.objects.get_or_create(name=f"Manufacturer {num}")
-        manufacturers.append(mfgr)
-
-    return manufacturers
-
-
-def create_devices(locations: list[Location]) -> list[tuple[Device, Device]]:
-    """Add test Device instances."""
-    site = Site.objects.first()
-    manufacturer = Manufacturer.objects.first()
-
-    devices: list[tuple[Device, Device]] = []
-    device_type, _ = DeviceType.objects.get_or_create(
-        manufacturer=manufacturer,
-        model="Device Type 1",
-        slug="device_type_1",
-    )
-
-    device_role, _ = DeviceRole.objects.get_or_create(
-        name="Device Role 1",
-        slug="device_role_1",
-        color="ff0000",
-    )
-
-    for num in range(1, 6):
-        dev1, _ = Device.objects.get_or_create(
+        _ = Device.objects.get_or_create(
             device_type=device_type,
             device_role=device_role,
             name=f"Device {num}-1",
-            site=site,
-            location=locations[num - 1],
+            site=location.site,
+            location=location,
         )
-
-        dev2, _ = Device.objects.get_or_create(
+        _ = Device.objects.get_or_create(
             device_type=device_type,
             device_role=device_role,
             name=f"Device {num}-2",
-            site=site,
-            location=locations[num - 1],
+            site=location.site,
+            location=location,
         )
 
-        devices.append((dev1, dev2))
+    print("Updating statuses...")
+    post_migrate_create_defaults()
 
-    return devices
+    print("Creating FSUTypes...")
+    fsu_types: dict[str, list[FSUTypeModel]] = {}
 
-
-def create_fsu_types(manufacturers: list[Manufacturer]) -> dict[str, FSUTypeModel]:
-    """Add test FSUType instances."""
-    fsu_types: dict[str, FSUTypeModel] = {}
-
-    for index, value in enumerate([
+    for value in [
         (models.CPUType, "cpu"),
         (models.DiskType, "disk"),
         (models.FanType, "fan"),
@@ -121,26 +69,21 @@ def create_fsu_types(manufacturers: list[Manufacturer]) -> dict[str, FSUTypeMode
         (models.OtherFSUType, "otherfsu"),
         (models.PSUType, "psu"),
         (models.RAMModuleType, "rammodule"),
-    ]):
-        mfgr = index if index <= 4 else int(index / 2) - 2
-        manufacturer = manufacturers[mfgr]
-        fsu_type, fsu_model = value
-        added, _ = fsu_type.objects.get_or_create(
-            manufacturer=manufacturer,
-            name=f"{fsu_type._meta.verbose_name} 1",
-            part_number=f"{fsu_model}_000{index}"
-        )
-        fsu_types[fsu_model] = added
+    ]:
+        fsu_type, type_model = value
+        fsu_types[type_model] = []
+        mfgr_used: list[Manufacturer] = []
+        for num in range(1, 4):
+            mfgr = factory.random.randgen.choice(Manufacturer.objects.exclude(id__in=mfgr_used))
+            added, _ = fsu_type.objects.get_or_create(
+                manufacturer=mfgr,
+                name=f"{fsu_type._meta.verbose_name} {num}",
+                part_number=f"{type_model}_000{num}"
+            )
+            mfgr_used.append(mfgr.pk)
+            fsu_types[type_model].append(added)
 
-    return fsu_types
-
-
-def create_fsus(
-    fsu_types: dict[str, FSUTypeModel],
-    devices: list[tuple[Device, Device]],
-    locations: list[Location]
-):
-    """Add test FSU instances."""
+    print("Creating FSUs...")
     for fsu_model in [
         models.CPU,
         models.Disk,
@@ -154,44 +97,16 @@ def create_fsus(
         models.PSU,
         models.RAMModule,
     ]:
-        fsu_type = fsu_types[getattr(fsu_model._meta, "model_name", "")]
         for num in range(1, 6):
             _ = fsu_model.objects.get_or_create(
                 name=f"{fsu_model._meta.verbose_name} {num}-1",
-                fsu_type=fsu_type,
-                device=devices[num - 1][0],
-                status=Status.objects.get(slug="active"),
+                fsu_type=fsu_types[getattr(fsu_model._meta, "model_name", "")][0],
+                device=factory.random.randgen.choice(Device.objects.all()),
+                status=Status.objects.get(name="Active"),
             )
             _ = fsu_model.objects.get_or_create(
                 name=f"{fsu_model._meta.verbose_name} {num}-2",
-                fsu_type=fsu_type,
-                location=locations[num - 1],
-                status=Status.objects.get(slug="available"),
+                fsu_type=fsu_types[getattr(fsu_model._meta, "model_name", "")][1],
+                location=factory.random.randgen.choice(Location.objects.all()),
+                status=Status.objects.get(name="Available"),
             )
-
-
-def create_env(with_fsus: bool = False):
-    """Populate environment with basic test data."""
-    print("Creating Base Data")
-
-    print(" - Site")
-    site = create_site()
-
-    print(" - LocationType")
-    location_type = create_location_type()
-
-    print(" - Manufacturers")
-    manufacturers = create_manufacturers()
-
-    print(" - Locations")
-    locations = create_locations(site, location_type)
-
-    print(" - Devices")
-    devices = create_devices(locations)
-
-    if with_fsus:
-        print(" - FSUTypes")
-        fsu_types = create_fsu_types(manufacturers)
-
-        print(" - FSUs")
-        create_fsus(fsu_types, devices, locations)

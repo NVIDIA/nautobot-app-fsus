@@ -41,7 +41,7 @@ class CPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
         mainboard = models.Mainboard.objects.create(
             fsu_type=mainboard_type,
-            device=Device.objects.first(),
+            device=cls.device,
             name="Test Mainboard",
             serial_number="mb1",
             firmware_version="1.0",
@@ -56,7 +56,7 @@ class CPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
     def test_has_parent_mainboard_filter(self):
         """Test filtering on CPUs that have a parent Mainboard."""
-        self.assertEqual(self.queryset.count(), 3)
+        self.assertGreater(self.queryset.count(), 1)
         params = {"has_parent_mainboard": True}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
@@ -64,7 +64,7 @@ class CPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
     def test_parent_mainboard_filter(self):
         """Test filtering on a CPU's parent mainboard."""
-        self.assertEqual(self.queryset.count(), 3)
+        self.assertGreater(self.queryset.count(), 1)
         params = {"parent_mainboard": ["Test Mainboard"]}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
@@ -91,7 +91,7 @@ class DiskTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
         hba = models.HBA.objects.create(
             fsu_type=hba_type,
-            device=Device.objects.first(),
+            device=cls.device,
             name="Test HBA",
             serial_number="hba1",
             firmware_version="1.0",
@@ -106,7 +106,7 @@ class DiskTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
     def test_has_parent_hba_filter(self):
         """Test filtering on Disks that have a parent HBA."""
-        self.assertEqual(self.queryset.count(), 3)
+        self.assertGreater(self.queryset.count(), 1)
         params = {"has_parent_hba": True}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
@@ -114,7 +114,7 @@ class DiskTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
     def test_parent_hba_filter(self):
         """Test filtering on a Disk's parent HBA."""
-        self.assertEqual(self.queryset.count(), 3)
+        self.assertGreater(self.queryset.count(), 1)
         params = {"parent_hba": ["Test HBA"]}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
@@ -172,7 +172,7 @@ class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
     def test_has_parent_baseboard_filter(self):
         """Test filtering on GPUs that have a parent Baseboard."""
-        self.assertEqual(self.queryset.count(), 3)
+        self.assertGreater(self.queryset.count(), 1)
         params = {"has_parent_gpubaseboard": True}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
@@ -180,7 +180,7 @@ class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
     def test_parent_baseboard_filter(self):
         """Test filtering on a GPU's parent Baseboard."""
-        self.assertEqual(self.queryset.count(), 3)
+        self.assertGreater(self.queryset.count(), 1)
         params = {"parent_gpubaseboard": ["Test Parent"]}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
@@ -693,10 +693,10 @@ class PSUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
     def test_feed_type(self):
         """Test filtering on feed type."""
-        params = {"feed_type": ["dc"]}
+        params = {"feed_type": ["ac"]}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, self.types[0].name)
+        self.assertEqual(filter_result.first().name, self.types[1].name)
 
     def test_power_provided(self):
         """Test filtering on power provided."""

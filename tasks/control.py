@@ -47,7 +47,23 @@ def build(context: Context, force_rm: bool = False, cache: bool = True) -> None:
     helpers.docker_compose(context, " ".join(command))
 
 
-@task
+@task(
+    help={
+        "local": "Force the command to run locally instead of in the service container."
+    }
+)
+def mkdocs(context: Context, local: bool = False) -> None:
+    """Runs `mkdocs` to create the static documentation for the plugin."""
+    command = ["mkdocs build --no-directory-urls --strict"]
+    if local:
+        context = context
+        context.nautobot_fsus.local = True
+        command.insert(0, "poetry run")
+
+    helpers.run_command(context, " ".join(command))
+
+
+@task(mkdocs)
 def generate_packages(context: Context) -> None:
     """Generate all python packages inside a docker container and copy them to ./dist"""
     helpers.run_command(context, "poetry build")
@@ -385,22 +401,60 @@ def post_upgrade(context: Context) -> None:
     helpers.run_command(context, "nautobot-server post_upgrade")
 
 
-@task
-def create_env(context: Context) -> None:
+@task(
+    help={
+        "seed": "String to use as a random generator seed for reproducible results.",
+        "cache-fixtures": "Save the generated test data to a json fixture file to re-use if "
+                          "the fixture file is not found, load the previously generated test "
+                          "data from the fixture file if it exists (implies the --flush option).",
+        "fixture-file": "Fixture file to use with --cache-fixtures, default is "
+                        "`development/factory_dump.json",
+        "flush": "Flush any existing data in the database before generating new data.",
+        "no-input": "Do not prompt for input or confirmation.",
+        "database": "The database to use when populating the data, defaults to the"
+                    " `default` database."
+    }
+)
+def create_env(context: Context, seed: str | None = None, cache_fixtures: bool = False,
+               fixture_file: str | None = None, flush: bool = False, no_input: bool = False,
+               database: str | None = None) -> None:
     """Add a base set of data to Nautobot to make development easier."""
-    helpers.run_command(context, "nautobot-server create_fsus_env --with-fsus")
+    command = ["nautobot-server", "create_fsus_env"]
+
+    if flush:
+        command.append("--flush")
+
+    if no_input:
+        command.append("--no-input")
+
+    if seed is not None:
+        command.extend(["--seed", seed])
+
+    if cache_fixtures:
+        command.append("--cache-fixtures")
+        if fixture_file is not None:
+            command.extend(["--fixture-file", fixture_file])
+
+    if database is not None:
+        command.append(f"--database={database}")
+
+    helpers.run_command(context, " ".join(command))
+
 
 @task(
     help={
-        "local": "Force the command to run locally instead of in the service container."
+        "no-input": "Do not prompt for input or confirmation.",
+        "database": "The database to flush, defaults to the `default` database."
     }
 )
-def mkdocs(context: Context, local: bool = False) -> None:
-    """Runs `mkdocs` to create the static documentation for the plugin."""
-    command = ["mkdocs build --no-directory-urls --strict"]
-    if local:
-        context = context
-        context.nautobot_fsus.local = True
-        command.insert(0, "poetry run")
+def flush_env(context: Context, no_input: bool = False, database: str | None = None) -> None:
+    """Clear all Nautobot data."""
+    command = ["nautobot-server", "flush_fsus_env"]
+
+    if no_input:
+        command.append("--no-input")
+
+    if database is not None:
+        command.append(f"--database={database}")
 
     helpers.run_command(context, " ".join(command))

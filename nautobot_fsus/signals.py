@@ -40,7 +40,7 @@ from nautobot_fsus.models import (
 logger = logging.getLogger("rq.worker")
 
 
-def post_migrate_create_defaults(sender, apps, **kwargs):  # pylint: disable=unused-argument
+def post_migrate_create_defaults(*args, **kwargs):  # pylint: disable=unused-argument
     """Callback function for post_migrate() -- create default Statuses."""
     statuses = ["active", "available", "maintenance", "offline"]
 
@@ -48,12 +48,18 @@ def post_migrate_create_defaults(sender, apps, **kwargs):  # pylint: disable=unu
 
     print("  Adding FSU models to Statuses")
     logger.info("Adding FSU models to Statuses")
-    for model in fsu_models:
-        for status in statuses:
-            logger.debug("Adding %s to %s", model.__name__, status)
-            Status.objects.get(slug=status).content_types.add(
-                ContentType.objects.get_for_model(model)
-            )
+    status = ""
+    try:
+        for model in fsu_models:
+            for status in statuses:
+                logger.debug("Adding %s to %s", model.__name__, status)
+                Status.objects.get(slug=status).content_types.add(
+                    ContentType.objects.get_for_model(model)
+                )
+    except Status.DoesNotExist:
+        # During testing, the test DB is flushed and the post_migrate signal is sent, meaning
+        # that this method is called, but the statuses are no longer there at that moment.
+        print(f"  Status {status} does not exist! Has the database been flushed?")
 
 
 @receiver(post_save, sender=Device, dispatch_uid="device_creation_fsu_signal")

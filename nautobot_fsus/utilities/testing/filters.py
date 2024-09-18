@@ -16,7 +16,7 @@
 """Test cases and helpers for testing the Nautobot FSUs app."""
 from typing import Type
 
-from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
+from nautobot.dcim.models import Device, DeviceRole, DeviceType, Location, Manufacturer
 from nautobot.extras.filters import NautobotFilterSet
 from nautobot.extras.models import Status
 from nautobot.utilities.querysets import RestrictedQuerySet
@@ -39,7 +39,21 @@ class FSUFilterTestCases:
         @classmethod
         def setUpTestData(cls):
             """Load initial data for the test case."""
-            fsu_types = [
+            device_type = DeviceType.objects.create(
+                manufacturer=Manufacturer.objects.last(),
+                model="Test Device Type",
+                slug="test-device-type",
+            )
+            location = Location.objects.first()
+            cls.device = Device.objects.create(
+                device_type=device_type,
+                device_role=DeviceRole.objects.first(),
+                name="Test Device",
+                site=location.base_site,
+                location=location,
+            )
+
+            cls.fsu_types = [
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.first(),
                     name=f"Test { cls.model._meta.verbose_name }",
@@ -52,8 +66,8 @@ class FSUFilterTestCases:
 
             cls.fsus = [
                 cls.model.objects.create(
-                    fsu_type=fsu_types[0],
-                    device=Device.objects.first(),
+                    fsu_type=cls.fsu_types[0],
+                    device=cls.device,
                     name=f"test_{ cls.model._meta.model_name }_0",
                     serial_number="a0001",
                     firmware_version="1.0",
@@ -63,8 +77,8 @@ class FSUFilterTestCases:
                     status=Status.objects.get(slug="active"),
                 ),
                 cls.model.objects.create(
-                    fsu_type=fsu_types[1],
-                    device=Device.objects.first(),
+                    fsu_type=cls.fsu_types[1],
+                    device=cls.device,
                     name=f"test_{ cls.model._meta.model_name }_1",
                     serial_number="a0002",
                     firmware_version="1.1",
@@ -74,8 +88,8 @@ class FSUFilterTestCases:
                     status=Status.objects.get(slug="active"),
                 ),
                 cls.model.objects.create(
-                    fsu_type=fsu_types[0],
-                    location=Location.objects.first(),
+                    fsu_type=cls.fsu_types[0],
+                    location=location,
                     name=f"test_{ cls.model._meta.model_name }_2",
                     serial_number="b0003",
                     firmware_version="1.0",
@@ -113,27 +127,26 @@ class FSUFilterTestCases:
 
         def test_device(self):
             """Test filtering on the FSU parent device."""
-            device = Device.objects.first()
             with self.subTest():
-                params = {"device_id": [device.pk]}
+                params = {"device_id": [self.device.pk]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
             with self.subTest():
-                params = {"device": [device.name]}
+                params = {"device": [self.device.name]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
         def test_storage_location(self):
             """Test filtering on the FSU parent storage location."""
             location = Location.objects.first()
-            with self.subTest():
-                params = {"location_id": [location.pk]}
+            with self.subTest(filter="id"):
+                params = {"id": [x.id for x in self.fsus], "location_id": [location.pk]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
-            with self.subTest():
-                params = {"location": [location.name]}
+            with self.subTest(filter="name"):
+                params = {"id": [x.id for x in self.fsus], "location": [location.name]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
         def test_fsu_type(self):
             """Test filtering on the FSU type id."""
-            fsu_type = self.type_model.objects.first()
+            fsu_type = self.fsu_types[0]
             params = {"fsu_type_id": [fsu_type.pk]}
             self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
@@ -153,7 +166,7 @@ class FSUFilterTestCases:
                 slug="test-device-type",
             )
 
-            fsu_types = [
+            cls.fsu_types = [
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.first(),
                     name=f"Test { cls.model._meta.verbose_name }",
@@ -166,19 +179,19 @@ class FSUFilterTestCases:
 
             cls.templates = [
                 cls.model.objects.create(
-                    fsu_type=fsu_types[0],
+                    fsu_type=cls.fsu_types[0],
                     device_type=DeviceType.objects.first(),
                     name=f"test_{ cls.model._meta.model_name }_0",
                     description=f"First test { cls.model._meta.verbose_name } template",
                 ),
                 cls.model.objects.create(
-                    fsu_type=fsu_types[1],
+                    fsu_type=cls.fsu_types[1],
                     device_type=DeviceType.objects.last(),
                     name=f"test_{ cls.model._meta.model_name }_1",
                     description=f"Second test { cls.model._meta.verbose_name } template",
                 ),
                 cls.model.objects.create(
-                    fsu_type=fsu_types[0],
+                    fsu_type=cls.fsu_types[0],
                     device_type=DeviceType.objects.first(),
                     name=f"test_{ cls.model._meta.model_name }_2",
                     description=f"Third test { cls.model._meta.verbose_name } template",
@@ -200,20 +213,20 @@ class FSUFilterTestCases:
 
         def test_device_type(self):
             """Test filtering on the DeviceType."""
-            with self.subTest():
+            with self.subTest(filter="id"):
                 params = {"device_type_id": [DeviceType.objects.first().id]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
-            with self.subTest():
+            with self.subTest(filte="name"):
                 params = {"device_type": [DeviceType.objects.last().slug]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
         def test_fsu_type(self):
             """Test filtering on the FSU type."""
-            fsu_type = self.type_model.objects.first()
-            with self.subTest():
+            fsu_type = self.fsu_types[0]
+            with self.subTest(filter="id"):
                 params = {"fsu_type_id": [fsu_type.pk]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
-            with self.subTest():
+            with self.subTest(filter="name"):
                 params = {"fsu_type": [fsu_type.name]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
@@ -254,10 +267,10 @@ class FSUFilterTestCases:
 
         def test_part_number(self):
             """Test filtering on the part number."""
-            with self.subTest():
+            with self.subTest(filter="exact"):
                 params = {"part_number": ["A10001"]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
-            with self.subTest():
+            with self.subTest(filter="contains"):
                 params = {"part_number__ic": ["A1000"]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
@@ -269,27 +282,27 @@ class FSUFilterTestCases:
         def test_manufacturer(self):
             """Test filtering on the parent manufacturer."""
             manufacturer = Manufacturer.objects.first()
-            with self.subTest():
-                params = {"manufacturer_id": [manufacturer.pk]}
+            with self.subTest(filter="id"):
+                params = {"id": [x.pk for x in self.types], "manufacturer_id": [manufacturer.pk]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
-            with self.subTest():
-                params = {"manufacturer": [manufacturer.name]}
+            with self.subTest(filter="name"):
+                params = {"id": [x.pk for x in self.types], "manufacturer": [manufacturer.name]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
         def test_has_instances(self):
             """Test filtering on if the FSU type has instances."""
             self.model.objects.create(
                 name=f"test_{ self.model._meta.model_name }",
-                fsu_type=self.type_model.objects.first(),
+                fsu_type=self.types[0],
                 device=Device.objects.first(),
             )
-            with self.subTest():
-                params = {"has_instances": True}
+            with self.subTest(filter="True"):
+                params = {"id": [x.pk for x in self.types], "has_instances": True}
                 filtered = self.filterset(params, self.queryset).qs
                 self.assertEqual(filtered.count(), 1)
                 self.assertEqual(filtered.first().name, self.types[0].name)
-            with self.subTest():
-                params = {"has_instances": False}
+            with self.subTest(filter="False"):
+                params = {"id": [x.pk for x in self.types], "has_instances": False}
                 filtered = self.filterset(params, self.queryset).qs
                 self.assertEqual(filtered.count(), 1)
                 self.assertEqual(filtered.first().name, self.types[1].name)

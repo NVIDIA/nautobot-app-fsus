@@ -28,6 +28,8 @@ class NautobotFSUsTestRunner(XMLTestRunner):
         self.cache_test_fixtures = cache_test_fixtures
         self.fixture_file = kwargs.get("fixture_file", "development/factory_dump.json")
         self.report_file = kwargs.get("report_file")
+        self.flush = kwargs.get("flush")
+        self.keepdb = kwargs.get("keepdb")
 
         # Assert "integration" hasn't been provided w/ --tag
         incoming_tags = kwargs.get("tags") or []
@@ -43,6 +45,7 @@ class NautobotFSUsTestRunner(XMLTestRunner):
 
     @classmethod
     def add_arguments(cls, parser):
+        """Additional arguments for the test runner."""
         super().add_arguments(parser)
         parser.add_argument(
             "--cache-test-fixtures",
@@ -59,50 +62,54 @@ class NautobotFSUsTestRunner(XMLTestRunner):
             default="rspec.xml",
             help="Filename for the saved XML test report."
         )
+        parser.add_argument(
+            "--flush",
+            action="store_true",
+            help="Flush any existing data in the database before generating new test data."
+        )
 
     def setup_test_environment(self, **kwargs):
+        """Global pre-test setup."""
         super().setup_test_environment(**kwargs)
+
         # Remove 'testserver' that Django "helpfully" adds automatically
         # to ALLOWED_HOSTS, masking issues like #3065
         settings.ALLOWED_HOSTS.remove("testserver")
+
+        # Update the XMLTestRunner settings if needed.
         settings.TEST_OUTPUT_VERBOSE = self.verbosity
         if self.report_file is not None:
             settings.TEST_OUTPUT_FILE_NAME = self.report_file
 
     def setup_databases(self, **kwargs):
+        """Create the test databases and add base set of factory data."""
         result = super().setup_databases(**kwargs)
-        call_command("create_fsus_env")
+        if result:
+            command = ["create_fsus_env", "--flush", "--no-input"]
+            if settings.TEST_FACTORY_SEED:
+                command.extend(["--seed", settings.TEST_FACTORY_SEED])
+            if self.cache_test_fixtures:
+                command.append("--cache-fixtures")
+            if self.fixture_file:
+                command.extend(["--fixture-file", self.fixture_file])
 
-        if self.cache_test_fixtures:
-            call_command(
-                "dumpdata",
-                "--natural-foreign",
-                "--natural-primary",
-                indent=2,
-                format="json",
-                exclude=[
-                    "contenttypes",
-                    "django_rq",
-                    "auth.permission",
-                    "extras.job",
-                    "extras.customfield",
-                ],
-                output=self.fixture_file,
-            )
+            for connection in result:
+                db_name = connection[0].alias
+                print(f"Pre-populating test database {db_name}...")
+                db_command = command + ["--database", db_name]
+                call_command(*db_command)
+
         return result
 
     def teardown_databases(self, old_config, **kwargs):
-        if settings.TEST_USE_FACTORIES and old_config:
+        """Clean up the test databases."""
+        # If keepdb is set, the test database won't be dropped, so we'll clean up the test data.
+        if self.keepdb:
+            command = ["flush_fsus_env", "--no-input"]
             for connection in old_config:
                 db_name = connection[0].alias
-                print(f'Emptying test database "{db_name}"...')
-                call_command(
-                    "flush",
-                    "--no-input",
-                    "--database",
-                    db_name,
-                    inhibit_post_migrate=True,
-                )
-                print(f"Database {db_name} emptied!")
+                print(f"Cleaning up test database {db_name}...")
+                db_command = command + ["--database", db_name]
+                call_command(*db_command)
 
         super().teardown_databases(old_config, **kwargs)

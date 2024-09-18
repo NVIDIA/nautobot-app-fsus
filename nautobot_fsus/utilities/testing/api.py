@@ -600,7 +600,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
         def setUpTestData(cls):
             """Set up the data for the tests."""
             cls.bulk_update_data = {
-                "manufacturer": Manufacturer.objects.get(slug="manufacturer-2").id
+                "manufacturer": Manufacturer.objects.last().pk
             }
 
             mfgr = Manufacturer.objects.first()
