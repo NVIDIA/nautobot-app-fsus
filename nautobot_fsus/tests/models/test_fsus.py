@@ -15,7 +15,7 @@
 
 """Tests for FSU models defined by the Nautobot FSUS app."""
 from django.core.exceptions import ValidationError
-from nautobot.dcim.models import Device, Interface, PowerPort
+from nautobot.dcim.models import Interface, PowerPort
 from nautobot.extras.models import Status
 
 from nautobot_fsus import models
