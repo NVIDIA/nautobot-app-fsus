@@ -285,4 +285,3 @@ class RAMModuleTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "comments",
             "instances",
         ]
-

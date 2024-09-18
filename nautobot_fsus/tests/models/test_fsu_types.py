@@ -165,5 +165,3 @@ class FSUTypeTestCase(TestCase):
         # Different manufacturer, but same part number should pass
         instance2.manufacturer = Manufacturer.objects.last()
         instance2.full_clean()
-
-

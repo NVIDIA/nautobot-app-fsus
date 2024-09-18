@@ -102,8 +102,6 @@ class FSUModel(PrimaryModel, StatusModel):
     asset_tag = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
-        unique=True,
         verbose_name="Asset tag",
         help_text="A unique tag used to identify this FSU.",
     )
@@ -185,7 +183,7 @@ class FSUModel(PrimaryModel, StatusModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
             str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
@@ -194,7 +192,7 @@ class FSUModel(PrimaryModel, StatusModel):
             self.driver_version,
             self.driver_name,
             getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",
+            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
             self.description,
             self.comments,
         )
@@ -299,7 +297,7 @@ class FSUTypeModel(PrimaryModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             self.description,
@@ -344,7 +342,7 @@ class PCIFSUModel(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
             str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
@@ -354,7 +352,7 @@ class PCIFSUModel(FSUModel):
             self.driver_name,
             self.pci_slot_id,
             getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",
+            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
             self.description,
             self.comments,
         )

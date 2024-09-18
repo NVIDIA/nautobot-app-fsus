@@ -19,8 +19,6 @@ Models for Field Serviceable Units (FSUs).
 An FSU is a physical instance of its parent FSU type, and can be either installed in a Device,
 or available for use in a Location.
 """
-from typing import Any
-
 from django.db import models
 from django.db.models import ForeignKey, ManyToManyField
 from nautobot.extras.utils import extras_features
@@ -79,17 +77,17 @@ class CPU(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
             str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
-            str(self.fsu_type.id),
+            str(self.fsu_type.id),  # pylint: disable=no-member
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.parent_mainboard,
             getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",
+            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
             self.description,
             self.comments,
         )
@@ -146,17 +144,17 @@ class Disk(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV data."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
             str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
-            str(self.fsu_type.id),
+            str(self.fsu_type.id),  # pylint: disable=no-member
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.parent_hba,
             getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",
+            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
             self.description,
             self.comments,
         )
@@ -206,7 +204,7 @@ class GPU(PCIFSUModel):
         verbose_name="GPU Type",
     )
 
-    parent_baseboard: ForeignKey = models.ForeignKey(
+    parent_gpubaseboard: ForeignKey = models.ForeignKey(
         to="GPUBaseboard",
         on_delete=models.PROTECT,
         related_name="gpus",
@@ -224,7 +222,7 @@ class GPU(PCIFSUModel):
         "driver_version",
         "driver_name",
         "pci_slot_id",
-        "parent_baseboard",
+        "parent_gpubaseboard",
         "asset_tag",
         "status",
         "description",
@@ -239,18 +237,18 @@ class GPU(PCIFSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
             str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
-            str(self.fsu_type.id),
+            str(self.fsu_type.id),  # pylint: disable=no-member
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.pci_slot_id,
-            str(self.parent_baseboard if getattr(self, "parent_baseboard", None) else ""),
+            str(self.parent_gpubaseboard if getattr(self, "parent_gpubaseboard", None) else ""),
             getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",
+            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
             self.description,
             self.comments,
         )
@@ -429,17 +427,17 @@ class PSU(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
             str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
-            str(self.fsu_type.id),
+            str(self.fsu_type.id),  # pylint: disable=no-member
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             "True" if self.redundant else "False",
             getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",
+            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
             self.description,
             self.comments,
         )
@@ -494,17 +492,17 @@ class RAMModule(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
             str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
-            str(self.fsu_type.id),
+            str(self.fsu_type.id),  # pylint: disable=no-member
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.slot_id,
             getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",
+            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
             self.description,
             self.comments,
         )

@@ -1,12 +1,12 @@
 #  SPDX-FileCopyrightText: Copyright (c) "2024" NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #  SPDX-License-Identifier: Apache-2.0
-# 
+#
 #  Licensed under the Apache License, Version 2.0 (the "License")
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-# 
+#
 #  http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -158,7 +158,7 @@ class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
         gpubaseboard = models.GPUBaseboard.objects.create(
             fsu_type=gpubaseboard_type,
             device=Device.objects.first(),
-            name="Test Baseboard",
+            name="Test Parent",
             serial_number="bb8",
             firmware_version="1.0",
             driver_name="test_driver",
@@ -173,7 +173,7 @@ class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     def test_has_parent_baseboard_filter(self):
         """Test filtering on GPUs that have a parent Baseboard."""
         self.assertEqual(self.queryset.count(), 3)
-        params = {"has_parent_baseboard": True}
+        params = {"has_parent_gpubaseboard": True}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
         self.assertEqual(filter_result.first().name, "test_gpu_0")
@@ -181,7 +181,7 @@ class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     def test_parent_baseboard_filter(self):
         """Test filtering on a GPU's parent Baseboard."""
         self.assertEqual(self.queryset.count(), 3)
-        params = {"parent_baseboard": ["Test Baseboard"]}
+        params = {"parent_gpubaseboard": ["Test Parent"]}
         filter_result = self.filterset(params, self.queryset).qs
         self.assertEqual(filter_result.count(), 1)
         self.assertEqual(filter_result.first().name, "test_gpu_0")

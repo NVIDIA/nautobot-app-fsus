@@ -74,7 +74,7 @@ class CPUType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             self.architecture,
@@ -127,7 +127,7 @@ class DiskType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             self.disk_type,
@@ -181,7 +181,7 @@ class GPUBaseboardType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             str(getattr(self, "slot_count", 0)),
@@ -265,7 +265,7 @@ class MainboardType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             self.get_pcie_generation_display(),
@@ -308,7 +308,7 @@ class NICType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             str(getattr(self, "interface_count", 0)),
@@ -385,7 +385,7 @@ class PSUType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             self.get_feed_type_display(),
@@ -461,7 +461,7 @@ class RAMModuleType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),
+            str(self.manufacturer.id),  # pylint: disable=no-member
             self.name,
             self.part_number,
             self.get_module_type_display(),

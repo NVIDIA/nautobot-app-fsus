@@ -40,7 +40,7 @@ from nautobot_fsus.models import (
 logger = logging.getLogger("rq.worker")
 
 
-def post_migrate_create_defaults(sender, apps, **kwargs):
+def post_migrate_create_defaults(sender, apps, **kwargs):  # pylint: disable=unused-argument
     """Callback function for post_migrate() -- create default Statuses."""
     statuses = ["active", "available", "maintenance", "offline"]
 

@@ -187,13 +187,13 @@ class GPUFilterSet(
         label="GPU Type (ID)",
     )
 
-    has_parent_baseboard = RelatedMembershipBooleanFilter(
-        field_name="parent_baseboard",
+    has_parent_gpubaseboard = RelatedMembershipBooleanFilter(
+        field_name="parent_gpubaseboard",
         label="Has a parent GPU Baseboard",
     )
 
-    parent_baseboard = NaturalKeyOrPKMultipleChoiceFilter(
-        field_name="parent_baseboard",
+    parent_gpubaseboard = NaturalKeyOrPKMultipleChoiceFilter(
+        field_name="parent_gpubaseboard",
         queryset=models.GPUBaseboard.objects.all(),
         to_field_name="name",
         label="Parent GPU Baseboard (Name or ID)",

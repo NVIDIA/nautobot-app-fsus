@@ -140,6 +140,7 @@ def create_fsus(
     devices: list[tuple[Device, Device]],
     locations: list[Location]
 ):
+    """Add test FSU instances."""
     for fsu_model in [
         models.CPU,
         models.Disk,
@@ -153,7 +154,7 @@ def create_fsus(
         models.PSU,
         models.RAMModule,
     ]:
-        fsu_type = fsu_types[fsu_model._meta.model_name]
+        fsu_type = fsu_types[getattr(fsu_model._meta, "model_name", "")]
         for num in range(1, 6):
             _ = fsu_model.objects.get_or_create(
                 name=f"{fsu_model._meta.verbose_name} {num}-1",
