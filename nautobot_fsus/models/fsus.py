@@ -79,8 +79,8 @@ class CPU(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id),
-            str(self.location.id),
+            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
             self.serial_number,
@@ -89,7 +89,7 @@ class CPU(FSUModel):
             self.driver_name,
             self.parent_mainboard,
             getattr(self, "asset_tag", ""),
-            self.status,
+            self.status.slug if getattr(self, "status", None) else "",
             self.description,
             self.comments,
         )
@@ -146,8 +146,8 @@ class Disk(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV data."""
         return (
-            str(self.device.id),
-            str(self.location.id),
+            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
             self.serial_number,
@@ -156,7 +156,7 @@ class Disk(FSUModel):
             self.driver_name,
             self.parent_hba,
             getattr(self, "asset_tag", ""),
-            self.status,
+            self.status.slug if getattr(self, "status", None) else "",
             self.description,
             self.comments,
         )
@@ -239,8 +239,8 @@ class GPU(PCIFSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id),
-            str(self.location.id),
+            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
             self.serial_number,
@@ -248,9 +248,9 @@ class GPU(PCIFSUModel):
             self.driver_version,
             self.driver_name,
             self.pci_slot_id,
-            self.parent_baseboard,
+            str(self.parent_baseboard if getattr(self, "parent_baseboard", None) else ""),
             getattr(self, "asset_tag", ""),
-            self.status,
+            self.status.slug if getattr(self, "status", None) else "",
             self.description,
             self.comments,
         )
@@ -429,8 +429,8 @@ class PSU(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id),
-            str(self.location.id),
+            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
             self.serial_number,
@@ -439,7 +439,7 @@ class PSU(FSUModel):
             self.driver_name,
             "True" if self.redundant else "False",
             getattr(self, "asset_tag", ""),
-            self.status,
+            self.status.slug if getattr(self, "status", None) else "",
             self.description,
             self.comments,
         )
@@ -494,8 +494,8 @@ class RAMModule(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id),
-            str(self.location.id),
+            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
             self.serial_number,
@@ -504,7 +504,7 @@ class RAMModule(FSUModel):
             self.driver_name,
             self.slot_id,
             getattr(self, "asset_tag", ""),
-            self.status,
+            self.status.slug if getattr(self, "status", None) else "",
             self.description,
             self.comments,
         )

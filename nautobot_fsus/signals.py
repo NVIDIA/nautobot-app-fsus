@@ -15,8 +15,12 @@
 
 """Signal handlers for Nautobot FSUs app."""
 import logging
+from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from nautobot.dcim.models import Device
 from nautobot.extras.models import Status
 
 from nautobot_fsus.models import (
@@ -50,3 +54,42 @@ def post_migrate_create_defaults(sender, apps, **kwargs):
             Status.objects.get(slug=status).content_types.add(
                 ContentType.objects.get_for_model(model)
             )
+
+
+@receiver(post_save, sender=Device, dispatch_uid="device_creation_fsu_signal")
+def create_fsus_for_new_devices(
+    sender: type[Device],  # pylint: disable=unused-argument
+    instance: Device,
+    created: bool,
+    **kwargs: Any,
+) -> None:
+    """
+    Watch for new Device creation and instantiate any associated FSUs from the DeviceType.
+
+    Args:
+        sender: The model class of the sender (filtered for Device by the receiver wrapper).
+        instance: The Device instance being saved.
+        created: True if a new record was created.
+        **kwargs: Any other args passed by the signal.
+
+    Method arguments are as defined in https://docs.djangoproject.com/en/4.2/ref/signals/#post-save.
+    """
+    if not created:
+        return
+
+    fsu_models = [
+        (CPU, instance.device_type.cputemplates.all()),
+        (Disk, instance.device_type.disktemplates.all()),
+        (Fan, instance.device_type.fantemplates.all()),
+        (GPU, instance.device_type.gputemplates.all()),
+        (GPUBaseboard, instance.device_type.gpubaseboardtemplates.all()),
+        (HBA, instance.device_type.hbatemplates.all()),
+        (Mainboard, instance.device_type.mainboardtemplates.all()),
+        (NIC, instance.device_type.nictemplates.all()),
+        (OtherFSU, instance.device_type.otherfsutemplates.all()),
+        (PSU, instance.device_type.psutemplates.all()),
+        (RAMModule, instance.device_type.rammoduletemplates.all()),
+    ]
+
+    for model, templates in fsu_models:
+        model.objects.bulk_create([fsu.instantiate(device=instance) for fsu in templates])

@@ -18,6 +18,7 @@ import logging
 from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import ForeignKey
 from django.urls import reverse
@@ -165,6 +166,15 @@ class FSUModel(PrimaryModel, StatusModel):
 
         return super().to_objectchange(action, related_object=related_object, **kwargs)
 
+    def clean(self) -> None:
+        """Perform model validation steps."""
+        if not self.device and not self.location:
+            raise ValidationError(
+                "A Field Serviceable Unit must have either a device or a storage location set."
+            )
+
+        super().clean()
+
     def save(self, *args, **kwargs) -> None:
         """Save the FSU object to the database."""
         if self.device and self.location:
@@ -175,8 +185,8 @@ class FSUModel(PrimaryModel, StatusModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id),
-            str(self.location.id),
+            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
             self.serial_number,
@@ -184,7 +194,7 @@ class FSUModel(PrimaryModel, StatusModel):
             self.driver_version,
             self.driver_name,
             getattr(self, "asset_tag", ""),
-            self.status,
+            self.status.slug if getattr(self, "status", None) else "",
             self.description,
             self.comments,
         )
@@ -334,8 +344,8 @@ class PCIFSUModel(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id),
-            str(self.location.id),
+            str(self.device.id if getattr(self, "device", None) else ""),
+            str(self.location.id if getattr(self, "location", None) else ""),
             self.name,
             str(self.fsu_type.id),
             self.serial_number,
@@ -344,7 +354,7 @@ class PCIFSUModel(FSUModel):
             self.driver_name,
             self.pci_slot_id,
             getattr(self, "asset_tag", ""),
-            self.status.slug,
+            self.status.slug if getattr(self, "status", None) else "",
             self.description,
             self.comments,
         )
