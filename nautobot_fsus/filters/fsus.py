@@ -15,11 +15,11 @@
 
 """FilterSets for FSU models."""
 import django_filters
-from nautobot.extras.filters import NautobotFilterSet
-from nautobot.extras.filters.mixins import StatusModelFilterSetMixin
-from nautobot.utilities.filters import (
+from nautobot.apps.filters import (
+    NautobotFilterSet,
     NaturalKeyOrPKMultipleChoiceFilter,
     RelatedMembershipBooleanFilter,
+    StatusModelFilterSetMixin,
 )
 
 from nautobot_fsus import models
@@ -65,6 +65,7 @@ class CPUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -107,6 +108,7 @@ class DiskFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -137,6 +139,7 @@ class FanFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -172,6 +175,7 @@ class GPUBaseboardFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -215,6 +219,7 @@ class GPUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -251,6 +256,7 @@ class HBAFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -286,6 +292,7 @@ class MainboardFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -322,6 +329,7 @@ class NICFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -352,6 +360,7 @@ class OtherFSUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -388,6 +397,7 @@ class PSUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
@@ -419,4 +429,5 @@ class RAMModuleFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]

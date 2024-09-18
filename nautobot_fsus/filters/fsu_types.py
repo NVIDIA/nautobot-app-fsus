@@ -15,7 +15,7 @@
 
 """FilterSets for FSU type models."""
 import django_filters.constants
-from nautobot.extras.filters import NautobotFilterSet
+from nautobot.apps.filters import NautobotFilterSet
 
 from nautobot_fsus import models
 from nautobot_fsus.choices import (
@@ -58,6 +58,7 @@ class CPUTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -83,6 +84,7 @@ class DiskTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -101,6 +103,7 @@ class FanTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -127,6 +130,7 @@ class GPUBaseboardTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -145,6 +149,7 @@ class GPUTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -163,6 +168,7 @@ class HBATypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -182,6 +188,7 @@ class MainboardTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -208,6 +215,7 @@ class NICTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -226,6 +234,7 @@ class OtherFSUTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -253,6 +262,7 @@ class PSUTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]
 
 
@@ -284,4 +294,5 @@ class RAMModuleTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "description",
             "comments",
             "instances",
+            "tags",
         ]

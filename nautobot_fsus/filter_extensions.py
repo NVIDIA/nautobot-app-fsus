@@ -15,13 +15,13 @@
 
 """Extensions to built-in Nautobot filters."""
 from django import forms
-from nautobot.apps.filters import FilterExtension
-from nautobot.utilities.filters import (
+from nautobot.apps.filters import (
+    FilterExtension,
     NaturalKeyOrPKMultipleChoiceFilter,
     RelatedMembershipBooleanFilter,
 )
-from nautobot.utilities.forms.constants import BOOLEAN_WITH_BLANK_CHOICES
-from nautobot.utilities.forms.widgets import StaticSelect2
+from nautobot.apps.forms import StaticSelect2
+from nautobot.core.forms.constants import BOOLEAN_WITH_BLANK_CHOICES
 
 from nautobot_fsus.models import NIC, PSU
 
