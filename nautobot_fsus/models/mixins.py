@@ -24,7 +24,13 @@ from django.db.models import ForeignKey
 from nautobot.core.models.fields import NaturalOrderingField
 from nautobot.core.models.generics import BaseModel, PrimaryModel
 from nautobot.dcim.models import Device, Location
-from nautobot.extras.models import CustomField, CustomFieldModel, RelationshipModel, StatusField
+from nautobot.extras.models import (
+    CustomField,
+    CustomFieldModel,
+    RelationshipModel,
+    Status,
+    StatusField,
+)
 from nautobot.extras.models.change_logging import ChangeLoggedModel, ObjectChange
 
 logger = logging.getLogger("nautobot.plugin.fsus")
@@ -209,6 +215,7 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
             device=device,
             name=self.name,
             description=self.description,
+            status=Status.objects.get(name="Active"),
             _custom_field_data=custom_field_data,
             **kwargs,
         )

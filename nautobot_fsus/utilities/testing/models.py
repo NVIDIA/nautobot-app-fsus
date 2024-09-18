@@ -20,12 +20,12 @@ from typing import Any, Type
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from nautobot.dcim.models import Device, DeviceRole, DeviceType, Location, Manufacturer, Site
+from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 from nautobot.extras.choices import CustomFieldTypeChoices
-from nautobot.extras.models import CustomField, Status
+from nautobot.extras.models import CustomField, Role, Status
 
 from nautobot_fsus.models import FanType, OtherFSUType
-from nautobot_fsus.models.mixins import FSUModel, FSUTemplateModel, FSUTypeModel, PCIFSUModel
+from nautobot_fsus.models.mixins import FSUModel, FSUTemplateModel, FSUTypeModel
 
 
 class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
@@ -80,25 +80,6 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
                 instance._meta.model,
             )
             self.assertEqual(object_change.related_object_id, instance.parent.id)
-
-        def test_export_fsu(self):
-            """Test exporting an FSU instance to CSV."""
-            instance = self.model(
-                fsu_type=self.fsu_type,
-                device=self.device,
-                name=f"test_{self.model._meta.model_name}",
-                status=self.status,
-            )
-            if isinstance(instance, PCIFSUModel):
-                instance.pci_slot_id = "00000000:07:00.0"
-            instance.save()
-
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), len(instance.csv_headers))
-            for index, value in enumerate(instance.csv_headers):
-                match = str(getattr(instance, value)) if getattr(instance, value) is not None else ""
-                self.assertEqual(str(csv[index]), match)
 
         def test_move_to_device(self):
             """Ensure when a device is set on an FSU instance, the storage location is cleared."""
@@ -312,7 +293,6 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             self.device_type = DeviceType.objects.create(
                 manufacturer=self.manufacturers[0],
                 model="Test Device Type",
-                slug="test_device_type",
             )
 
             self.fsu_type = self.type_model.objects.create(
@@ -359,7 +339,7 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             """Test that the target FSU is present on a new Device."""
             custom_field = CustomField.objects.create(
                 type=CustomFieldTypeChoices.TYPE_TEXT,
-                name="cf_field_1",
+                label="cf_field_1",
                 default="value_1",
             )
             custom_field.content_types.set([ContentType.objects.get_for_model(self.target_model)])
@@ -372,10 +352,10 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
 
             device = Device.objects.create(
                 device_type=self.device_type,
-                device_role=DeviceRole.objects.first(),
+                role=Role.objects.first(),
                 status=Status.objects.get_for_model(Device).first(),
                 name="Device X",
-                site=Site.objects.first(),
+                location=Location.objects.first(),
             )
 
             # Pause for the signal
@@ -395,21 +375,6 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
         def setUp(self) -> None:
             """Set up objects for the tests."""
             self.manufacturer = Manufacturer.objects.first()
-
-        def test_export_fsu_type(self):
-            """Test exporting an FSU type instance to CSV."""
-            instance = self.type_model(
-                manufacturer=self.manufacturer,
-                name=f"Test {self.type_model._meta.verbose_name}",
-                part_number="0001",
-            )
-            for key, value in self.model_fields.items():
-                setattr(instance, key, value)
-
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), len(instance.csv_headers))
-            self.assertEqual(csv[1], instance.name)
 
         def test_duplicate_part_number(self):
             """Verify unique part number constraint."""
