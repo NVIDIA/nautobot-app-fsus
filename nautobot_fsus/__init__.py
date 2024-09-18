@@ -18,6 +18,7 @@
 # in the environment, this should be added
 from importlib import metadata
 
+from django.db.models.signals import post_migrate
 from nautobot.extras.plugins import NautobotAppConfig
 
 dist = metadata.distribution(__name__)
@@ -38,6 +39,14 @@ class NautobotFSUsConfig(NautobotAppConfig):
     min_version: str = "1.6.1"
     max_version: str = "1.9999"
     caching_config: dict[str, str | dict[str, str]] = {}
+
+    def ready(self):
+        """Register custom signals."""
+        # pylint:disable=import-outside-toplevel
+        from nautobot_fsus.signals import post_migrate_create_defaults
+        post_migrate.connect(post_migrate_create_defaults, sender=self)
+
+        super().ready()
 
 
 config = NautobotFSUsConfig  # pylint:disable=invalid-name
