@@ -27,18 +27,42 @@ from nautobot_fsus.models.fsu_types import (
     PSUType,
     RAMModuleType,
 )
+from nautobot_fsus.models.fsus import (
+    CPU,
+    Disk,
+    Fan,
+    GPU,
+    GPUBaseboard,
+    HBA,
+    Mainboard,
+    NIC,
+    OtherFSU,
+    PSU,
+    RAMModule,
+)
 
 
 __all__ = (
+    "CPU",
     "CPUType",
+    "Disk",
     "DiskType",
+    "Fan",
     "FanType",
+    "GPUBaseboard",
     "GPUBaseboardType",
+    "GPU",
     "GPUType",
+    "HBA",
     "HBAType",
+    "Mainboard",
     "MainboardType",
+    "NIC",
     "NICType",
+    "OtherFSU",
     "OtherFSUType",
+    "PSU",
     "PSUType",
+    "RAMModule",
     "RAMModuleType",
 )
