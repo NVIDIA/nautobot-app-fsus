@@ -15,18 +15,56 @@
 
 """Base classes for object models."""
 import logging
-from typing import Any
+from typing import Any, TypeAlias
 
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import ForeignKey
 from django.urls import reverse
+from nautobot.core.models import BaseModel
 from nautobot.core.models.generics import PrimaryModel
 from nautobot.dcim.models import Device, Location
-from nautobot.extras.models import StatusModel
+from nautobot.extras.models import (
+    ChangeLoggedModel,
+    CustomField,
+    CustomFieldModel,
+    RelationshipModel,
+    StatusModel,
+)
 from nautobot.extras.models.change_logging import ObjectChange
 from nautobot.utilities.fields import NaturalOrderingField
 
+from nautobot_fsus.models.fsus import (
+    CPU,
+    Disk,
+    Fan,
+    GPU,
+    GPUBaseboard,
+    HBA,
+    Mainboard,
+    NIC,
+    OtherFSU,
+    PSU,
+    RAMModule,
+)
+
 logger = logging.getLogger("nautobot.plugin.fsus")
+
+FSU: TypeAlias = (
+    CPU
+    | Disk
+    | Fan
+    | GPU
+    | GPUBaseboard
+    | HBA
+    | Mainboard
+    | NIC
+    | OtherFSU
+    | PSU
+    | RAMModule
+)
 
 
 class FSUModel(PrimaryModel, StatusModel):
@@ -184,6 +222,64 @@ class FSUModel(PrimaryModel, StatusModel):
     def get_absolute_url(self) -> str:
         """Calculate the absolute URL of the FSU instance."""
         return reverse(f"plugins:fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
+
+
+class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, RelationshipModel):
+    """
+    Abstract base model for FSU templates.
+
+    FSU templates are similar to Nautobot device component templates - they are associated
+    with a DeviceType, and when a Device is created from that DeviceType, the FSUs are
+    instantiated automatically.
+    """
+
+    fsu_type: ForeignKey
+
+    device_type: ForeignKey = models.ForeignKey(
+        to="dcim.DeviceType",
+        on_delete=models.CASCADE,
+        related_name="%(class)ss",
+    )
+
+    name = models.CharField(max_length=100, db_index=True)
+    _name = NaturalOrderingField(target_field="name", max_length=255, blank=True, db_index=True)
+    description = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        """Metaclass attributes."""
+        abstract = True
+        ordering = ["device_type", "_name"]
+        unique_together = ["device_type", "name"]
+
+    def __str__(self) -> str:
+        """Default string representation for the FSU template."""
+        return str(self.name)
+
+    def _instantiate_model(self, model: type[FSU], device: Device, **kwargs: Any) -> FSU:
+        """Helper method for `self.instantiate()`."""
+        # Handle any custom fields assigned to the model first.
+        custom_field_data: dict[str, Any] = {}
+        content_type = ContentType.objects.get_for_model(model)
+        cf_fields = CustomField.objects.filter(content_types=content_type)
+        for field in cf_fields:
+            custom_field_data[field.name] = field.default
+
+        return model(  # pylint: disable=not-callable
+            fsu_type=self.fsu_type,
+            device=device,
+            name=self.name,
+            description=self.description,
+            _custom_field_data=custom_field_data,
+            **kwargs,
+        )
+
+    def instantiate(self, device: Device) -> FSU:
+        """Instantiate a new FSU on a Device."""
+        raise NotImplementedError
+
+    def to_objectchange(self, action: str, **kwargs: Any) -> ObjectChange:
+        """Return a new ObjectChange on updates."""
+        return super().to_objectchange(action, related_object=self.device_type, **kwargs)
 
 
 class FSUTypeModel(PrimaryModel):
