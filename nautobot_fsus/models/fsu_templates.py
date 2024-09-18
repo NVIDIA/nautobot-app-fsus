@@ -43,6 +43,7 @@ class CPUTemplate(FSUTemplateModel):
         to="CPUType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     class Meta(FSUTemplateModel.Meta):
@@ -63,6 +64,7 @@ class DiskTemplate(FSUTemplateModel):
         to="DiskType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     class Meta(FSUTemplateModel.Meta):
@@ -83,6 +85,7 @@ class FanTemplate(FSUTemplateModel):
         to="FanType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     class Meta(FSUTemplateModel.Meta):
@@ -103,6 +106,7 @@ class GPUBaseboardTemplate(FSUTemplateModel):
         to="GPUBaseboardType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     class Meta(FSUTemplateModel.Meta):
@@ -123,6 +127,7 @@ class GPUTemplate(FSUTemplateModel):
         to="GPUType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     pci_slot_id = models.CharField(max_length=100, blank=True, verbose_name="PCI slot ID")
@@ -145,6 +150,7 @@ class HBATemplate(FSUTemplateModel):
         to="HBAType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     pci_slot_id = models.CharField(max_length=100, blank=True, verbose_name="PCI slot ID")
@@ -167,6 +173,7 @@ class MainboardTemplate(FSUTemplateModel):
         to="MainboardType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     class Meta(FSUTemplateModel.Meta):
@@ -187,6 +194,7 @@ class NICTemplate(FSUTemplateModel):
         to="NICType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     pci_slot_id = models.CharField(max_length=100, blank=True, verbose_name="PCI slot ID")
@@ -209,6 +217,7 @@ class OtherFSUTemplate(FSUTemplateModel):
         to="OtherFSUType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     class Meta(FSUTemplateModel.Meta):
@@ -229,6 +238,7 @@ class PSUTemplate(FSUTemplateModel):
         to="PSUType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     redundant = models.BooleanField(default=False)
@@ -251,6 +261,7 @@ class RAMModuleTemplate(FSUTemplateModel):
         to="RAMModuleType",
         on_delete=models.PROTECT,
         related_name="templates",
+        verbose_name="FSU Type",
     )
 
     slot_id = models.CharField(max_length=16, blank=True, verbose_name="RAM slot ID")

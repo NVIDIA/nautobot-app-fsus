@@ -202,7 +202,7 @@ class GPUBaseboardSerializer(FSUModelSerializer):
                             )
 
                 # Create the GPUBaseboard instance
-                instance = GPUBaseboard.objects.create(**validated_data)
+                instance: GPUBaseboard = GPUBaseboard.objects.create(**validated_data)
 
                 # Set parent_gpubaseboard for any specified child GPU instances
                 for gpu in gpus:
@@ -389,7 +389,7 @@ class HBASerializer(FSUModelSerializer):
                             )
 
                 # Create the HBA instance
-                instance = HBA.objects.create(**validated_data)
+                instance: HBA = HBA.objects.create(**validated_data)
 
                 # Set the parent_hba for any specified child Disk instances
                 for disk in disks:
@@ -547,7 +547,7 @@ class MainboardSerializer(FSUModelSerializer):
                             )
 
                 # Create the Mainboard instance
-                instance = Mainboard.objects.create(**validated_data)
+                instance: Mainboard = Mainboard.objects.create(**validated_data)
 
                 # Set parent_mainboard for any specified child CPU instance
                 for cpu in cpus:
@@ -703,7 +703,7 @@ class NICSerializer(FSUModelSerializer):
                             )
 
                 # Create the NIC instance
-                instance = NIC.objects.create(**validated_data)
+                instance: NIC = NIC.objects.create(**validated_data)
 
                 # Add the child interfaces
                 instance.interfaces.set(interfaces)
@@ -848,7 +848,7 @@ class PSUSerializer(FSUModelSerializer):
                             )
 
                 # Create the PSU instance
-                instance = PSU.objects.create(**validated_data)
+                instance: PSU = PSU.objects.create(**validated_data)
 
                 # Add the child interfaces
                 instance.power_ports.set(power_ports)

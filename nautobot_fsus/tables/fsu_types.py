@@ -40,6 +40,7 @@ class CPUTypeTable(FSUTypeModelTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "architecture",
             "cpu_speed",
@@ -52,6 +53,7 @@ class CPUTypeTable(FSUTypeModelTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "architecture",
             "cpu_speed",
@@ -82,6 +84,7 @@ class DiskTypeTable(FSUTypeModelTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "disk_type",
             "size",
@@ -93,6 +96,7 @@ class DiskTypeTable(FSUTypeModelTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "disk_type",
             "size",
@@ -160,6 +164,7 @@ class GPUBaseboardTypeTable(FSUTypeModelTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "slot_count",
             "description",
@@ -170,6 +175,7 @@ class GPUBaseboardTypeTable(FSUTypeModelTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "slot_count",
             "description",
@@ -217,6 +223,7 @@ class MainboardTypeTable(FSUTypeModelTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "pcie_generation",
             "cpu_socket_count",
@@ -228,6 +235,7 @@ class MainboardTypeTable(FSUTypeModelTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "pcie_generation",
             "cpu_socket_count",
@@ -257,6 +265,7 @@ class NICTypeTable(FSUTypeModelTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "interface_count",
             "description",
@@ -267,6 +276,7 @@ class NICTypeTable(FSUTypeModelTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "interface_count",
             "description",
@@ -314,6 +324,7 @@ class PSUTypeTable(FSUTypeModelTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "feed_type",
             "power_provided",
@@ -327,6 +338,7 @@ class PSUTypeTable(FSUTypeModelTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "feed_type",
             "power_provided",
@@ -358,6 +370,7 @@ class RAMModuleTypeTable(FSUTypeModelTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "technology",
             "speed",
@@ -371,6 +384,7 @@ class RAMModuleTypeTable(FSUTypeModelTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "technology",
             "capacity",

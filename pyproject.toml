@@ -129,6 +129,7 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = [
     "django_filters.*",
+    "django_jinja.*",
     "django_tables2.*",
     "nautobot.*",
     "rest_framework.*",

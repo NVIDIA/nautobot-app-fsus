@@ -1,0 +1,27 @@
+{% load helpers %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Parent GPU Baseboard</strong>
+    </div>
+{% if object.parent_gpubaseboard %}
+    <table class="table table-hover panel-body attr-table">
+        <tr>
+            <td>Name</td>
+            <td>{{ object.parent_gpubaseboard | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>{{ object.parent_gpubaseboard.fsu_type | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ object.parent_gpubaseboard.description }}</td>
+        </tr>
+    </table>
+{% else %}
+    <div class="panel-body text-muted">
+        No parent GPU Baseboard
+    </div>
+{% endif %}
+</div>

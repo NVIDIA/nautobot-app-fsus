@@ -1,0 +1,35 @@
+{% load helpers %}
+
+{% if cpu_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=cpu_table title="CPUs" bulk_rename_url="plugins:nautobot_fsus:cpu_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:cpu_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:cpu_bulk_delete" %}
+{% endif %}
+{% if disk_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=disk_table title="Disks" bulk_rename_url="plugins:nautobot_fsus:disk_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:disk_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:disk_bulk_delete" %}
+{% endif %}
+{% if fan_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=fan_table title="Fans" bulk_rename_url="plugins:nautobot_fsus:fan_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:fan_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:fan_bulk_delete" %}
+{% endif %}
+{% if gpu_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=gpu_table title="GPUs" bulk_rename_url="plugins:nautobot_fsus:gpu_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:gpu_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:gpu_bulk_delete" %}
+{% endif %}
+{% if gpubaseboard_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=gpubaseboard_table title="GPUBaseboards" bulk_rename_url="plugins:nautobot_fsus:gpubaseboard_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:gpubaseboard_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:gpubaseboard_bulk_delete" %}
+{% endif %}
+{% if hba_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=hba_table title="HBAs" bulk_rename_url="plugins:nautobot_fsus:hba_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:hba_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:hba_bulk_delete" %}
+{% endif %}
+{% if mainboard_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=mainboard_table title="Mainboards" bulk_rename_url="plugins:nautobot_fsus:mainboard_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:mainboard_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:mainboard_bulk_delete" %}
+{% endif %}
+{% if nic_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=nic_table title="NICs" bulk_rename_url="plugins:nautobot_fsus:nic_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:nic_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:nic_bulk_delete" %}
+{% endif %}
+{% if otherfsu_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=otherfsu_table title="OtherFSUs" bulk_rename_url="plugins:nautobot_fsus:otherfsu_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:otherfsu_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:otherfsu_bulk_delete" %}
+{% endif %}
+{% if psu_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=psu_table title="PSUs" bulk_rename_url="plugins:nautobot_fsus:psu_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:psu_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:psu_bulk_delete" %}
+{% endif %}
+{% if rammodule_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=rammodule_table title="RAMModules" bulk_rename_url="plugins:nautobot_fsus:rammodule_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:rammodule_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:rammodule_bulk_delete" %}
+{% endif %}

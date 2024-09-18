@@ -1,0 +1,72 @@
+{% load helpers %}
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#cpus" role="tab" data-toggle="tab">CPUs {% badge cpu_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#disks" role="tab" data-toggle="tab">Disks {% badge disk_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#fans" role="tab" data-toggle="tab">Fans {% badge fan_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#gpus" role="tab" data-toggle="tab">GPUs {% badge gpu_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#gpubaseboards" role="tab" data-toggle="tab">GPU Baseboards {% badge gpubaseboard_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#hbas" role="tab" data-toggle="tab">HBAs {% badge hba_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#mainboards" role="tab" data-toggle="tab">Mainboards {% badge mainboard_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#nics" role="tab" data-toggle="tab">NICs {% badge nic_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#otherfsus" role="tab" data-toggle="tab">Other FSUs {% badge otherfsu_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#psus" role="tab" data-toggle="tab">PSUs {% badge psu_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
+                <a href="#rammodules" role="tab" data-toggle="tab">RAM Modules {% badge rammodule_table.rows|length %}</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="cpus">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=cpu_table title="CPUs" tab="cpus" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="disks">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=disk_table title="Disks" tab="disks" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="fans">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=fan_table title="Fans" tab="fans" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="gpus">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=gpu_table title="GPUs" tab="gpus" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="gpubaseboards">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=gpubaseboard_table title="GPU Baseboards" tab="gpubaseboards" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="hbas">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=hba_table title="HBAs" tab="hbas" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="mainboards">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=mainboard_table title="Mainboards" tab="mainboards" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="nics">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=nic_table title="NICs" tab="nics" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="otherfsus">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=otherfsu_table title="Other FSUs" tab="otherfsus" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="psus">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=psu_table title="PSUs" tab="psus" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="rammodules">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=rammodule_table title="RAM Modules" tab="rammodules" %}
+            </div>
+        </div>

@@ -27,7 +27,7 @@ from nautobot.extras.forms import (
     StatusModelFilterFormMixin,
 )
 from nautobot.extras.forms.mixins import StatusModelCSVFormMixin
-from nautobot.utilities.forms import BootstrapMixin, CommentField
+from nautobot.utilities.forms import BootstrapMixin, CommentField, CSVModelForm
 from nautobot.utilities.forms.fields import (
     CSVModelChoiceField,
     DynamicModelChoiceField,
@@ -40,7 +40,7 @@ from nautobot_fsus.models.mixins import FSUModel
 class FSUTemplateModelForm(NautobotModelForm):
     """Abstract form model for creating/editing FSU templates."""
 
-    device_type = DynamicModelChoiceField(queryset=DeviceType.objects.all())
+    device_type = DynamicModelChoiceField(queryset=DeviceType.objects.all(), label="Device Type")
 
     class Meta:
         """FSUTemplateModelForm model options."""
@@ -50,11 +50,23 @@ class FSUTemplateModelForm(NautobotModelForm):
         widgets = {"device_type": forms.HiddenInput()}
 
 
+class FSUTemplateCSVForm(CSVModelForm):
+    """Abstract form model for bulk importing FSU templates from CSV data."""
+
+    device_type = CSVModelChoiceField(queryset=DeviceType.objects.all(), label="Device Type")
+
+    class Meta:
+        """FSUTemplateCSVForm model options."""
+
+        abstract = True
+        fields = ["fsu_type", "device_type", "name", "description"]
+
+
 class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
     """Base form for creating FSU templates."""
 
     name_pattern = ExpandableNameField(label="Name")
-    device_type = DynamicModelChoiceField(queryset=DeviceType.objects.all())
+    device_type = DynamicModelChoiceField(queryset=DeviceType.objects.all(), label="Device Type")
     description = forms.CharField(required=False)
 
     field_order = ["device_type", "fsu_type", "name_pattern", "description"]
@@ -65,6 +77,54 @@ class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
         abstract = True
         fields = ["fsu_type", "device_type", "name_pattern", "description"]
         widgets = {"device_type": forms.HiddenInput()}
+
+    def clean(self):
+        """Validate the form data."""
+        super().clean()
+
+        # Validate that the number of generated names and pci_slot_ids are equal
+        name_count = len(self.cleaned_data["name_pattern"])
+        if "pci_slot_id_pattern" in self.cleaned_data and self.cleaned_data["pci_slot_id_pattern"]:
+            pci_slot_count = len(self.cleaned_data["pci_slot_id_pattern"])
+            if name_count != pci_slot_count:
+                raise forms.ValidationError(
+                    message={
+                        "pci_slot_id_pattern": forms.ValidationError(
+                            message="The provided name pattern will create %(names)d names, "
+                                    "however, %(pci_slots)d pci_slot_ids will be generated - "
+                                    "these counts must match.",
+                            params={"names": name_count, "pci_slot_ids": pci_slot_count},
+                        ),
+                    },
+                    code="pattern_mismatch",
+                )
+        elif "slot_id_pattern" in self.cleaned_data and self.cleaned_data["slot_id_pattern"]:
+            slot_count = len(self.cleaned_data["slot_id_pattern"])
+            if name_count != slot_count:
+                raise forms.ValidationError(
+                    message={
+                        "slot_id_pattern": forms.ValidationError(
+                            message="The provided name pattern will create %(names)d names, "
+                                    "however, %(slots)d slot_ids will be generated - "
+                                    "these counts must match.",
+                            params={"names": name_count, "slot_ids": slot_count},
+                        ),
+                    },
+                    code="pattern_mismatch",
+                )
+
+
+class FSUTemplatePCIModelCreateForm(FSUTemplateCreateForm):
+    """Abstract for extension to handle pci_slot_id field."""
+
+    pci_slot_id_pattern = ExpandableNameField(label="PCI Slot ID", required=False)
+    field_order = ["device_type", "fsu_type", "name_pattern", "pci_slot_id_pattern", "description"]
+
+    class Meta(FSUTemplateCreateForm.Meta):
+        """FSUTemplatePCIModelCreateForm model options."""
+
+        abstract = True
+        fields = ["device_type", "fsu_type", "name_pattern", "pci_slot_id_pattern", "description"]
 
 
 class FSUTypeModelForm(NautobotModelForm):
@@ -86,8 +146,21 @@ class FSUTypeModelForm(NautobotModelForm):
         ]
 
 
+class FSUTypeCSVForm(CSVModelForm):
+    """Abstract form model for bulk importing FSU types from CSV data."""
+
+    manufacturer = CSVModelChoiceField(queryset=Manufacturer.objects.all(), to_field_name="name")
+
+    class Meta:
+        """FSUTypeCSVForm model options."""
+
+        abstract = True
+        fields = ["manufacturer", "name", "part_number", "description", "comments"]
+
+
 class FSUTypeImportModelForm(BootstrapMixin, forms.ModelForm):
     """Abstract form model for importing FSU types."""
+
     manufacturer = forms.ModelChoiceField(
         queryset=Manufacturer.objects.all(),
         to_field_name="name",
@@ -157,10 +230,7 @@ class FSUModelBulkEditForm(
         ]
 
 
-class FSUModelFilterForm(
-    NautobotFilterForm,
-    StatusModelFilterFormMixin,
-):
+class FSUModelFilterForm(NautobotFilterForm, StatusModelFilterFormMixin):
     """Form for filtering CPU instances."""
     model: Type[FSUModel]
 
@@ -218,7 +288,7 @@ class BaseFSUCSVForm(StatusModelCSVFormMixin):
         to_field_name="name",
         required=False,
         blank=True,
-        help_text="Parent device (can be empty if storage location is set)."
+        help_text="Parent device (must be empty if storage location is set)."
     )
 
     location = CSVModelChoiceField(
@@ -226,7 +296,7 @@ class BaseFSUCSVForm(StatusModelCSVFormMixin):
         to_field_name="name",
         required=False,
         blank=True,
-        help_text="Parent storage location (can be empty if device is set)."
+        help_text="Parent storage location (must be empty if device is set)."
     )
 
     manufacturer = CSVModelChoiceField(
@@ -256,7 +326,20 @@ class BaseFSUCSVForm(StatusModelCSVFormMixin):
 
     def __init__(self, *args: Any, data: dict[str, Any] | None = None, **kwargs: Any) -> None:
         """Initialize the form."""
-        super().__init__(*args, **kwargs)
+        if "headers" not in kwargs:
+            headers = {
+                "device": "name",
+                "location": "name",
+                "name": None,
+                "fsu_type": "id",
+                "status": "slug",
+            }
+        else:
+            headers = kwargs.pop("headers")
+            headers.setdefault("device", "name")
+            headers.setdefault("location", "name")
+
+        super().__init__(*args, headers=headers, **kwargs)
 
         if data is not None:
             if manufacturer_name := data.get("manufacturer"):

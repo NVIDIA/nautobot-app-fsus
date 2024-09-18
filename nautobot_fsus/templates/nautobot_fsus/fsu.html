@@ -1,0 +1,135 @@
+{% extends "generic/object_retrieve.html" %}
+{% load helpers %}
+{% load fsu_helpers %}
+
+{% block extra_breadcrumbs %}
+    {% if object.device %}
+                <li><a href="{% url list_url  %}?device={{ object.device.name }}">{{ object.device }}</a></li>
+    {% else %}
+                <li><a href="{% url list_url  %}?storage_location={{ object.storage_location.name }}">{{ object.storage_location }}</a></li>
+    {% endif %}
+                <li><a href="{% url list_url  %}?type={{ object.type.model_name }}">{{ object.type }}</a></li>
+{% endblock extra_breadcrumbs %}
+
+{% block masthead %}
+<span class="cover_copy">
+    <h1>
+        <span id="fsu-name">{% block title %}{{ object }}{% endblock title %}</span>
+        <button class="btn btn-xs btn-default hover_copy_button" data-clipboard-target="#fsu-name">
+            <span class="mdi mdi-content-copy"></span>
+        </button>
+    </h1>
+</span>
+{% endblock masthead %}
+
+{% block content_left_page %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>{{ verbose_name }}</strong>
+    </div>
+    <table class="table table-hover panel-body attr-table">
+        <tr>
+            <td>Status</td>
+            <td>
+                <span class="label" style="color: {{ object.status.color | fgcolor }}; background-color: #{{ object.status.color }}">
+                    {{ object.get_status_display | placeholder }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>Device</td>
+            <td>{{ object.device | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Storage Location</td>
+            <td>{{ object.location | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>{{ object.fsu_type | hyperlinked_object }}</td>
+        </tr>
+    {% if object|has_attr:"redundant" %}
+        <tr>
+            <td>Redundant</td>
+            <td>{{ object.redundant }}</td>
+        </tr>
+    {% endif %}
+        <tr>
+            <td>Serial Number</td>
+            <td>{{ object.serial_number | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Firmware Version</td>
+            <td>{{ object.firmware_version | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Driver Name</td>
+            <td>{{ object.driver_name | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Driver Version</td>
+            <td>{{ object.driver_version | placeholder }}</td>
+        </tr>
+    {% if object|has_attr:"pci_slot_id" %}
+        <tr>
+            <td>PCI Slot ID</td>
+            <td>{{ object.pci_slot_id | placeholder }}</td>
+        </tr>
+    {% endif %}
+    {% if object|has_attr:"slot_id" %}
+        <tr>
+            <td>Memory Slot ID</td>
+            <td>{{ object.slot_id | placeholder }}</td>
+        </tr>
+    {% endif %}
+        <tr>
+            <td>Asset Tag</td>
+            <td>{{ object.asset_tag | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ object.description|placeholder }}</td>
+        </tr>
+     </table>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Comments</strong>
+    </div>
+    <div class="panel-body rendered-markdown">
+    {% if object.comments %}
+        {{ object.comments | render_markdown }}
+    {% else %}
+        <span class="text-muted">None</span>
+    {% endif %}
+    </div>
+</div>
+{% endblock content_left_page %}
+
+{% block content_right_page %}
+    {% if verbose_name == "CPU" %}
+{% include "nautobot_fsus/inc/parent_mainboard_panel.html" %}
+    {% elif verbose_name == "Disk" %}
+{% include "nautobot_fsus/inc/parent_hba_panel.html" %}
+    {% elif verbose_name == "GPU" %}
+{% include "nautobot_fsus/inc/parent_gpubaseboard_panel.html" %}
+    {% endif %}
+{% endblock content_right_page %}
+
+{% block content_full_width_page %}
+    {% if verbose_name == "GPU Baseboard" %}
+{% include "nautobot_fsus/inc/gpubaseboard_gpus.html" %}
+    {% elif verbose_name == "HBA" %}
+{% include "nautobot_fsus/inc/hba_disks.html" %}
+    {% elif verbose_name == "Mainboard" %}
+{% include "nautobot_fsus/inc/mainboard_cpus.html" %}
+    {% elif verbose_name == "NIC" %}
+{% include "nautobot_fsus/inc/nic_interfaces.html" %}
+    {% elif verbose_name == "PSU" %}
+{% include "nautobot_fsus/inc/psu_power_ports.html" %}
+    {% endif %}
+{% endblock content_full_width_page %}
+
+{% block javascript %}
+    {{ block.super }}
+{% endblock javascript %}

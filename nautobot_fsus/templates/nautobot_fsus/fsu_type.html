@@ -1,0 +1,141 @@
+{% extends "generic/object_retrieve.html" %}
+{% load helpers %}
+
+{% block extra_breadcrumbs %}
+                <li><a href="{% url list_url %}?manufacturer={{ object.manufacturer.name }}">{{ object.manufacturer }}</a></li>
+{% endblock extra_breadcrumbs %}
+
+{% block masthead %}
+<span class="hover_copy">
+    <h1>
+        <span id="fsutype-name">{% block title %}{{ object.manufacturer.name }} {{ object.name }} [{{ object.part_number | placeholder }}]{% endblock title %}</span>
+        <button class="btn btn-xs btn-default hover_copy_button" data-clipboard-target="#fsutype-name">
+            <span class="mdi mdi-content-copy"></span>
+        </button>
+    </h1>
+</span>
+{% endblock masthead %}
+
+{% block content_left_page %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>{{ verbose_name }}</strong>
+    </div>
+    <table class="table table-hover panel-body attr-table">
+        <tr>
+            <td>Manufacturer</td>
+            <td>{{ object.manufacturer | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Model Name</td>
+            <td>{{ object.name }}</td>
+        </tr>
+        <tr>
+            <td>Part Number</td>
+            <td>{{ object.part_number }}</td>
+        </tr>
+    {% if verbose_name == "CPU Type" %}
+        <tr>
+            <td>CPU Architecture</td>
+            <td>{{ object.get_architecture_display }}</td>
+        </tr>
+        <tr>
+            <td>Speed</td>
+            <td>{{ object.cpu_speed | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Cores</td>
+            <td>{{ object.cores | placeholder }}</td>
+        </tr>
+    {% elif verbose_name == "Disk Type" %}
+        <tr>
+            <td>Type</td>
+            <td>{{ object.disk_type | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Size (GB)</td>
+            <td>{{ object.size | placeholder }}</td>
+        </tr>
+    {% elif verbose_name == "GPU Baseboard Type" %}
+        <tr>
+            <td>Slot Count</td>
+            <td>{{ object.slot_count | placeholder }}</td>
+        </tr>
+    {% elif verbose_name == "Mainboard Type" %}
+        <tr>
+            <td>PCIe Generation</td>
+            <td>{{ object.get_pcie_generation_display }}</td>
+        </tr>
+        <tr>
+            <td>CPU Socket Count</td>
+            <td>{{ object.cpu_socket_count | placeholder }}</td>
+        </tr>
+    {% elif verbose_name == "NIC Type" %}
+        <tr>
+            <td>Interface Count</td>
+            <td>{{ object.interface_count | placeholder }}</td>
+        </tr>
+    {% elif verbose_name == "PSU Type" %}
+        <tr>
+            <td>Feed Type</td>
+            <td>{{ object.get_feed_type_display }}</td>
+        </tr>
+        <tr>
+            <td>Power Provided</td>
+            <td>{{ object.power_provided | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Required Voltage</td>
+            <td>{{ object.required_voltage | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Hot Swappable</td>
+            <td>{{ object.hot_swappable }}</td>
+        </tr>
+    {% elif verbose_name == "RAM Module Type" %}
+        <tr>
+            <td>Module Type</td>
+            <td>{{ object.get_module_type_display }}</td>
+        </tr>
+        <tr>
+            <td>Technology</td>
+            <td>{{ object.get_technology_display }}</td>
+        </tr>
+        <tr>
+            <td>Speed</td>
+            <td>{{ object.speed | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Capacity (GB)</td>
+            <td>{{ object.capacity | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Quantity</td>
+            <td>{{ object.quantity | placeholder }}</td>
+        </tr>
+    {% endif %}
+        <tr>
+            <td>Description</td>
+            <td>{{ object.description | placeholder }}</td>
+        </tr>
+        <tr>
+            <td>Instances</td>
+            <td><a href="{{ fsu_list }}?fsu_type_id={{ object.pk }}">{{ instance_count }}</a></td>
+        </tr>
+    </table>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Comments</strong>
+    </div>
+    <div class="panel-body rendered-markdown">
+    {% if object.comments %}
+        {{ object.comments | render_markdown }}
+    {% else %}
+        <span class="text-muted">None</span>
+    {% endif %}
+    </div>
+</div>
+
+{% endblock content_left_page %}

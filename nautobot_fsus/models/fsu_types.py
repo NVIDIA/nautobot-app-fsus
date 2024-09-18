@@ -74,12 +74,12 @@ class CPUType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,
             self.name,
             self.part_number,
-            self.architecture,
-            str(getattr(self, "cpu_speed", 0.0)),
-            str(getattr(self, "cores", 0)),
+            self.get_architecture_display,
+            str(self.cpu_speed) if self.cpu_speed else "",
+            str(self.cores) if self.cores else "",
             self.description,
             self.comments,
         )
@@ -127,11 +127,11 @@ class DiskType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,
             self.name,
             self.part_number,
-            self.disk_type,
-            str(getattr(self, "size", 0)),
+            self.get_disk_type_display,
+            str(self.size) if self.size else "",
             self.description,
             self.comments,
         )
@@ -171,7 +171,14 @@ class GPUBaseboardType(FSUTypeModel):
         help_text="The number of physical GPU slots provided by this GPU Baseboard."
     )
 
-    csv_headers = ["manufacturer", "name", "part_number", "slot_count", "description", "comments"]
+    csv_headers = [
+        "manufacturer",
+        "name",
+        "part_number",
+        "slot_count",
+        "description",
+        "comments",
+    ]
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
@@ -181,10 +188,10 @@ class GPUBaseboardType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,
             self.name,
             self.part_number,
-            str(getattr(self, "slot_count", 0)),
+            str(self.slot_count) if self.slot_count else "",
             self.description,
             self.comments,
         )
@@ -265,11 +272,11 @@ class MainboardType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,
             self.name,
             self.part_number,
-            self.get_pcie_generation_display(),
-            str(getattr(self, "cpu_socket_count", 0)),
+            self.get_pcie_generation_display,
+            str(self.cpu_socket_count) if self.cpu_socket_count else "",
             self.description,
             self.comments,
         )
@@ -308,10 +315,10 @@ class NICType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,
             self.name,
             self.part_number,
-            str(getattr(self, "interface_count", 0)),
+            str(self.interface_count) if self.interface_count else "",
             self.description,
             self.comments,
         )
@@ -385,13 +392,13 @@ class PSUType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,
             self.name,
             self.part_number,
-            self.get_feed_type_display(),
-            str(getattr(self, "power_provided", 0)),
+            self.get_feed_type_display,
+            str(self.power_provided) if self.power_provided else "",
             self.required_voltage,
-            "True" if self.hot_swappable else "False",
+            str(self.hot_swappable),
             self.description,
             self.comments,
         )
@@ -461,13 +468,13 @@ class RAMModuleType(FSUTypeModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,
             self.name,
             self.part_number,
-            self.get_module_type_display(),
-            self.get_technology_display(),
-            str(getattr(self, 'speed', 0)),
-            str(getattr(self, 'capacity', 0)),
+            self.get_module_type_display,
+            self.get_technology_display,
+            str(self.speed) if self.speed else "",
+            str(self.capacity) if self.capacity else "",
             str(self.quantity),
             self.description,
             self.comments,

@@ -68,7 +68,8 @@ class FSUTemplateModelTable(BaseTable):
     """Base class for FSU template tables."""
 
     pk = ToggleColumn()
-    name = tables.Column(order_by=("_name",))
+    name = tables.Column(linkify=True, order_by=("_name",))
+    device_type = tables.Column(linkify=True)
     actions: ButtonsColumn
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
@@ -90,6 +91,7 @@ class FSUTypeModelTable(BaseTable):
 
     pk = ToggleColumn()
     name = tables.Column(linkify=True)
+    manufacturer = tables.Column(linkify=True)
     instance_count: LinkedCountColumn
     tags: TagColumn
     actions: ButtonsColumn
@@ -101,6 +103,7 @@ class FSUTypeModelTable(BaseTable):
         fields = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "description",
             "instance_count",
@@ -110,6 +113,7 @@ class FSUTypeModelTable(BaseTable):
         default_columns = [
             "pk",
             "name",
+            "manufacturer",
             "part_number",
             "description",
             "instance_count",

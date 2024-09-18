@@ -81,17 +81,17 @@ class CPU(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
-            str(self.location.id if getattr(self, "location", None) else ""),
+            self.device.identifier if self.device else "",  # pylint: disable=no-member
+            self.location.name if self.location else "",
             self.name,
-            str(self.fsu_type.id),  # pylint: disable=no-member
+            self.fsu_type.name,
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
-            self.parent_mainboard,
-            getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
+            self.parent_mainboard.name if self.parent_mainboard else "",
+            self.asset_tag,
+            self.status,
             self.description,
             self.comments,
         )
@@ -172,17 +172,17 @@ class Disk(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV data."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
-            str(self.location.id if getattr(self, "location", None) else ""),
+            self.device.identifier if self.device else "",  # pylint: disable=no-member
+            self.location.name if self.location else "",
             self.name,
-            str(self.fsu_type.id),  # pylint: disable=no-member
+            self.fsu_type.name,
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
-            self.parent_hba,
-            getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
+            self.parent_hba.name if self.parent_hba else "",
+            self.asset_tag,
+            self.status,
             self.description,
             self.comments,
         )
@@ -276,18 +276,18 @@ class GPU(PCIFSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
-            str(self.location.id if getattr(self, "location", None) else ""),
+            self.device.identifier if self.device else "",  # pylint: disable=no-member
+            self.location.name if self.location else "",
             self.name,
-            str(self.fsu_type.id),  # pylint: disable=no-member
+            self.fsu_type.name,
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.pci_slot_id,
-            str(self.parent_gpubaseboard if getattr(self, "parent_gpubaseboard", None) else ""),
-            getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
+            self.parent_gpubaseboard.name if self.parent_gpubaseboard else "",
+            self.asset_tag,
+            self.status,
             self.description,
             self.comments,
         )
@@ -492,17 +492,17 @@ class PSU(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
-            str(self.location.id if getattr(self, "location", None) else ""),
+            self.device.identifier if self.device else "",  # pylint: disable=no-member
+            self.location.name if self.location else "",
             self.name,
-            str(self.fsu_type.id),  # pylint: disable=no-member
+            self.fsu_type.name,
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
-            "True" if self.redundant else "False",
-            getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
+            str(self.redundant),
+            self.asset_tag,
+            self.status,
             self.description,
             self.comments,
         )
@@ -557,17 +557,17 @@ class RAMModule(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
-            str(self.location.id if getattr(self, "location", None) else ""),
+            self.device.identifier if self.device else "",  # pylint: disable=no-member
+            self.location.name if self.location else "",
             self.name,
-            str(self.fsu_type.id),  # pylint: disable=no-member
+            self.fsu_type.name,
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.slot_id,
-            getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
+            self.asset_tag,
+            self.status,
             self.description,
             self.comments,
         )

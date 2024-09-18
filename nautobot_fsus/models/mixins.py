@@ -183,23 +183,23 @@ class FSUModel(PrimaryModel, StatusModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
-            str(self.location.id if getattr(self, "location", None) else ""),
+            self.device.identifier if self.device else "",  # pylint: disable=no-member
+            self.location.name if self.location else "",
             self.name,
-            str(self.fsu_type.id),
+            self.fsu_type.name,
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
-            getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
+            self.asset_tag,
+            self.status,
             self.description,
             self.comments,
         )
 
     def get_absolute_url(self) -> str:
         """Calculate the absolute URL of the FSU instance."""
-        return reverse(f"plugins:fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
+        return reverse(f"plugins:nautobot_fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
 
 
 class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, RelationshipModel):
@@ -259,6 +259,10 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
         """Return a new ObjectChange on updates."""
         return super().to_objectchange(action, related_object=self.device_type, **kwargs)
 
+    def get_absolute_url(self) -> str:
+        """Calculate the absolute URL of the FSUTemplate instance."""
+        return reverse(f"plugins:nautobot_fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
+
 
 class FSUTypeModel(PrimaryModel):
     """
@@ -297,11 +301,11 @@ class FSUTypeModel(PrimaryModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            str(self.manufacturer.id),  # pylint: disable=no-member
+            self.manufacturer.name,  # pylint: disable=no-member
             self.name,
             self.part_number,
             self.description,
-            self.comments
+            self.comments,
         )
 
     @property
@@ -311,7 +315,7 @@ class FSUTypeModel(PrimaryModel):
 
     def get_absolute_url(self) -> str:
         """Calculate the absolute URL for an FSU type."""
-        return reverse(f"plugins:fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
+        return reverse(f"plugins:nautobot_fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
 
 
 class PCIFSUModel(FSUModel):
@@ -342,17 +346,17 @@ class PCIFSUModel(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            str(self.device.id if getattr(self, "device", None) else ""),  # pylint: disable=no-member
-            str(self.location.id if getattr(self, "location", None) else ""),
+            self.device.identifier if self.device else "",  # pylint: disable=no-member
+            self.location.name if self.location else "",
             self.name,
-            str(self.fsu_type.id),
+            self.fsu_type.name,
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.pci_slot_id,
-            getattr(self, "asset_tag", ""),
-            self.status.slug if getattr(self, "status", None) else "",  # pylint: disable=no-member
+            self.asset_tag,
+            self.status,
             self.description,
             self.comments,
         )

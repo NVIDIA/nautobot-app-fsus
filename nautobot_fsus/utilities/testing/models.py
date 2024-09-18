@@ -96,7 +96,9 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             csv = instance.to_csv()
             self.assertIsInstance(csv, tuple)
             self.assertEqual(len(csv), len(instance.csv_headers))
-            self.assertEqual(csv[0], str(self.device.id))
+            for index, value in enumerate(instance.csv_headers):
+                match = str(getattr(instance, value)) if getattr(instance, value) is not None else ""
+                self.assertEqual(str(csv[index]), match)
 
         def test_move_to_device(self):
             """Ensure when a device is set on an FSU instance, the storage location is cleared."""

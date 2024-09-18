@@ -1,0 +1,27 @@
+{% load helpers %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Parent NIC</strong>
+    </div>
+{% if object.parent_nic.first %}
+    <table class="table table-hover panel-body attr-table">
+        <tr>
+            <td>Name</td>
+            <td>{{ object.parent_nic.first | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>{{ object.parent_nic.first.fsu_type | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ object.parent_nic.first.description }}</td>
+        </tr>
+    </table>
+{% else %}
+    <div class="panel-body text-muted">
+        No parent NIC
+    </div>
+{% endif %}
+</div>

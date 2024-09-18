@@ -1,0 +1,27 @@
+{% load helpers %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Parent Mainboard</strong>
+    </div>
+{% if object.parent_mainboard %}
+    <table class="table table-hover panel-body attr-table">
+        <tr>
+            <td>Name</td>
+            <td>{{ object.parent_mainboard | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>{{ object.parent_mainboard.fsu_type | hyperlinked_object }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ object.parent_mainboard.description }}</td>
+        </tr>
+    </table>
+{% else %}
+    <div class="panel-body text-muted">
+        No parent Mainboard
+    </div>
+{% endif %}
+</div>
