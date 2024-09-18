@@ -23,11 +23,20 @@ from nautobot_fsus.tests.fixtures import create_env
 class Command(BaseCommand):
     """Publish the command to bootstrap dummy data."""
 
-    def handle(self, *args, **options):
+    def add_arguments(self, parser):
+        """Optional command-line arguments for the handler."""
+        super().add_arguments(parser)
+        parser.add_argument(
+            "--with-fsus",
+            action="store_true",
+            help="Create a base set of FSUs/FSUTypes as well.",
+        )
+
+    def handle(self, *args, with_fsus: bool = False, **options):
         """Command handler method."""
         self.stdout.write("Attempting to populate dummy data.")
         try:
-            create_env()
+            create_env(with_fsus=with_fsus)
             self.stdout.write(self.style.SUCCESS("Done."))
         except IntegrityError as error:
             self.stdout.write(

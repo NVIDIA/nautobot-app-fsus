@@ -388,7 +388,7 @@ def post_upgrade(context: Context) -> None:
 @task
 def create_env(context: Context) -> None:
     """Add a base set of data to Nautobot to make development easier."""
-    helpers.run_command(context, "nautobot-server create_fsus_env")
+    helpers.run_command(context, "nautobot-server create_fsus_env --with-fsus")
 
 @task(
     help={

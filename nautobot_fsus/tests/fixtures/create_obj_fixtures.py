@@ -24,10 +24,9 @@ from nautobot.dcim.models import (
     Site,
 )
 from nautobot.extras.models import Status
-from nautobot.utilities.choices import ColorChoices
 
 from nautobot_fsus import models
-from nautobot_fsus.models.mixins import FSUModel, FSUTypeModel
+from nautobot_fsus.models.mixins import FSUTypeModel
 
 
 def create_site() -> Site:
@@ -170,7 +169,7 @@ def create_fsus(
             )
 
 
-def create_env():
+def create_env(with_fsus: bool = False):
     """Populate environment with basic test data."""
     print("Creating Base Data")
 
@@ -189,8 +188,9 @@ def create_env():
     print(" - Devices")
     devices = create_devices(locations)
 
-    print(" - FSUTypes")
-    fsu_types = create_fsu_types(manufacturers)
+    if with_fsus:
+        print(" - FSUTypes")
+        fsu_types = create_fsu_types(manufacturers)
 
-    print(" - FSUs")
-    create_fsus(fsu_types, devices, locations)
+        print(" - FSUs")
+        create_fsus(fsu_types, devices, locations)
