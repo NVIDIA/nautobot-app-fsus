@@ -14,10 +14,12 @@
 #  limitations under the License.
 
 """Create test environment object fixtures."""
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.utils.crypto import get_random_string
 import factory.random
-from nautobot.dcim.models import Device, DeviceRole, DeviceType, Location, Manufacturer
-from nautobot.extras.models import Status
+from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Manufacturer
+from nautobot.extras.models import Role, Status
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUTypeModel
@@ -30,31 +32,38 @@ def create_env(seed: str | None = None):
         seed = get_random_string(16)
     factory.random.reseed_random(seed)
 
-    print("Creating Devices...")
-    for num in range(1, 6):
-        device_type = factory.random.randgen.choice(DeviceType.objects.all())
-        device_role = factory.random.randgen.choice(DeviceRole.objects.all())
-        location = factory.random.randgen.choice(Location.objects.filter(site__isnull=False))
+    # Factory test data in versions before 2.1.x doesn't include Devices for some reason.
+    if settings.VERSION_MINOR == 0:
+        print("Creating Devices...")
+        for num in range(1, 6):
+            device_type = factory.random.randgen.choice(DeviceType.objects.all())
+            device_role = factory.random.randgen.choice(Role.objects.all())
+            location = factory.random.randgen.choice(Location.objects.filter(
+                location_type__in=LocationType.objects.filter(
+                    content_types__in=[ContentType.objects.get_for_model(Device)]
+                )
+            ))
 
-        _ = Device.objects.get_or_create(
-            device_type=device_type,
-            device_role=device_role,
-            name=f"Device {num}-1",
-            site=location.site,
-            location=location,
-        )
-        _ = Device.objects.get_or_create(
-            device_type=device_type,
-            device_role=device_role,
-            name=f"Device {num}-2",
-            site=location.site,
-            location=location,
-        )
+            _ = Device.objects.get_or_create(
+                device_type=device_type,
+                role=device_role,
+                name=f"Device {num}-1",
+                location=location,
+                status=Status.objects.get_for_model(Device).first(),
+            )
+            _ = Device.objects.get_or_create(
+                device_type=device_type,
+                role=device_role,
+                name=f"Device {num}-2",
+                location=location,
+                status=Status.objects.get_for_model(Device).first(),
+            )
 
     print("Updating statuses...")
     post_migrate_create_defaults()
 
-    print("Creating FSUTypes...")
+    if settings.VERSION_MINOR <= 1:
+        print("Creating FSUTypes...")
     fsu_types: dict[str, list[FSUTypeModel]] = {}
 
     for value in [
@@ -73,6 +82,8 @@ def create_env(seed: str | None = None):
         fsu_type, type_model = value
         fsu_types[type_model] = []
         mfgr_used: list[Manufacturer] = []
+        if settings.VERSION_MINOR > 1:
+            print(f"Creating 3 {type_model} types...")
         for num in range(1, 4):
             mfgr = factory.random.randgen.choice(Manufacturer.objects.exclude(id__in=mfgr_used))
             added, _ = fsu_type.objects.get_or_create(
@@ -83,7 +94,8 @@ def create_env(seed: str | None = None):
             mfgr_used.append(mfgr.pk)
             fsu_types[type_model].append(added)
 
-    print("Creating FSUs...")
+    if settings.VERSION_MINOR <= 1:
+        print("Creating FSUs...")
     for fsu_model in [
         models.CPU,
         models.Disk,
@@ -97,16 +109,19 @@ def create_env(seed: str | None = None):
         models.PSU,
         models.RAMModule,
     ]:
+        fsu_model_name: str = getattr(fsu_model._meta, "model_name", "")
+        if settings.VERSION_MINOR > 1:
+            print(f"Creating 10 {fsu_model_name}s...")
         for num in range(1, 6):
             _ = fsu_model.objects.get_or_create(
                 name=f"{fsu_model._meta.verbose_name} {num}-1",
-                fsu_type=fsu_types[getattr(fsu_model._meta, "model_name", "")][0],
+                fsu_type=fsu_types[fsu_model_name][0],
                 device=factory.random.randgen.choice(Device.objects.all()),
                 status=Status.objects.get(name="Active"),
             )
             _ = fsu_model.objects.get_or_create(
                 name=f"{fsu_model._meta.verbose_name} {num}-2",
-                fsu_type=fsu_types[getattr(fsu_model._meta, "model_name", "")][1],
+                fsu_type=fsu_types[fsu_model_name][1],
                 location=factory.random.randgen.choice(Location.objects.all()),
                 status=Status.objects.get(name="Available"),
             )
