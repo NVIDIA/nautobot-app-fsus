@@ -26,7 +26,6 @@ from nautobot_fsus.views.mixins import FSUTypeModelViewSet
 class CPUTypeUIViewSet(FSUTypeModelViewSet):
     """View set for CPUType model."""
 
-    bulk_create_form_class = forms.CPUTypeCSVForm
     bulk_update_form_class = forms.CPUTypeBulkEditForm
     filterset_class = filters.CPUTypeFilterSet
     filterset_form_class = forms.CPUTypeFilterForm
@@ -49,7 +48,6 @@ class CPUTypeUIViewSet(FSUTypeModelViewSet):
 class DiskTypeUIViewSet(FSUTypeModelViewSet):
     """View set for DiskType model."""
 
-    bulk_create_form_class = forms.DiskTypeCSVForm
     bulk_update_form_class = forms.DiskTypeBulkEditForm
     filterset_class = filters.DiskTypeFilterSet
     filterset_form_class = forms.DiskTypeFilterForm
@@ -72,7 +70,6 @@ class DiskTypeUIViewSet(FSUTypeModelViewSet):
 class FanTypeUIViewSet(FSUTypeModelViewSet):
     """View set for FanType model."""
 
-    bulk_create_form_class = forms.FanTypeCSVForm
     bulk_update_form_class = forms.FanTypeBulkEditForm
     filterset_class = filters.FanTypeFilterSet
     filterset_form_class = forms.FanTypeFilterForm
@@ -95,7 +92,6 @@ class FanTypeUIViewSet(FSUTypeModelViewSet):
 class GPUTypeUIViewSet(FSUTypeModelViewSet):
     """View set for GPUType model."""
 
-    bulk_create_form_class = forms.GPUTypeCSVForm
     bulk_update_form_class = forms.GPUTypeBulkEditForm
     filterset_class = filters.GPUTypeFilterSet
     filterset_form_class = forms.GPUTypeFilterForm
@@ -118,7 +114,6 @@ class GPUTypeUIViewSet(FSUTypeModelViewSet):
 class GPUBaseboardTypeUIViewSet(FSUTypeModelViewSet):
     """View set for GPUBaseboardType model."""
 
-    bulk_create_form_class = forms.GPUBaseboardTypeCSVForm
     bulk_update_form_class = forms.GPUBaseboardTypeBulkEditForm
     filterset_class = filters.GPUBaseboardTypeFilterSet
     filterset_form_class = forms.GPUBaseboardTypeFilterForm
@@ -141,7 +136,6 @@ class GPUBaseboardTypeUIViewSet(FSUTypeModelViewSet):
 class HBATypeUIViewSet(FSUTypeModelViewSet):
     """View set for HBAType model."""
 
-    bulk_create_form_class = forms.HBATypeCSVForm
     bulk_update_form_class = forms.HBATypeBulkEditForm
     filterset_class = filters.HBATypeFilterSet
     filterset_form_class = forms.HBATypeFilterForm
@@ -164,7 +158,6 @@ class HBATypeUIViewSet(FSUTypeModelViewSet):
 class MainboardTypeUIViewSet(FSUTypeModelViewSet):
     """View set for MainboardType model."""
 
-    bulk_create_form_class = forms.MainboardTypeCSVForm
     bulk_update_form_class = forms.MainboardTypeBulkEditForm
     filterset_class = filters.MainboardTypeFilterSet
     filterset_form_class = forms.MainboardTypeFilterForm
@@ -187,7 +180,6 @@ class MainboardTypeUIViewSet(FSUTypeModelViewSet):
 class NICTypeUIViewSet(FSUTypeModelViewSet):
     """View set for NICType model."""
 
-    bulk_create_form_class = forms.NICTypeCSVForm
     bulk_update_form_class = forms.NICTypeBulkEditForm
     filterset_class = filters.NICTypeFilterSet
     filterset_form_class = forms.NICTypeFilterForm
@@ -210,7 +202,6 @@ class NICTypeUIViewSet(FSUTypeModelViewSet):
 class OtherFSUTypeUIViewSet(FSUTypeModelViewSet):
     """View set for OtherFSUType model."""
 
-    bulk_create_form_class = forms.OtherFSUTypeCSVForm
     bulk_update_form_class = forms.OtherFSUTypeBulkEditForm
     filterset_class = filters.OtherFSUTypeFilterSet
     filterset_form_class = forms.OtherFSUTypeFilterForm
@@ -233,7 +224,6 @@ class OtherFSUTypeUIViewSet(FSUTypeModelViewSet):
 class PSUTypeUIViewSet(FSUTypeModelViewSet):
     """View set for PSUType model."""
 
-    bulk_create_form_class = forms.PSUTypeCSVForm
     bulk_update_form_class = forms.PSUTypeBulkEditForm
     filterset_class = filters.PSUTypeFilterSet
     filterset_form_class = forms.PSUTypeFilterForm
@@ -256,7 +246,6 @@ class PSUTypeUIViewSet(FSUTypeModelViewSet):
 class RAMModuleTypeUIViewSet(FSUTypeModelViewSet):
     """View set for RAMModuleType model."""
 
-    bulk_create_form_class = forms.RAMModuleTypeCSVForm
     bulk_update_form_class = forms.RAMModuleTypeBulkEditForm
     filterset_class = filters.RAMModuleTypeFilterSet
     filterset_form_class = forms.RAMModuleTypeFilterForm

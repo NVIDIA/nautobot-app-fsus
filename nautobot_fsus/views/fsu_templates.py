@@ -22,7 +22,6 @@ from nautobot_fsus.views.mixins import FSUTemplateModelViewSet
 class CPUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for CPUTemplate model."""
 
-    bulk_create_form_class = forms.CPUTemplateCSVForm
     bulk_update_form_class = forms.CPUTemplateBulkEditForm
     create_form_class = forms.CPUTemplateCreateForm
     filterset_class = filters.CPUTemplateFilterSet
@@ -36,7 +35,6 @@ class CPUTemplateUIViewSet(FSUTemplateModelViewSet):
 class DiskTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for DiskTemplate model."""
 
-    bulk_create_form_class = forms.DiskTemplateCSVForm
     bulk_update_form_class = forms.DiskTemplateBulkEditForm
     create_form_class = forms.DiskTemplateCreateForm
     filterset_class = filters.DiskTemplateFilterSet
@@ -50,7 +48,6 @@ class DiskTemplateUIViewSet(FSUTemplateModelViewSet):
 class FanTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for FanTemplate model."""
 
-    bulk_create_form_class = forms.FanTemplateCSVForm
     bulk_update_form_class = forms.FanTemplateBulkEditForm
     create_form_class = forms.FanTemplateCreateForm
     filterset_class = filters.FanTemplateFilterSet
@@ -64,7 +61,6 @@ class FanTemplateUIViewSet(FSUTemplateModelViewSet):
 class GPUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for GPUTemplate model."""
 
-    bulk_create_form_class = forms.GPUTemplateCSVForm
     bulk_update_form_class = forms.GPUTemplateBulkEditForm
     create_form_class = forms.GPUTemplateCreateForm
     filterset_class = filters.GPUTemplateFilterSet
@@ -78,7 +74,6 @@ class GPUTemplateUIViewSet(FSUTemplateModelViewSet):
 class GPUBaseboardTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for GPUBaseboardTemplate model."""
 
-    bulk_create_form_class = forms.GPUBaseboardTemplateCSVForm
     bulk_update_form_class = forms.GPUBaseboardTemplateBulkEditForm
     create_form_class = forms.GPUBaseboardTemplateCreateForm
     filterset_class = filters.GPUBaseboardTemplateFilterSet
@@ -92,7 +87,6 @@ class GPUBaseboardTemplateUIViewSet(FSUTemplateModelViewSet):
 class HBATemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for HBATemplate model."""
 
-    bulk_create_form_class = forms.HBATemplateCSVForm
     bulk_update_form_class = forms.HBATemplateBulkEditForm
     create_form_class = forms.HBATemplateCreateForm
     filterset_class = filters.HBATemplateFilterSet
@@ -106,7 +100,6 @@ class HBATemplateUIViewSet(FSUTemplateModelViewSet):
 class MainboardTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for MainboardTemplate model."""
 
-    bulk_create_form_class = forms.MainboardTemplateCSVForm
     bulk_update_form_class = forms.MainboardTemplateBulkEditForm
     create_form_class = forms.MainboardTemplateCreateForm
     filterset_class = filters.MainboardTemplateFilterSet
@@ -120,7 +113,6 @@ class MainboardTemplateUIViewSet(FSUTemplateModelViewSet):
 class NICTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for NICTemplate model."""
 
-    bulk_create_form_class = forms.NICTemplateCSVForm
     bulk_update_form_class = forms.NICTemplateBulkEditForm
     create_form_class = forms.NICTemplateCreateForm
     filterset_class = filters.NICTemplateFilterSet
@@ -134,7 +126,6 @@ class NICTemplateUIViewSet(FSUTemplateModelViewSet):
 class OtherFSUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for OtherFSUTemplate model."""
 
-    bulk_create_form_class = forms.OtherFSUTemplateCSVForm
     bulk_update_form_class = forms.OtherFSUTemplateBulkEditForm
     create_form_class = forms.OtherFSUTemplateCreateForm
     filterset_class = filters.OtherFSUTemplateFilterSet
@@ -148,7 +139,6 @@ class OtherFSUTemplateUIViewSet(FSUTemplateModelViewSet):
 class PSUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for PSUTemplate model."""
 
-    bulk_create_form_class = forms.PSUTemplateCSVForm
     bulk_update_form_class = forms.PSUTemplateBulkEditForm
     create_form_class = forms.PSUTemplateCreateForm
     filterset_class = filters.PSUTemplateFilterSet
@@ -162,7 +152,6 @@ class PSUTemplateUIViewSet(FSUTemplateModelViewSet):
 class RAMModuleTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for RAMModuleTemplate model."""
 
-    bulk_create_form_class = forms.RAMModuleTemplateCSVForm
     bulk_update_form_class = forms.RAMModuleTemplateBulkEditForm
     create_form_class = forms.RAMModuleTemplateCreateForm
     filterset_class = filters.RAMModuleTemplateFilterSet

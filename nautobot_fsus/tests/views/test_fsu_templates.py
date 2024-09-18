@@ -19,9 +19,9 @@ from typing import Type
 from django.contrib.contenttypes.models import ContentType
 from django.test.utils import override_settings
 from django.urls import reverse
+from nautobot.core.testing import extract_page_body, post_data, ViewTestCases
 from nautobot.dcim.models import DeviceType, Manufacturer
 from nautobot.users.models import ObjectPermission
-from nautobot.utilities.testing import extract_page_body, post_data, ViewTestCases
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUTemplateModel, FSUTypeModel
@@ -37,7 +37,6 @@ class FSUTemplateViewTestCases:  # pylint: disable=too-few-public-methods
         ViewTestCases.CreateMultipleObjectsViewTestCase,
         ViewTestCases.EditObjectViewTestCase,
         ViewTestCases.DeleteObjectViewTestCase,
-        ViewTestCases.ListObjectsViewTestCase,
     ):
         """Common tests for FSUTemplate model views."""
 
@@ -52,11 +51,9 @@ class FSUTemplateViewTestCases:  # pylint: disable=too-few-public-methods
             manufacturers = [
                 Manufacturer.objects.create(
                     name="Device Manufacturer",
-                    slug="device-manufacturer",
                 ),
                 Manufacturer.objects.create(
                     name="FSU Manufacturer",
-                    slug="fsu-manufacturer"
                 )
             ]
 
@@ -64,12 +61,10 @@ class FSUTemplateViewTestCases:  # pylint: disable=too-few-public-methods
                 DeviceType.objects.create(
                     manufacturer=manufacturers[0],
                     model="Test Device Type 1",
-                    slug="test-device-type-1",
                 ),
                 DeviceType.objects.create(
                     manufacturer=manufacturers[0],
                     model="Test Device Type 2",
-                    slug="test-device-type-2",
                 ),
             ]
 

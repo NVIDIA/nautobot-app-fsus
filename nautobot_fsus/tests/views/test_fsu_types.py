@@ -16,8 +16,8 @@
 """Tests for FSUType model views defined in the Nautobot FSUs app."""
 from typing import Type
 
+from nautobot.core.testing import ViewTestCases
 from nautobot.dcim.models import Manufacturer
-from nautobot.utilities.testing import ViewTestCases
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUTypeModel
@@ -47,9 +47,9 @@ class FSUTypeViewTestCases:  # pylint: disable=too-few-public-methods
 
             cls.csv_data = (
                 "manufacturer,name,part_number",
-                f"{manufacturers[1].name},{cls.model._meta.verbose_name} 7,0007",
-                f"{manufacturers[1].name},{cls.model._meta.verbose_name} 8,0008",
-                f"{manufacturers[1].name},{cls.model._meta.verbose_name} 9,0009",
+                f"{manufacturers[1].pk},{cls.model._meta.verbose_name} 7,0007",
+                f"{manufacturers[1].pk},{cls.model._meta.verbose_name} 8,0008",
+                f"{manufacturers[1].pk},{cls.model._meta.verbose_name} 9,0009",
             )
 
 
@@ -76,9 +76,9 @@ class CPUTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):
 
         cls.csv_data = (
             "manufacturer,name,part_number,architecture",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 7,0007,x86",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 8,0008,x86",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 9,0009,arm",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 7,0007,x86",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 8,0008,x86",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 9,0009,arm",
         )
 
 
@@ -96,9 +96,9 @@ class DiskTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):
 
         cls.csv_data = (
             "manufacturer,name,part_number,disk_type",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 7,0007,SSD",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 8,0008,NVME",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 9,0009,NVME",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 7,0007,SSD",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 8,0008,NVME",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 9,0009,NVME",
         )
 
 
@@ -158,9 +158,9 @@ class PSUTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):
 
         cls.csv_data = (
             "manufacturer,name,part_number,feed_type",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 7,0007,dc",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 8,0008,dc",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 9,0009,ac",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 7,0007,dc",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 8,0008,dc",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 9,0009,ac",
         )
 
 
@@ -178,7 +178,7 @@ class RAMModuleTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):
 
         cls.csv_data = (
             "manufacturer,name,part_number,module_type,technology,quantity",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 7,0007,u,ddr5,1",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 8,0008,u,ddr5,1",
-            f"{Manufacturer.objects.last().name},{cls.model._meta.verbose_name} 9,0009,ue,ddr5,2",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 7,0007,u,ddr5,1",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 8,0008,u,ddr5,1",
+            f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 9,0009,ue,ddr5,2",
         )
