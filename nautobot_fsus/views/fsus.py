@@ -26,7 +26,7 @@ from nautobot_fsus.api import serializers
 from nautobot_fsus.views.mixins import FSUBulkRenameView, FSUModelViewSet
 
 
-class CPUViewSet(FSUModelViewSet):
+class CPUUIViewSet(FSUModelViewSet):
     """View set for CPU model."""
 
     bulk_create_form_class = forms.CPUCSVForm
@@ -47,7 +47,7 @@ class CPUBulkRenameView(FSUBulkRenameView):
     queryset = models.CPU.objects.all()
 
 
-class DiskViewSet(FSUModelViewSet):
+class DiskUIViewSet(FSUModelViewSet):
     """View set for Disk model."""
 
     bulk_create_form_class = forms.DiskCSVForm
@@ -68,7 +68,7 @@ class DiskBulkRenameView(FSUBulkRenameView):
     queryset = models.Disk.objects.all()
 
 
-class FanViewSet(FSUModelViewSet):
+class FanUIViewSet(FSUModelViewSet):
     """View set for Fan model."""
 
     bulk_create_form_class = forms.FanCSVForm
@@ -89,7 +89,7 @@ class FanBulkRenameView(FSUBulkRenameView):
     queryset = models.Fan.objects.all()
 
 
-class GPUViewSet(FSUModelViewSet):
+class GPUUIViewSet(FSUModelViewSet):
     """View set for GPU model."""
 
     bulk_create_form_class = forms.GPUCSVForm
@@ -110,7 +110,7 @@ class GPUBulkRenameView(FSUBulkRenameView):
     queryset = models.GPU.objects.all()
 
 
-class GPUBaseboardViewSet(FSUModelViewSet):
+class GPUBaseboardUIViewSet(FSUModelViewSet):
     """View set for GPUBaseboard model."""
 
     bulk_create_form_class = forms.GPUBaseboardCSVForm
@@ -148,7 +148,7 @@ class GPUBaseboardBulkRenameView(FSUBulkRenameView):
     queryset = models.GPUBaseboard.objects.all()
 
 
-class HBAViewSet(FSUModelViewSet):
+class HBAUIViewSet(FSUModelViewSet):
     """View set for HBA model."""
 
     bulk_create_form_class = forms.HBACSVForm
@@ -185,7 +185,7 @@ class HBABulkRenameView(FSUBulkRenameView):
     queryset = models.HBA.objects.all()
 
 
-class MainboardViewSet(FSUModelViewSet):
+class MainboardUIViewSet(FSUModelViewSet):
     """View set for Mainboard model."""
 
     bulk_create_form_class = forms.MainboardCSVForm
@@ -223,7 +223,7 @@ class MainboardBulkRenameView(FSUBulkRenameView):
     queryset = models.Mainboard.objects.all()
 
 
-class NICViewSet(FSUModelViewSet):
+class NICUIViewSet(FSUModelViewSet):
     """View set for NIC model."""
 
     bulk_create_form_class = forms.NICCSVForm
@@ -270,7 +270,7 @@ class NICBulkRenameView(FSUBulkRenameView):
     queryset = models.NIC.objects.all()
 
 
-class OtherFSUViewSet(FSUModelViewSet):
+class OtherFSUUIViewSet(FSUModelViewSet):
     """View set for OtherFSU model."""
 
     bulk_create_form_class = forms.OtherFSUCSVForm
@@ -291,7 +291,7 @@ class OtherFSUBulkRenameView(FSUBulkRenameView):
     queryset = models.OtherFSU.objects.all()
 
 
-class PSUViewSet(FSUModelViewSet):
+class PSUUIViewSet(FSUModelViewSet):
     """View set for PSU model."""
 
     bulk_create_form_class = forms.PSUCSVForm
@@ -332,7 +332,7 @@ class PSUBulkRenameView(FSUBulkRenameView):
     queryset = models.PSU.objects.all()
 
 
-class RAMModuleViewSet(FSUModelViewSet):
+class RAMModuleUIViewSet(FSUModelViewSet):
     """View set for RAMModule model."""
 
     bulk_create_form_class = forms.RAMModuleCSVForm

@@ -19,7 +19,7 @@ from nautobot_fsus.api import serializers
 from nautobot_fsus.views.mixins import FSUTemplateModelViewSet
 
 
-class CPUTemplateViewSet(FSUTemplateModelViewSet):
+class CPUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for CPUTemplate model."""
 
     bulk_create_form_class = forms.CPUTemplateCSVForm
@@ -33,7 +33,7 @@ class CPUTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.CPUTemplateTable
 
 
-class DiskTemplateViewSet(FSUTemplateModelViewSet):
+class DiskTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for DiskTemplate model."""
 
     bulk_create_form_class = forms.DiskTemplateCSVForm
@@ -47,7 +47,7 @@ class DiskTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.DiskTemplateTable
 
 
-class FanTemplateViewSet(FSUTemplateModelViewSet):
+class FanTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for FanTemplate model."""
 
     bulk_create_form_class = forms.FanTemplateCSVForm
@@ -61,7 +61,7 @@ class FanTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.FanTemplateTable
 
 
-class GPUTemplateViewSet(FSUTemplateModelViewSet):
+class GPUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for GPUTemplate model."""
 
     bulk_create_form_class = forms.GPUTemplateCSVForm
@@ -75,7 +75,7 @@ class GPUTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.GPUTemplateTable
 
 
-class GPUBaseboardTemplateViewSet(FSUTemplateModelViewSet):
+class GPUBaseboardTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for GPUBaseboardTemplate model."""
 
     bulk_create_form_class = forms.GPUBaseboardTemplateCSVForm
@@ -89,7 +89,7 @@ class GPUBaseboardTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.GPUBaseboardTemplateTable
 
 
-class HBATemplateViewSet(FSUTemplateModelViewSet):
+class HBATemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for HBATemplate model."""
 
     bulk_create_form_class = forms.HBATemplateCSVForm
@@ -103,7 +103,7 @@ class HBATemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.HBATemplateTable
 
 
-class MainboardTemplateViewSet(FSUTemplateModelViewSet):
+class MainboardTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for MainboardTemplate model."""
 
     bulk_create_form_class = forms.MainboardTemplateCSVForm
@@ -117,7 +117,7 @@ class MainboardTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.MainboardTemplateTable
 
 
-class NICTemplateViewSet(FSUTemplateModelViewSet):
+class NICTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for NICTemplate model."""
 
     bulk_create_form_class = forms.NICTemplateCSVForm
@@ -131,7 +131,7 @@ class NICTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.NICTemplateTable
 
 
-class OtherFSUTemplateViewSet(FSUTemplateModelViewSet):
+class OtherFSUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for OtherFSUTemplate model."""
 
     bulk_create_form_class = forms.OtherFSUTemplateCSVForm
@@ -145,7 +145,7 @@ class OtherFSUTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.OtherFSUTemplateTable
 
 
-class PSUTemplateViewSet(FSUTemplateModelViewSet):
+class PSUTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for PSUTemplate model."""
 
     bulk_create_form_class = forms.PSUTemplateCSVForm
@@ -159,7 +159,7 @@ class PSUTemplateViewSet(FSUTemplateModelViewSet):
     table_class = tables.PSUTemplateTable
 
 
-class RAMModuleTemplateViewSet(FSUTemplateModelViewSet):
+class RAMModuleTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for RAMModuleTemplate model."""
 
     bulk_create_form_class = forms.RAMModuleTemplateCSVForm
