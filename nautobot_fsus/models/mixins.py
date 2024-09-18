@@ -21,24 +21,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import ForeignKey
-from django.urls import reverse
-from nautobot.core.models import BaseModel
-from nautobot.core.models.generics import PrimaryModel
+from nautobot.core.models.fields import NaturalOrderingField
+from nautobot.core.models.generics import BaseModel, PrimaryModel
 from nautobot.dcim.models import Device, Location
-from nautobot.extras.models import (
-    ChangeLoggedModel,
-    CustomField,
-    CustomFieldModel,
-    RelationshipModel,
-    StatusModel,
-)
-from nautobot.extras.models.change_logging import ObjectChange
-from nautobot.utilities.fields import NaturalOrderingField
+from nautobot.extras.models import CustomField, CustomFieldModel, RelationshipModel, StatusField
+from nautobot.extras.models.change_logging import ChangeLoggedModel, ObjectChange
 
 logger = logging.getLogger("nautobot.plugin.fsus")
 
 
-class FSUModel(PrimaryModel, StatusModel):
+class FSUModel(PrimaryModel):
     """
     Abstract base class for Field Serviceable Units.
 
@@ -106,6 +98,12 @@ class FSUModel(PrimaryModel, StatusModel):
         help_text="A unique tag used to identify this FSU.",
     )
 
+    status = StatusField(
+        related_name="%(app_label)s_%(class)s_related",
+        blank=False,
+        null=False,
+    )
+
     description = models.CharField(max_length=255, blank=True)
     comments = models.TextField(blank=True)
 
@@ -118,26 +116,11 @@ class FSUModel(PrimaryModel, StatusModel):
         "driver_name",
     ]
 
-    csv_headers = [
-        "device",
-        "location",
-        "name",
-        "fsu_type",
-        "serial_number",
-        "firmware_version",
-        "driver_version",
-        "driver_name",
-        "asset_tag",
-        "status",
-        "description",
-        "comments",
-    ]
-
     class Meta:
         """Metaclass attributes."""
         abstract = True
         ordering = ["device", "location", "_name"]
-        unique_together = [["device", "name"], ["location", "name"]]
+        unique_together = [["name", "device"], ["name", "location"]]
 
     def __str__(self) -> str:
         """Default string representation of the FSU."""
@@ -180,27 +163,6 @@ class FSUModel(PrimaryModel, StatusModel):
 
         super().save(*args, **kwargs)
 
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of model values suitable for CSV export."""
-        return (
-            self.device.identifier if self.device else "",  # pylint: disable=no-member
-            self.location.name if self.location else "",
-            self.name,
-            self.fsu_type.name,
-            self.serial_number,
-            self.firmware_version,
-            self.driver_version,
-            self.driver_name,
-            self.asset_tag,
-            self.status,
-            self.description,
-            self.comments,
-        )
-
-    def get_absolute_url(self) -> str:
-        """Calculate the absolute URL of the FSU instance."""
-        return reverse(f"plugins:nautobot_fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
-
 
 class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, RelationshipModel):
     """
@@ -227,7 +189,7 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
         """Metaclass attributes."""
         abstract = True
         ordering = ["device_type", "_name"]
-        unique_together = ["device_type", "name"]
+        unique_together = ["name", "device_type"]
 
     def __str__(self) -> str:
         """Default string representation for the FSU template."""
@@ -240,7 +202,7 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
         content_type = ContentType.objects.get_for_model(model)
         cf_fields = CustomField.objects.filter(content_types=content_type)
         for field in cf_fields:
-            custom_field_data[field.name] = field.default
+            custom_field_data[field.key] = field.default
 
         return model(  # pylint: disable=not-callable
             fsu_type=self.fsu_type,
@@ -258,10 +220,6 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
     def to_objectchange(self, action: str, **kwargs: Any) -> ObjectChange:
         """Return a new ObjectChange on updates."""
         return super().to_objectchange(action, related_object=self.device_type, **kwargs)
-
-    def get_absolute_url(self) -> str:
-        """Calculate the absolute URL of the FSUTemplate instance."""
-        return reverse(f"plugins:nautobot_fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
 
 
 class FSUTypeModel(PrimaryModel):
@@ -292,21 +250,11 @@ class FSUTypeModel(PrimaryModel):
         """Metaclass attributes."""
         abstract = True
         ordering = ["manufacturer", "_name", "part_number"]
-        unique_together = ["manufacturer", "part_number"]
+        unique_together = ["part_number", "manufacturer"]
 
     def __str__(self) -> str:
         """String representation of the FSU type."""
         return f"{self.name}"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,  # pylint: disable=no-member
-            self.name,
-            self.part_number,
-            self.description,
-            self.comments,
-        )
 
     @property
     def display(self) -> str:
@@ -318,50 +266,12 @@ class FSUTypeModel(PrimaryModel):
         """Calculate the number of child FSU instances."""
         return int(self.instances.all().count())
 
-    def get_absolute_url(self) -> str:
-        """Calculate the absolute URL for an FSU type."""
-        return reverse(f"plugins:nautobot_fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
-
 
 class PCIFSUModel(FSUModel):
     """Abstract base class for an FSU that occupies a PCI slot."""
 
     pci_slot_id = models.CharField(max_length=100, blank=True, verbose_name="PCI slot ID")
 
-    csv_headers = [
-        "device",
-        "location",
-        "name",
-        "fsu_type",
-        "serial_number",
-        "firmware_version",
-        "driver_version",
-        "driver_name",
-        "pci_slot_id",
-        "asset_tag",
-        "status",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
         abstract = True
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of model values suitable for CSV export."""
-        return (
-            self.device.identifier if self.device else "",  # pylint: disable=no-member
-            self.location.name if self.location else "",
-            self.name,
-            self.fsu_type.name,
-            self.serial_number,
-            self.firmware_version,
-            self.driver_version,
-            self.driver_name,
-            self.pci_slot_id,
-            self.asset_tag,
-            self.status,
-            self.description,
-            self.comments,
-        )

@@ -42,7 +42,7 @@ logger = logging.getLogger("rq.worker")
 
 def post_migrate_create_defaults(*args, **kwargs):  # pylint: disable=unused-argument
     """Callback function for post_migrate() -- create default Statuses."""
-    statuses = ["active", "available", "maintenance", "offline"]
+    statuses = ["Active", "Available", "Maintenance", "Offline"]
 
     fsu_models = [CPU, Disk, Fan, GPU, GPUBaseboard, HBA, Mainboard, NIC, OtherFSU, PSU, RAMModule]
 
@@ -53,7 +53,7 @@ def post_migrate_create_defaults(*args, **kwargs):  # pylint: disable=unused-arg
         for model in fsu_models:
             for status in statuses:
                 logger.debug("Adding %s to %s", model.__name__, status)
-                Status.objects.get(slug=status).content_types.add(
+                Status.objects.get(name=status).content_types.add(
                     ContentType.objects.get_for_model(model)
                 )
     except Status.DoesNotExist:

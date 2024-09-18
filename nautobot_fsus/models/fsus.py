@@ -57,44 +57,10 @@ class CPU(FSUModel):
         null=True,
     )
 
-    csv_headers = [
-        "device",
-        "location",
-        "name",
-        "fsu_type",
-        "serial_number",
-        "firmware_version",
-        "driver_version",
-        "driver_name",
-        "parent_mainboard",
-        "asset_tag",
-        "status",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
         verbose_name = "CPU"
         verbose_name_plural = "CPUs"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of model values suitable for CSV export."""
-        return (
-            self.device.identifier if self.device else "",  # pylint: disable=no-member
-            self.location.name if self.location else "",
-            self.name,
-            self.fsu_type.name,
-            self.serial_number,
-            self.firmware_version,
-            self.driver_version,
-            self.driver_name,
-            self.parent_mainboard.name if self.parent_mainboard else "",
-            self.asset_tag,
-            self.status,
-            self.description,
-            self.comments,
-        )
 
     def clean_fields(self, exclude=None) -> None:
         """Validate the parent Device against the parent Mainboard."""
@@ -148,44 +114,10 @@ class Disk(FSUModel):
         null=True,
     )
 
-    csv_headers = [
-        "device",
-        "location",
-        "name",
-        "fsu_type",
-        "serial_number",
-        "firmware_version",
-        "driver_version",
-        "driver_name",
-        "parent_hba",
-        "asset_tag",
-        "status",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
         verbose_name = "Disk"
         verbose_name_plural = "Disks"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of model values suitable for CSV data."""
-        return (
-            self.device.identifier if self.device else "",  # pylint: disable=no-member
-            self.location.name if self.location else "",
-            self.name,
-            self.fsu_type.name,
-            self.serial_number,
-            self.firmware_version,
-            self.driver_version,
-            self.driver_name,
-            self.parent_hba.name if self.parent_hba else "",
-            self.asset_tag,
-            self.status,
-            self.description,
-            self.comments,
-        )
 
     def clean_fields(self, exclude=None) -> None:
         """Validate the parent Device against the parent HBA."""
@@ -251,46 +183,10 @@ class GPU(PCIFSUModel):
         null=True,
     )
 
-    csv_headers = [
-        "device",
-        "location",
-        "name",
-        "fsu_type",
-        "serial_number",
-        "firmware_version",
-        "driver_version",
-        "driver_name",
-        "pci_slot_id",
-        "parent_gpubaseboard",
-        "asset_tag",
-        "status",
-        "description",
-        "comments",
-    ]
-
     class Meta(PCIFSUModel.Meta):
         """Metaclass attributes."""
         verbose_name = "GPU"
         verbose_name_plural = "GPUs"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of model values suitable for CSV export."""
-        return (
-            self.device.identifier if self.device else "",  # pylint: disable=no-member
-            self.location.name if self.location else "",
-            self.name,
-            self.fsu_type.name,
-            self.serial_number,
-            self.firmware_version,
-            self.driver_version,
-            self.driver_name,
-            self.pci_slot_id,
-            self.parent_gpubaseboard.name if self.parent_gpubaseboard else "",
-            self.asset_tag,
-            self.status,
-            self.description,
-            self.comments,
-        )
 
     def clean_fields(self, exclude=None) -> None:
         """Validate the parent Device against the parent GPU Baseboard."""
@@ -468,44 +364,10 @@ class PSU(FSUModel):
         blank=True,
     )
 
-    csv_headers = [
-        "device",
-        "location",
-        "name",
-        "fsu_type",
-        "serial_number",
-        "firmware_version",
-        "driver_version",
-        "driver_name",
-        "redundant",
-        "asset_tag",
-        "status",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
         verbose_name = "PSU"
         verbose_name_plural = "PSUs"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of model values suitable for CSV export."""
-        return (
-            self.device.identifier if self.device else "",  # pylint: disable=no-member
-            self.location.name if self.location else "",
-            self.name,
-            self.fsu_type.name,
-            self.serial_number,
-            self.firmware_version,
-            self.driver_version,
-            self.driver_name,
-            str(self.redundant),
-            self.asset_tag,
-            self.status,
-            self.description,
-            self.comments,
-        )
 
 
 @extras_features(
@@ -533,41 +395,7 @@ class RAMModule(FSUModel):
         verbose_name="RAM slot ID",
     )
 
-    csv_headers = [
-        "device",
-        "location",
-        "name",
-        "fsu_type",
-        "serial_number",
-        "firmware_version",
-        "driver_version",
-        "driver_name",
-        "slot_id",
-        "asset_tag",
-        "status",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
         verbose_name = "RAM Module"
         verbose_name_plural = "RAM Modules"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of model values suitable for CSV export."""
-        return (
-            self.device.identifier if self.device else "",  # pylint: disable=no-member
-            self.location.name if self.location else "",
-            self.name,
-            self.fsu_type.name,
-            self.serial_number,
-            self.firmware_version,
-            self.driver_version,
-            self.driver_name,
-            self.slot_id,
-            self.asset_tag,
-            self.status,
-            self.description,
-            self.comments,
-        )
