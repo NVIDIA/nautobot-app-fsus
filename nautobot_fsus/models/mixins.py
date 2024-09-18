@@ -15,11 +15,9 @@
 
 """Base classes for object models."""
 import logging
-from typing import Any, TypeAlias
+from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import ForeignKey
 from django.urls import reverse
@@ -36,35 +34,7 @@ from nautobot.extras.models import (
 from nautobot.extras.models.change_logging import ObjectChange
 from nautobot.utilities.fields import NaturalOrderingField
 
-from nautobot_fsus.models.fsus import (
-    CPU,
-    Disk,
-    Fan,
-    GPU,
-    GPUBaseboard,
-    HBA,
-    Mainboard,
-    NIC,
-    OtherFSU,
-    PSU,
-    RAMModule,
-)
-
 logger = logging.getLogger("nautobot.plugin.fsus")
-
-FSU: TypeAlias = (
-    CPU
-    | Disk
-    | Fan
-    | GPU
-    | GPUBaseboard
-    | HBA
-    | Mainboard
-    | NIC
-    | OtherFSU
-    | PSU
-    | RAMModule
-)
 
 
 class FSUModel(PrimaryModel, StatusModel):
@@ -205,15 +175,15 @@ class FSUModel(PrimaryModel, StatusModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            self.device.id,
-            self.location.id,
+            str(self.device.id),
+            str(self.location.id),
             self.name,
-            self.fsu_type.id,
+            str(self.fsu_type.id),
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
-            self.asset_tag,
+            getattr(self, "asset_tag", ""),
             self.status,
             self.description,
             self.comments,
@@ -255,7 +225,7 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
         """Default string representation for the FSU template."""
         return str(self.name)
 
-    def _instantiate_model(self, model: type[FSU], device: Device, **kwargs: Any) -> FSU:
+    def _instantiate_model(self, model: type[FSUModel], device: Device, **kwargs: Any) -> FSUModel:
         """Helper method for `self.instantiate()`."""
         # Handle any custom fields assigned to the model first.
         custom_field_data: dict[str, Any] = {}
@@ -273,7 +243,7 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
             **kwargs,
         )
 
-    def instantiate(self, device: Device) -> FSU:
+    def instantiate(self, device: Device) -> FSUModel:
         """Instantiate a new FSU on a Device."""
         raise NotImplementedError
 
@@ -319,7 +289,7 @@ class FSUTypeModel(PrimaryModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.id,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
             self.description,
@@ -364,17 +334,17 @@ class PCIFSUModel(FSUModel):
     def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of model values suitable for CSV export."""
         return (
-            self.device.id,
-            self.location.id,
+            str(self.device.id),
+            str(self.location.id),
             self.name,
-            self.fsu_type.id,
+            str(self.fsu_type.id),
             self.serial_number,
             self.firmware_version,
             self.driver_version,
             self.driver_name,
             self.pci_slot_id,
-            self.asset_tag,
-            self.status,
+            getattr(self, "asset_tag", ""),
+            self.status.slug,
             self.description,
             self.comments,
         )

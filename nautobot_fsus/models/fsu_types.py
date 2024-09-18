@@ -71,15 +71,15 @@ class CPUType(FSUTypeModel):
         verbose_name = "CPU Type"
         verbose_name_plural = "CPU Types"
 
-    def to_csv(self) -> tuple[str, str, str, str, float, int, str, str]:
+    def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.name,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
             self.architecture,
-            getattr(self, "cpu_speed", 0.0),
-            getattr(self, "cores", 0),
+            str(getattr(self, "cpu_speed", 0.0)),
+            str(getattr(self, "cores", 0)),
             self.description,
             self.comments,
         )
@@ -124,14 +124,14 @@ class DiskType(FSUTypeModel):
         verbose_name = "Disk Type"
         verbose_name_plural = "Disk Types"
 
-    def to_csv(self) -> tuple[str, str, str, str, int, str, str]:
+    def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.name,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
             self.disk_type,
-            getattr(self, "size", 0),
+            str(getattr(self, "size", 0)),
             self.description,
             self.comments,
         )
@@ -178,13 +178,13 @@ class GPUBaseboardType(FSUTypeModel):
         verbose_name = "GPU Baseboard Type"
         verbose_name_plural = "GPU Baseboard Types"
 
-    def to_csv(self) -> tuple[str, str, str, int, str, str]:
+    def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.name,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
-            getattr(self, "slot_count", 0),
+            str(getattr(self, "slot_count", 0)),
             self.description,
             self.comments,
         )
@@ -262,14 +262,14 @@ class MainboardType(FSUTypeModel):
         verbose_name = "Mainboard Type"
         verbose_name_plural = "Mainboard Types"
 
-    def to_csv(self) -> tuple[str, str, str, str, int, str, str]:
+    def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.name,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
             self.get_pcie_generation_display(),
-            getattr(self, "cpu_socket_count", 0),
+            str(getattr(self, "cpu_socket_count", 0)),
             self.description,
             self.comments,
         )
@@ -305,13 +305,13 @@ class NICType(FSUTypeModel):
         verbose_name = "NIC Type"
         verbose_name_plural = "NIC Types"
 
-    def to_csv(self) -> tuple[str, str, str, int, str, str]:
+    def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.name,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
-            getattr(self, "interface_count", 0),
+            str(getattr(self, "interface_count", 0)),
             self.description,
             self.comments,
         )
@@ -382,14 +382,14 @@ class PSUType(FSUTypeModel):
         verbose_name = "PSU Type"
         verbose_name_plural = "PSU Types"
 
-    def to_csv(self) -> tuple[str, str, str, str, int, str, str, str, str]:
+    def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.name,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
             self.get_feed_type_display(),
-            getattr(self, "power_provided", 0),
+            str(getattr(self, "power_provided", 0)),
             self.required_voltage,
             "True" if self.hot_swappable else "False",
             self.description,
@@ -458,17 +458,17 @@ class RAMModuleType(FSUTypeModel):
         verbose_name = "RAM Module Type"
         verbose_name_plural = "RAM Module Types"
 
-    def to_csv(self) -> tuple[str, str, str, str, str, int, int, int, str, str]:
+    def to_csv(self) -> tuple[str, ...]:
         """Return a tuple of values suitable for CSV export."""
         return (
-            self.manufacturer.name,
+            str(self.manufacturer.id),
             self.name,
             self.part_number,
             self.get_module_type_display(),
             self.get_technology_display(),
-            getattr(self, 'speed', 0),
-            getattr(self, 'capacity', 0),
-            self.quantity,
+            str(getattr(self, 'speed', 0)),
+            str(getattr(self, 'capacity', 0)),
+            str(self.quantity),
             self.description,
             self.comments,
         )
