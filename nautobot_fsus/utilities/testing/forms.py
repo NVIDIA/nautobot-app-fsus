@@ -16,13 +16,12 @@
 """Test cases for forms."""
 from typing import Type
 
+from nautobot.core.testing import TestCase
 from nautobot.dcim.models import Device, DeviceType, Manufacturer
 from nautobot.extras.models import Status
 from nautobot.extras.forms import NautobotBulkEditForm, NautobotFilterForm
-from nautobot.utilities.testing import TestCase
 
 from nautobot_fsus.forms.mixins import (
-    BaseFSUCSVForm,
     FSUModelBulkEditForm,
     FSUModelFilterForm,
     FSUModelForm,
@@ -44,7 +43,6 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
         form_model: Type[FSUModelForm]
         bulk_form_model: Type[FSUModelBulkEditForm]
         filter_form_model: Type[FSUModelFilterForm]
-        csv_form_model: Type[BaseFSUCSVForm]
 
         @classmethod
         def setUpTestData(cls):
@@ -78,6 +76,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
                 fsu_type=self.fsu_type,
                 device=Device.objects.first(),
                 name=f"{self.model._meta.model_name}_0",
+                status=Status.objects.get(name="Active"),
             )
 
             form = self.form_model(instance=fsu)

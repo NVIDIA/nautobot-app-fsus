@@ -28,7 +28,6 @@ class CPUTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.CPUForm
     bulk_form_model = forms.CPUBulkEditForm
     filter_form_model = forms.CPUFilterForm
-    csv_form_model = forms.CPUCSVForm
 
 
 class CPUTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -74,7 +73,6 @@ class DiskTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.DiskForm
     bulk_form_model = forms.DiskBulkEditForm
     filter_form_model = forms.DiskFilterForm
-    csv_form_model = forms.DiskCSVForm
 
 
 class DiskTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -118,7 +116,6 @@ class FanTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.FanForm
     bulk_form_model = forms.FanBulkEditForm
     filter_form_model = forms.FanFilterForm
-    csv_form_model = forms.FanCSVForm
 
 
 class FanTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -148,7 +145,6 @@ class GPUTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.GPUForm
     bulk_form_model = forms.GPUBulkEditForm
     filter_form_model = forms.GPUFilterForm
-    csv_form_model = forms.GPUCSVForm
 
 
 class GPUTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -178,7 +174,6 @@ class GPUBaseboardTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.GPUBaseboardForm
     bulk_form_model = forms.GPUBaseboardBulkEditForm
     filter_form_model = forms.GPUBaseboardFilterForm
-    csv_form_model = forms.GPUBaseboardCSVForm
 
 
 class GPUBaseboardTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -221,7 +216,6 @@ class HBATestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.HBAForm
     bulk_form_model = forms.HBABulkEditForm
     filter_form_model = forms.HBAFilterForm
-    csv_form_model = forms.HBACSVForm
 
 
 class HBATemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -251,7 +245,6 @@ class MainboardTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.MainboardForm
     bulk_form_model = forms.MainboardBulkEditForm
     filter_form_model = forms.MainboardFilterForm
-    csv_form_model = forms.MainboardCSVForm
 
 
 class MainboardTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -294,7 +287,6 @@ class NICTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.NICForm
     bulk_form_model = forms.NICBulkEditForm
     filter_form_model = forms.NICFilterForm
-    csv_form_model = forms.NICCSVForm
 
 
 class NICTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -337,7 +329,6 @@ class OtherFSUTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.OtherFSUForm
     bulk_form_model = forms.OtherFSUBulkEditForm
     filter_form_model = forms.OtherFSUFilterForm
-    csv_form_model = forms.OtherFSUCSVForm
 
 
 class OtherFSUTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -367,7 +358,6 @@ class PSUTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.PSUForm
     bulk_form_model = forms.PSUBulkEditForm
     filter_form_model = forms.PSUFilterForm
-    csv_form_model = forms.PSUCSVForm
 
 
 class PSUTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
@@ -397,7 +387,6 @@ class RAMModuleTestCase(FSUFormTestCases.FSUModelFormTestCase):
     form_model = forms.RAMModuleForm
     bulk_form_model = forms.RAMModuleBulkEditForm
     filter_form_model = forms.RAMModuleFilterForm
-    csv_form_model = forms.RAMModuleCSVForm
 
 
 class RAMModuleTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):

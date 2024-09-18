@@ -15,16 +15,14 @@
 
 """Form definitions for FSU template models."""
 from django import forms
-from nautobot.extras.forms import NautobotBulkEditForm
-from nautobot.utilities.forms.fields import (
-    CSVModelChoiceField,
+from nautobot.apps.forms import (
     DynamicModelChoiceField,
     ExpandableNameField,
+    NautobotBulkEditForm,
 )
 
 from nautobot_fsus import models
 from nautobot_fsus.forms.mixins import (
-    FSUTemplateCSVForm,
     FSUTemplateCreateForm,
     FSUTemplateModelForm,
     FSUTemplatePCIModelCreateForm,
@@ -49,23 +47,6 @@ class CPUTemplateBulkEditForm(NautobotBulkEditForm):
         """CPUTemplateBulkEditForm model options."""
 
         nullable_fields = ["description"]
-
-
-class CPUTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of CPUTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.CPUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="CPU type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """CPUTemplateCSVForm model options."""
-
-        model = models.CPUTemplate
 
 
 class CPUTemplateCreateForm(FSUTemplateCreateForm):
@@ -110,23 +91,6 @@ class DiskTemplateBulkEditForm(NautobotBulkEditForm):
         nullable_fields = ["description"]
 
 
-class DiskTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of DiskTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.DiskType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="Disk type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """DiskTemplateCSVForm model options."""
-
-        model = models.DiskTemplate
-
-
 class DiskTemplateCreateForm(FSUTemplateCreateForm):
     """Form for creating one or more DiskTemplate instances."""
 
@@ -167,23 +131,6 @@ class FanTemplateBulkEditForm(NautobotBulkEditForm):
         """FanTemplateBulkEditForm model options."""
 
         nullable_fields = ["description"]
-
-
-class FanTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of FanTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.FanType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="Fan type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """FanTemplateCSVForm model options."""
-
-        model = models.FanTemplate
 
 
 class FanTemplateCreateForm(FSUTemplateCreateForm):
@@ -228,24 +175,6 @@ class GPUTemplateBulkEditForm(NautobotBulkEditForm):
         nullable_fields = ["description"]
 
 
-class GPUTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of GPUTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.GPUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="GPU type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """GPUTemplateCSVForm model options."""
-
-        model = models.GPUTemplate
-        fields = ["fsu_type", "device_type", "name", "pci_slot_id", "description"]
-
-
 class GPUTemplateCreateForm(FSUTemplatePCIModelCreateForm):
     """Form for creating one or more GPUTemplate instances."""
 
@@ -287,23 +216,6 @@ class GPUBaseboardTemplateBulkEditForm(NautobotBulkEditForm):
         """GPUBaseboardTemplateBulkEditForm model options."""
 
         nullable_fields = ["description"]
-
-
-class GPUBaseboardTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of GPUBaseboardTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.GPUBaseboardType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="GPUBaseboard type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """GPUBaseboardTemplateCSVForm model options."""
-
-        model = models.GPUBaseboardTemplate
 
 
 class GPUBaseboardTemplateCreateForm(FSUTemplateCreateForm):
@@ -354,24 +266,6 @@ class HBATemplateBulkEditForm(NautobotBulkEditForm):
         nullable_fields = ["description"]
 
 
-class HBATemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of HBATemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.HBAType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="HBA type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """HBATemplateCSVForm model options."""
-
-        model = models.HBATemplate
-        fields = ["fsu_type", "device_type", "name", "pci_slot_id", "description"]
-
-
 class HBATemplateCreateForm(FSUTemplatePCIModelCreateForm):
     """Form for creating one or more HBATemplate instances."""
 
@@ -413,23 +307,6 @@ class MainboardTemplateBulkEditForm(NautobotBulkEditForm):
         """MainboardTemplateBulkEditForm model options."""
 
         nullable_fields = ["description"]
-
-
-class MainboardTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of MainboardTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.MainboardType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="Mainboard type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """MainboardTemplateCSVForm model options."""
-
-        model = models.MainboardTemplate
 
 
 class MainboardTemplateCreateForm(FSUTemplateCreateForm):
@@ -480,24 +357,6 @@ class NICTemplateBulkEditForm(NautobotBulkEditForm):
         nullable_fields = ["description"]
 
 
-class NICTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of NICTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.NICType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="NIC type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """NICTemplateCSVForm model options."""
-
-        model = models.NICTemplate
-        fields = ["fsu_type", "device_type", "name", "pci_slot_id", "description"]
-
-
 class NICTemplateCreateForm(FSUTemplatePCIModelCreateForm):
     """Form for creating one or more NICTemplate instances."""
 
@@ -539,23 +398,6 @@ class OtherFSUTemplateBulkEditForm(NautobotBulkEditForm):
         """OtherFSUTemplateBulkEditForm model options."""
 
         nullable_fields = ["description"]
-
-
-class OtherFSUTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of OtherFSUTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.OtherFSUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="OtherFSU type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """OtherFSUcTemplateCSVForm model options."""
-
-        model = models.OtherFSUTemplate
 
 
 class OtherFSUTemplateCreateForm(FSUTemplateCreateForm):
@@ -601,24 +443,6 @@ class PSUTemplateBulkEditForm(NautobotBulkEditForm):
         fields = ["fsu_type", "device_type", "name", "redundant", "description"]
 
 
-class PSUTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of PSUTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.PSUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="PSU type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """PSUTemplateCSVForm model options."""
-
-        model = models.PSUTemplate
-        fields = ["fsu_type", "device_type", "name", "redundant", "description"]
-
-
 class PSUTemplateCreateForm(FSUTemplateCreateForm):
     """Form for creating one or more PSUTemplate instances."""
 
@@ -661,23 +485,6 @@ class RAMModuleTemplateBulkEditForm(NautobotBulkEditForm):
         """RAMModuleTemplateBulkEditForm model options."""
 
         nullable_fields = ["description"]
-
-
-class RAMModuleTemplateCSVForm(FSUTemplateCSVForm):
-    """Form for CSV import of RAMModuleTemplate instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.RAMModuleType.objects.all(),
-        to_field_name="id",
-        required=True,
-        label="FSU Type",
-        help_text="RAMModule type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(FSUTemplateCSVForm.Meta):
-        """RAMModuleTemplateCSVForm model options."""
-
-        model = models.RAMModuleTemplate
 
 
 class RAMModuleTemplateCreateForm(FSUTemplateCreateForm):
