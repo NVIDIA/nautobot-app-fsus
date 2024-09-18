@@ -19,11 +19,15 @@ Models for Field Serviceable Units (FSUs).
 An FSU is a physical instance of its parent FSU type, and can be either installed in a Device,
 or available for use in a Location.
 """
+from copy import copy
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import ForeignKey, ManyToManyField
 from nautobot.extras.utils import extras_features
 
 from nautobot_fsus.models.mixins import FSUModel, PCIFSUModel
+from nautobot_fsus.utilities import validate_parent_device
 
 
 @extras_features(
@@ -92,6 +96,30 @@ class CPU(FSUModel):
             self.comments,
         )
 
+    def clean_fields(self, exclude=None) -> None:
+        """Validate the parent Device against the parent Mainboard."""
+        super().clean_fields(exclude=exclude)
+
+        parent_mainboard: Mainboard
+        if parent_mainboard := copy(self.parent_mainboard):
+            errors = {}
+
+            try:
+                validate_parent_device([self], parent_mainboard.device)
+            except ValidationError as error:
+                errors["parent_mainboard"] = error.error_list
+
+            if socket_count := parent_mainboard.fsu_type.cpu_socket_count:
+                cpu_count = parent_mainboard.cpus.count()
+                if self not in parent_mainboard.cpus.all() and cpu_count >= socket_count:
+                    errors.setdefault("parent_mainboard", [])
+                    errors["parent_mainboard"].extend(
+                        ValidationError("Mainboard has no available CPU sockets.").error_list
+                    )
+
+            if errors:
+                raise ValidationError(errors)
+
 
 @extras_features(
     "custom_fields",
@@ -158,6 +186,17 @@ class Disk(FSUModel):
             self.description,
             self.comments,
         )
+
+    def clean_fields(self, exclude=None) -> None:
+        """Validate the parent Device against the parent HBA."""
+        super().clean_fields(exclude=exclude)
+
+        parent_hba: HBA
+        if parent_hba := copy(self.parent_hba):
+            try:
+                validate_parent_device([self], parent_hba.device)
+            except ValidationError as error:
+                raise ValidationError({"parent_hba": error.error_list}) from error
 
 
 @extras_features(
@@ -252,6 +291,31 @@ class GPU(PCIFSUModel):
             self.description,
             self.comments,
         )
+
+    def clean_fields(self, exclude=None) -> None:
+        """Validate the parent Device against the parent GPU Baseboard."""
+        super().clean_fields(exclude=exclude)
+
+        # if self.parent_gpubaseboard is not None:
+        parent_gpubaseboard: GPUBaseboard
+        if parent_gpubaseboard := copy(self.parent_gpubaseboard):
+            errors = {}
+
+            try:
+                validate_parent_device([self], parent_gpubaseboard.device)
+            except ValidationError as error:
+                errors["parent_gpubaseboard"] = error.error_list
+
+            if slot_count := parent_gpubaseboard.fsu_type.slot_count:
+                gpu_count = parent_gpubaseboard.gpus.count()
+                if self not in parent_gpubaseboard.gpus.all() and gpu_count >= slot_count:
+                    errors.setdefault("parent_gpubaseboard", [])
+                    errors["parent_gpubaseboard"].extend(
+                        ValidationError("GPU Baseboard has no available slots.").error_list
+                    )
+
+            if errors:
+                raise ValidationError(errors)
 
 
 @extras_features(
@@ -351,6 +415,7 @@ class NIC(PCIFSUModel):
     interfaces: ManyToManyField = models.ManyToManyField(
         to="dcim.Interface",
         related_name="parent_nic",
+        limit_choices_to={"type__n": ["bridge", "lag", "virtual"]},
         blank=True,
     )
 

@@ -1066,6 +1066,7 @@ class Migration(migrations.Migration):
                     'interfaces',
                     models.ManyToManyField(
                         blank=True,
+                        limit_choices_to={'type__n': ['bridge', 'lag', 'virtual']},
                         related_name='parent_nic',
                         to='dcim.Interface',
                     ),

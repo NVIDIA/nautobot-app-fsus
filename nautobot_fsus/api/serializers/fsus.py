@@ -17,6 +17,8 @@
 from copy import copy
 from typing import Any
 
+from django.core.exceptions import ValidationError
+from django.db import transaction
 from nautobot.dcim.models import Interface, PowerPort
 from rest_framework import serializers
 from rest_framework.relations import HyperlinkedIdentityField
@@ -51,6 +53,7 @@ from nautobot_fsus.models import (
     PSU,
     RAMModule,
 )
+from nautobot_fsus.utilities import validate_parent_device
 
 
 class CPUSerializer(FSUModelSerializer):
@@ -81,45 +84,6 @@ class CPUSerializer(FSUModelSerializer):
             "description",
         ]
 
-    def validate_sockets(self, mainboard: Mainboard):
-        """Validate that the parent Mainboard has available sockets."""
-        if mainboard.fsu_type.cpu_socket_count and mainboard.fsu_type.cpu_socket_count > 0:
-            if mainboard.cpus.count() >= mainboard.fsu_type.cpu_socket_count:
-                raise serializers.ValidationError(
-                    {
-                        "parent_mainboard": "Mainboard has no available CPU sockets."
-                    }
-                )
-
-    def create(self, validated_data: Any) -> CPU:
-        """Create a new CPU instance with parent Mainboard validation."""
-        instance = CPU(**validated_data)
-        if instance.parent_mainboard is not None:
-            self.validate_parent_device(
-                [instance],
-                instance.parent_mainboard.device,  # pylint: disable=no-member
-                "parent_mainboard",
-            )
-
-            self.validate_sockets(instance.parent_mainboard)
-
-        instance.validated_save()
-        return instance
-
-    def update(self, instance: CPU, validated_data: Any) -> CPU:
-        """Update an existing CPU instance with parent Mainboard validation."""
-        # For update operations we need to know if the parent_mainboard field is present in the
-        # PUT/PATCH data, if it is explicitly set to null it triggers clearing the value
-        mainboard = validated_data.get("parent_mainboard", False)
-        if mainboard and mainboard is not None:
-            if instance.parent_mainboard != mainboard:
-                # Mainboard is changing, validate parent Device and available sockets
-                self.validate_parent_device([instance], mainboard.device, "parent_mainboard")
-                self.validate_sockets(mainboard)
-
-        validated_instance: CPU = super().update(instance, validated_data)
-        return validated_instance
-
 
 class DiskSerializer(FSUModelSerializer):
     """API serializer for Disk model."""
@@ -148,32 +112,6 @@ class DiskSerializer(FSUModelSerializer):
             "status",
             "description",
         ]
-
-    def create(self, validated_data: Any) -> Disk:
-        """Create a new Disk instance with parent HBA validation."""
-        instance = Disk(**validated_data)
-        if instance.parent_hba is not None:
-            self.validate_parent_device(
-                [instance],
-                instance.parent_hba.device,  # pylint: disable=no-member
-                "parent_hba",
-            )
-
-        instance.validated_save()
-        return instance
-
-    def update(self, instance: Disk, validated_data: Any) -> Disk:
-        """Update an existing Disk instance with parent HBA validation."""
-        # For update operations we need to know if the parent_mainboard field is present in the
-        # PUT/PATCH data, if it is explicitly set to null it triggers clearing the value
-        hba = validated_data.get("parent_hba", False)
-        if hba and hba is not None:
-            if instance.parent_hba != hba:
-                # HBA is changing, validate parent Device
-                self.validate_parent_device([instance], hba.device, "parent_hba")
-
-        validated_instance: Disk = super().update(instance, validated_data)
-        return validated_instance
 
 
 class FanSerializer(FSUModelSerializer):
@@ -239,38 +177,40 @@ class GPUBaseboardSerializer(FSUModelSerializer):
         # gpus is optional in the POST data, set it to an empty list if it's not present.
         gpus = validated_data.pop("gpus", [])
 
-        if gpus:
-            # Validate parent device
-            self.validate_parent_device(gpus, validated_data.get("device", None), "gpus")
+        try:
+            with transaction.atomic():
+                if gpus:
+                    # Validate parent device
+                    validate_parent_device(gpus, validated_data.get("device", None))
 
-            # Validate available slots
-            baseboard_type = validated_data["fsu_type"]
-            if baseboard_type.slot_count is not None and len(gpus) > baseboard_type.slot_count:
-                raise serializers.ValidationError(
-                    {
-                        "gpus": f"Number of GPUs being added to Baseboard ({len(gpus)}) is "
-                                f"greater than the number of available slots "
-                                f"({baseboard_type.slot_count})"
-                    }
-                )
+                    # Validate available slots
+                    baseboard_type = validated_data["fsu_type"]
+                    if (baseboard_type.slot_count is not None
+                            and len(gpus) > baseboard_type.slot_count):
+                        raise ValidationError(
+                            f"Number of GPUs being added to Baseboard ({len(gpus)}) is "
+                            f"greater than the number of available slots "
+                            f"({baseboard_type.slot_count})"
+                        )
 
-            # Child GPUs must not have a parent GPU Baseboard assigned
-            for gpu in gpus:
-                if gpu.parent_gpubaseboard is not None:
-                    raise serializers.ValidationError(
-                        {
-                            "gpus": f"GPU {gpu.name} is already assigned "
-                                    f"to {gpu.parent_gpubaseboard.name}"
-                        }
-                    )
+                    # Child GPUs must not have a parent GPU Baseboard assigned
+                    for gpu in gpus:
+                        if gpu.parent_gpubaseboard is not None:
+                            raise ValidationError(
+                                f"GPU {gpu.name} is already assigned to "
+                                f"{gpu.parent_gpubaseboard.name}"
+                            )
 
-        # Create the GPUBaseboard instance
-        instance = GPUBaseboard.objects.create(**validated_data)
+                # Create the GPUBaseboard instance
+                instance = GPUBaseboard.objects.create(**validated_data)
 
-        # Set parent_gpubaseboard for any specified child GPU instances
-        for gpu in gpus:
-            gpu.parent_gpubaseboard = instance
-            gpu.validated_save()
+                # Set parent_gpubaseboard for any specified child GPU instances
+                for gpu in gpus:
+                    gpu.parent_gpubaseboard = instance
+                    gpu.validated_save()
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"gpus": error.messages[0]})
 
         return instance
 
@@ -297,61 +237,61 @@ class GPUBaseboardSerializer(FSUModelSerializer):
         location = validated_data.get("location", None)
         parent_device = None if location else validated_data.get("device", instance.device)
 
-        if gpus is not None:
-            # An empty list means we're clearing the child GPUs for this GPUBasebaord
-            if len(gpus) == 0:
-                for gpu in instance.gpus.all():
-                    gpu.parent_gpubaseboard = None
-                    gpu.validated_save()
+        try:
+            with transaction.atomic():
+                # An empty list means we're clearing the child GPUs for this GPUBasebaord
+                # Moving a GPUBaseboard to a location means we need to clear any child GPUs
+                if (gpus is not None and len(gpus) == 0) or location is not None:
+                    for gpu in instance.gpus.all():
+                        gpu.parent_gpubaseboard = None
+                        gpu.validated_save()
 
-            # Validate and update the child GPUs to the new list
-            else:
-                # Validate the parent device
-                self.validate_parent_device(gpus, parent_device, "gpus")
-
-                # Validate available slots
-                baseboard_type = instance.fsu_type
-                if (baseboard_type.slot_count is not None
-                        and len(gpus) > int(baseboard_type.slot_count)):
-                    raise serializers.ValidationError(
-                        {
-                            "gpus": f"Number of GPUs being added to Baseboard ({len(gpus)}) is "
-                                    f"greater than the number of available slots "
-                                    f"({baseboard_type.slot_count})"
-                        }
-                    )
-
-                # Track the currently set child GPUs to update properly if the list has changed
-                current_gpus = set(list(instance.gpus.all()))
-                new_gpus = set()
-                for gpu in gpus:
-                    # New child GPUs must not have a parent GPUBaseboard assigned
-                    if gpu not in current_gpus and gpu.parent_gpubaseboard is not None:
-                        raise serializers.ValidationError(
-                            {
-                                "gpus": f"GPU {gpu.name} is already assigned "
-                                        f"to {gpu.parent_gpubaseboard.name}"
-                            }
+                elif gpus:
+                    if location is not None:
+                        raise ValidationError(
+                            "Child GPUs cannot be set on a GPU Baseboard in storage."
                         )
-                    new_gpus.add(gpu)
 
-                # Set parent_gpubaseboard for newly added child GPUs
-                for new_gpu in new_gpus.difference(current_gpus):
-                    new_gpu.parent_gpubaseboard = instance
-                    new_gpu.validated_save()
+                    # Validate the parent device
+                    validate_parent_device(gpus, parent_device)
 
-                # Remove any currently assigned child GPUs that are not in the updated list
-                for gpu in current_gpus.difference(new_gpus):
-                    gpu.parent_gpubaseboard = None
-                    gpu.validated_save()
+                    # Validate available slots
+                    baseboard_type = instance.fsu_type
+                    if (baseboard_type.slot_count is not None
+                            and len(gpus) > baseboard_type.slot_count):
+                        raise ValidationError(
+                            f"Number of GPUs being added to Baseboard ({len(gpus)}) is greater "
+                            f"than the number of available slots ({baseboard_type.slot_count})"
+                        )
 
-        # Moving a GPUBaseboard to a location means we need to clear any child GPUs
-        elif location is not None:
-            for gpu in instance.gpus.all():
-                gpu.parent_gpubaseboard = None
-                gpu.validated_save()
+                    # Track the currently set child GPUs to update properly
+                    # if the list has changed
+                    current_gpus = set(list(instance.gpus.all()))
+                    new_gpus = set()
+                    for gpu in gpus:
+                        # New child GPUs must not have a parent GPUBaseboard assigned
+                        if gpu not in current_gpus and gpu.parent_gpubaseboard is not None:
+                            raise ValidationError(
+                                f"GPU {gpu.name} is already assigned to "
+                                f"{gpu.parent_gpubaseboard.name}"
+                            )
+                        new_gpus.add(gpu)
 
-        validated_instance: GPUBaseboard = super().update(instance, validated_data)
+                    # Set parent_gpubaseboard for newly added child GPUs
+                    for new_gpu in new_gpus.difference(current_gpus):
+                        new_gpu.parent_gpubaseboard = instance
+                        new_gpu.validated_save()
+
+                    # Remove any currently assigned child GPUs that are not in the updated list
+                    for gpu in current_gpus.difference(new_gpus):
+                        gpu.parent_gpubaseboard = None
+                        gpu.validated_save()
+
+                validated_instance: GPUBaseboard = super().update(instance, validated_data)
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"gpus": error.messages[0]})
+
         return validated_instance
 
 
@@ -382,45 +322,6 @@ class GPUSerializer(FSUModelSerializer):
             "status",
             "description",
         ]
-
-    def validate_slots(self, baseboard: GPUBaseboard):
-        """Validate that the parent GPUBaseboard has available slots."""
-        if baseboard.fsu_type.slot_count and int(baseboard.fsu_type.slot_count) > 0:
-            if baseboard.gpus.count() >= baseboard.fsu_type.slot_count:
-                raise serializers.ValidationError(
-                    {
-                        "parent_gpubaseboard": "GPU Baseboard has no available GPU slots"
-                    }
-                )
-
-    def create(self, validated_data: Any) -> GPU:
-        """Create a new GPU instance with parent GPUBaseboard validation."""
-        instance = GPU(**validated_data)
-        if instance.parent_gpubaseboard is not None:
-            self.validate_parent_device(
-                [instance],
-                instance.parent_gpubaseboard.device,  # pylint: disable=no-member
-                "parent_gpubaseboard",
-            )
-
-            self.validate_slots(instance.parent_gpubaseboard)
-
-        instance.validated_save()
-        return instance
-
-    def update(self, instance: GPU, validated_data: Any) -> GPU:
-        """Update an existing GPU instance with parent GPUBaseboard validation."""
-        # For update operations we need to know if the parent_gpubaseboard field is present in the
-        # PUT/PATCH data, if it is explicitly set to null it triggers clearing the value
-        baseboard = validated_data.get("parent_gpubaseboard", False)
-        if baseboard and baseboard is not None:
-            if instance.parent_gpubaseboard != baseboard:
-                # GPUBaseboard is changing, validate parent Device and available slots
-                self.validate_parent_device([instance], baseboard.device, "parent_gpubaseboard")
-                self.validate_slots(baseboard)
-
-        validated_instance: GPU = super().update(instance, validated_data)
-        return validated_instance
 
 
 class HBASerializer(FSUModelSerializer):
@@ -474,27 +375,29 @@ class HBASerializer(FSUModelSerializer):
         # disks is optional in the POST data, set it to an empty list if it's not present
         disks = validated_data.pop("disks", [])
 
-        if disks:
-            # Validate parent device
-            self.validate_parent_device(disks, validated_data.get("device", None), "disks")
+        try:
+            with transaction.atomic():
+                if disks:
+                    # Validate parent device
+                    validate_parent_device(disks, validated_data.get("device", None))
 
-            # Child disks must not have a parent HBA assigned
-            for disk in disks:
-                if disk.parent_hba is not None:
-                    raise serializers.ValidationError(
-                        {
-                            "disks": f"Disk {disk.name} is already assigned "
-                                     f"to {disk.parent_hba.name}"
-                        }
-                    )
+                    # Child disks must not have a parent HBA assigned
+                    for disk in disks:
+                        if disk.parent_hba is not None:
+                            raise ValidationError(
+                                f"Disk {disk.name} is already assigned to {disk.parent_hba.name}"
+                            )
 
-        # Create the HBA instance
-        instance = HBA.objects.create(**validated_data)
+                # Create the HBA instance
+                instance = HBA.objects.create(**validated_data)
 
-        # Set the parent_hba for any specified child Disk instances
-        for disk in disks:
-            disk.parent_hba = instance
-            disk.validated_save()
+                # Set the parent_hba for any specified child Disk instances
+                for disk in disks:
+                    disk.parent_hba = instance
+                    disk.validated_save()
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"disks": error.messages[0]})
 
         return instance
 
@@ -521,52 +424,50 @@ class HBASerializer(FSUModelSerializer):
         location = validated_data.get("location", None)
         parent_device = None if location else validated_data.get("device", instance.device)
 
-        if disks is not None:
-            # An empty list means we're clearing the child Disks for this HBA
-            if len(disks) == 0:
-                for disk in instance.disks.all():
-                    disk.parent_hba = None
-                    disk.validated_save()
+        try:
+            with transaction.atomic():
+                # An empty list means we're clearing the child Disks for this HBA
+                # Moving an HBA to a location means we need to clear any child Disks
+                if (disks is not None and len(disks) == 0) or location is not None:
+                    for disk in instance.disks.all():
+                        disk.parent_hba = None
+                        disk.validated_save()
 
-            # Validate and update the child Disks to the new list
-            else:
-                # Validate the parent device
-                self.validate_parent_device(disks, parent_device, "disks")
-
-                # Track the currently set child Disks to update properly if the list has changed
-                current_disks = list(instance.disks.all())
-                new_disks = []
-                for disk in disks:
-                    if disk in current_disks:
-                        current_disks.remove(disk)
-                    # New child Disks must not have a parent HBA assigned
-                    elif disk.parent_hba is not None:
-                        raise serializers.ValidationError(
-                            {
-                                "disks": f"Disk {disk.name} is already assigned "
-                                         f"to {disk.parent_hba.name}"
-                            }
+                elif disks:
+                    if location is not None:
+                        raise ValidationError(
+                            "Child Disks cannot be set on an HBA in storage."
                         )
-                    else:
-                        new_disks.append(disk)
 
-                # Set parent_hba for newly added child Disks
-                for new_disk in new_disks:
-                    new_disk.parent_hba = instance
-                    new_disk.validated_save()
+                    # Validate the parent device
+                    validate_parent_device(disks, parent_device)
 
-                # Remove any currently assigned child Disks that are not in the updated list
-                for disk in current_disks:
-                    disk.parent_hba = None
-                    disk.validated_save()
+                    # Track the currently set child Disks to update properly if the list has changed
+                    current_disks = set(list(instance.disks.all()))
+                    new_disks = set()
+                    for disk in disks:
+                        # New child Disks must not have a parent HBA assigned
+                        if disk not in current_disks and disk.parent_hba is not None:
+                            raise ValidationError(
+                                f"Disk {disk.name} is already assigned to {disk.parent_hba.name}"
+                            )
+                        new_disks.add(disk)
 
-        # Moving an HBA to a location means we need to clear any child Disks
-        elif location is not None:
-            for disk in instance.disks.all():
-                disk.parent_hba = None
-                disk.validated_save()
+                    # Set parent_hba for newly added child Disks
+                    for new_disk in new_disks.difference(current_disks):
+                        new_disk.parent_hba = instance
+                        new_disk.validated_save()
 
-        validated_instance: HBA = super().update(instance, validated_data)
+                    # Remove any currently assigned child Disks that are not in the updated list
+                    for disk in current_disks.difference(new_disks):
+                        disk.parent_hba = None
+                        disk.validated_save()
+
+                validated_instance: HBA = super().update(instance, validated_data)
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"disks": error.messages[0]})
+
         return validated_instance
 
 
@@ -621,39 +522,40 @@ class MainboardSerializer(FSUModelSerializer):
         # cpus is optional in the POST data, set it to an empty list if it's not present.
         cpus = validated_data.pop("cpus", [])
 
-        if cpus:
-            # Validate parent device
-            self.validate_parent_device(cpus, validated_data.get("device", None), "cpus")
+        try:
+            with transaction.atomic():
+                if cpus:
+                    # Validate parent device
+                    validate_parent_device(cpus, validated_data.get("device", None))
 
-            # Validate available sockets
-            mainboard_type = validated_data["fsu_type"]
-            if (mainboard_type.cpu_socket_count is not None
-                    and len(cpus) > mainboard_type.cpu_socket_count):
-                raise serializers.ValidationError(
-                    {
-                        "cpus": f"Number of CPUs being added to Mainboard ({len(cpus)}) is "
-                                f"greater than the number of available sockets "
-                                f"({mainboard_type.cpu_socket_count})"
-                    }
-                )
+                    # Validate available sockets
+                    mainboard_type = validated_data["fsu_type"]
+                    if (mainboard_type.cpu_socket_count is not None
+                            and len(cpus) > mainboard_type.cpu_socket_count):
+                        raise ValidationError(
+                            f"Number of CPUs being added to Mainboard ({len(cpus)}) is "
+                            f"greater than the number of available sockets "
+                            f"({mainboard_type.cpu_socket_count})"
+                        )
 
-            # Child CPUs must not have a parent Mainboard assigned
-            for cpu in cpus:
-                if cpu.parent_mainboard is not None:
-                    raise serializers.ValidationError(
-                        {
-                            "cpus": f"CPU {cpu.name} is already assigned "
-                                    f"to {cpu.parent_mainboard.name}"
-                        }
-                    )
+                    # Child CPUs must not have a parent Mainboard assigned
+                    for cpu in cpus:
+                        if cpu.parent_mainboard is not None:
+                            raise ValidationError(
+                                f"CPU {cpu.name} is already assigned "
+                                f"to {cpu.parent_mainboard.name}"
+                            )
 
-        # Create the Mainboard instance
-        instance = Mainboard.objects.create(**validated_data)
+                # Create the Mainboard instance
+                instance = Mainboard.objects.create(**validated_data)
 
-        # Set parent_mainboard for any specified child CPU instance
-        for cpu in cpus:
-            cpu.parent_mainboard = instance
-            cpu.validated_save()
+                # Set parent_mainboard for any specified child CPU instance
+                for cpu in cpus:
+                    cpu.parent_mainboard = instance
+                    cpu.validated_save()
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"cpus": error.messages[0]})
 
         return instance
 
@@ -680,62 +582,61 @@ class MainboardSerializer(FSUModelSerializer):
         location = validated_data.get("location", None)
         parent_device = None if location else validated_data.get("device", instance.device)
 
-        if cpus is not None:
-            # An empty list means we're clearing the child CPUs for this Mainboard
-            if len(cpus) == 0:
-                for cpu in instance.cpus.all():
-                    cpu.parent_mainboard = None
-                    cpu.validated_save()
+        try:
+            with transaction.atomic():
+                # An empty list means we're clearing the child CPUs for this Mainboard
+                # Moving a Mainboard to a location means we need to clear any child CPUs
+                if (cpus is not None and len(cpus) == 0) or location is not None:
+                    for cpu in instance.cpus.all():
+                        cpu.parent_mainboard = None
+                        cpu.validated_save()
 
-            # Validate and update the child CPUs to the new list
-            else:
-                # Validate the parent device
-                self.validate_parent_device(cpus, parent_device, "cpus")
-
-                # Validate available sockets
-                mainboard_type = instance.fsu_type
-                if (mainboard_type.cpu_socket_count is not None
-                        and len(cpus) > mainboard_type.cpu_socket_count):
-                    raise serializers.ValidationError(
-                        {
-                            "cpus": f"Number of CPUs being added to Mainboard ({len(cpus)}) is "
-                                    f"greater than the number of available sockets "
-                                    f"({mainboard_type.cpu_socket_count})"
-                        }
-                    )
-
-                # Track the currently set child CPUs to update properly if the list has changed
-                current_cpus = set(list(instance.cpus.all()))
-                new_cpus = set()
-                for cpu in cpus:
-                    # New child CPU must not have a parent Mainboard assigned
-                    if cpu not in current_cpus and cpu.parent_mainboard is not None:
-                        raise serializers.ValidationError(
-                            {
-                                "cpus": f"CPU {cpu.name} is already assigned "
-                                        f"to {cpu.parent_mainboard.name}"
-                            }
+                elif cpus:
+                    if location is not None:
+                        raise ValidationError(
+                            "Child CPUs cannot be set on a Mainboard in storage."
                         )
 
-                    new_cpus.add(cpu)
+                    # Validate the parent device
+                    validate_parent_device(cpus, parent_device)
 
-                # Set parent_mainboard for newly added child CPUs
-                for new_cpu in new_cpus.difference(current_cpus):
-                    new_cpu.parent_mainboard = instance
-                    new_cpu.validated_save()
+                    # Validate available sockets
+                    mainboard_type = instance.fsu_type
+                    if (mainboard_type.cpu_socket_count is not None
+                            and len(cpus) > mainboard_type.cpu_socket_count):
+                        raise ValidationError(
+                            f"Number of CPUs being added to Mainboard ({len(cpus)}) is "
+                            f"greater than the number of available sockets "
+                            f"({mainboard_type.cpu_socket_count})"
+                        )
 
-                # Remove any currently assigned child CPUs that are not in the updated list
-                for cpu in current_cpus.difference(new_cpus):
-                    cpu.parent_mainboard = None
-                    cpu.validated_save()
+                    # Track the currently set child CPUs to update properly if the list has changed
+                    current_cpus = set(list(instance.cpus.all()))
+                    new_cpus = set()
+                    for cpu in cpus:
+                        # New child CPU must not have a parent Mainboard assigned
+                        if cpu not in current_cpus and cpu.parent_mainboard is not None:
+                            raise ValidationError(
+                                f"CPU {cpu.name} is already assigned "
+                                f"to {cpu.parent_mainboard.name}"
+                            )
+                        new_cpus.add(cpu)
 
-        # Moving a Mainboard to a location means we need to clear any child CPUs
-        elif location is not None:
-            for cpu in instance.cpus.all():
-                cpu.parent_mainboard = None
-                cpu.validated_save()
+                    # Set parent_mainboard for newly added child CPUs
+                    for new_cpu in new_cpus.difference(current_cpus):
+                        new_cpu.parent_mainboard = instance
+                        new_cpu.validated_save()
 
-        validated_instance: Mainboard = super().update(instance, validated_data)
+                    # Remove any currently assigned child CPUs that are not in the updated list
+                    for cpu in current_cpus.difference(new_cpus):
+                        cpu.parent_mainboard = None
+                        cpu.validated_save()
+
+                validated_instance: Mainboard = super().update(instance, validated_data)
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"cpus": error.messages[0]})
+
         return validated_instance
 
 
@@ -771,6 +672,115 @@ class NICSerializer(FSUModelSerializer):
             "interfaces",
             "description",
         ]
+
+    def create(self, validated_data: Any) -> NIC:
+        """Create a new NIC instance with child Interface validation."""
+        # interfaces field is optional in the POST data, set it to an empty list if it's not present
+        interfaces = validated_data.pop("interfaces", [])
+
+        try:
+            with transaction.atomic():
+                if interfaces:
+                    # Validate the parent device
+                    validate_parent_device(interfaces, validated_data.get("device", None))
+
+                    # Validate available connections
+                    nic_type = validated_data["fsu_type"]
+                    if (nic_type.interface_count is not None
+                            and len(interfaces) > nic_type.interface_count):
+                        raise ValidationError(
+                            f"Number of Interfaces being added to NIC ({len(interfaces)}) is "
+                            f"greater than the number of available connections "
+                            f"({nic_type.interface_count})"
+                        )
+
+                    # Child Interfaces must not have a parent NIC assigned
+                    for interface in interfaces:
+                        if interface.parent_nic.first() is not None:
+                            raise ValidationError(
+                                f"interface {interface.name} is already assigned to "
+                                f"{interface.parent_nic.first().name}"
+                            )
+
+                # Create the NIC instance
+                instance = NIC.objects.create(**validated_data)
+
+                # Add the child interfaces
+                instance.interfaces.set(interfaces)
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"interfaces": error.messages[0]})
+
+        return instance
+
+    def update(self, instance: NIC, validated_data: Any) -> NIC:
+        """
+        Update an existing NIC instance.
+
+        PUT requests must have all required field, PATCH requests need only the changed fields.
+        When updating a NIC instance, child Interface update logic is:
+        - interfaces not set or null, device and storage location not updated -> no changes
+        - interfaces set and device is not set or instance device is None -> ValidationError
+        - interfaces is an empty list -> clear parent_nic on any existing child Interfaces
+        - interfaces is set, device is set or instance.device is not None and any interfaces.device
+            is not the same as the device value or the instance.device -> ValidationError
+        - interfaces is set, device is set or instance.device is not None -> set parent_nic to
+            instance for Interfaces in the list, clear parent_nic for any that are currently set
+            to the instance but are not in the list
+        - interfaces not set or null and storage location set -> clear any existing child Interfaces
+        """
+        # For update operations we need to know if the interfaces field is present in the
+        # PUT/PATCH data, as an empty list triggers clearing parent_nic for current child Interfaces
+        interfaces = validated_data.pop("interfaces", None)
+
+        location = validated_data.get("location", None)
+        parent_device = None if location else validated_data.get("device", instance.device)
+
+        try:
+            with transaction.atomic():
+                # An empty list means we're clearing the child Interfaces for this NIC
+                # Moving a NIC to a location means we need to clear any child Interfaces
+                if (interfaces is not None and len(interfaces) == 0) or location is not None:
+                    instance.interfaces.clear()
+
+                elif interfaces:
+                    if location is not None:
+                        raise ValidationError(
+                            "Child Interfaces cannot be set on a NIC in storage."
+                        )
+
+                    # Validate the parent device
+                    validate_parent_device(interfaces, parent_device)
+
+                    # Validate available slots
+                    nic_type = instance.fsu_type
+                    if (nic_type.interface_count is not None
+                            and len(interfaces) > nic_type.interface_count):
+                        raise ValidationError(
+                            f"Number of Interfaces being added to NIC ({len(interfaces)}) is "
+                            f"greater than the number of available connections "
+                            f"({nic_type.interface_count})"
+                        )
+
+                    # New child Interface must not have a parent NIC assigned
+                    current_interfaces = set(list(instance.interfaces.all()))
+                    for interface in interfaces:
+                        if (interface not in current_interfaces
+                                and interface.parent_nic.first() is not None):
+                            raise ValidationError(
+                                f"interface {interface.name} is already assigned to "
+                                f"{interface.parent_nic.first().name}"
+                            )
+
+                    # Set the new interface list on the NIC
+                    instance.interfaces.set(interfaces)
+
+                validated_instance: NIC = super().update(instance, validated_data)
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"interfaces": error.messages[0]})
+
+        return validated_instance
 
 
 class OtherFSUSerializer(FSUModelSerializer):
@@ -817,6 +827,95 @@ class PSUSerializer(FSUModelSerializer):
             "power_ports",
             "description",
         ]
+
+    def create(self, validated_data: Any) -> PSU:
+        """Create a new PSU instance with child PowerPort validation."""
+        # power_ports field is optional in the POST data, set it to an empty list if it's not present
+        power_ports = validated_data.pop("power_ports", [])
+
+        try:
+            with transaction.atomic():
+                if power_ports:
+                    # Validate the parent device
+                    validate_parent_device(power_ports, validated_data.get("device", None))
+
+                    # Child PowerPorts must not have a parent PSU assigned
+                    for power_port in power_ports:
+                        if power_port.parent_psu.first() is not None:
+                            raise ValidationError(
+                                f"power port {power_port.name} is already assigned to "
+                                f"{power_port.parent_psu.first().name}"
+                            )
+
+                # Create the PSU instance
+                instance = PSU.objects.create(**validated_data)
+
+                # Add the child interfaces
+                instance.power_ports.set(power_ports)
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"power_ports": error.messages[0]})
+
+        return instance
+
+    def update(self, instance: PSU, validated_data: Any) -> PSU:
+        """
+        Update an existing PSU instance.
+
+        PUT requests must have all required field, PATCH requests need only the changed fields.
+        When updating a PSU instance, child PowerPort update logic is:
+        - power_ports not set or null, device and storage location not updated -> no changes
+        - power_ports set and device is not set or instance device is None -> ValidationError
+        - power_ports is an empty list -> clear power_ports on the instance
+        - power_ports is set, device is set or instance.device is not None and any
+            power_ports.device is not the same as the device value or the
+            instance.device -> ValidationError
+        - power_ports is set, device is set or instance.device is not None -> set power_ports
+            on the instance to the new list.
+        - power_ports not set or null and storage location set -> clear any existing child PowerPorts
+        """
+        # For update operations we need to know if the power_ports field is present in the
+        # PUT/PATCH data, as an empty list triggers clearing parent_psu for current child PowerPorts
+        power_ports = validated_data.pop("power_ports", None)
+
+        location = validated_data.get("location", None)
+        parent_device = None if location else validated_data.get("device", instance.device)
+
+        try:
+            with transaction.atomic():
+                # An empty list means we're clearing the child PowerPorts for this PSU
+                # Moving a PSU to a location means we need to clear any child PowerPorts
+                if (power_ports is not None and len(power_ports) == 0) or location is not None:
+                    instance.power_ports.clear()
+
+                elif power_ports:
+                    if location is not None:
+                        raise ValidationError(
+                            "Child Power Ports cannot be set on a PSU in storage."
+                        )
+
+                    # Validate the parent device
+                    validate_parent_device(power_ports, parent_device)
+
+                    # New child PowerPorts must not have a parent PSU assigned
+                    current_power_ports = set(list(instance.power_ports.all()))
+                    for power_port in power_ports:
+                        if (power_port not in current_power_ports
+                                and power_port.parent_psu.first() is not None):
+                            raise ValidationError(
+                                f"Power Port {power_port.name} is already assigned to "
+                                f"{power_port.parent_psu.first().name}"
+                            )
+
+                    # Set the new interface list on the NIC
+                    instance.power_ports.set(power_ports)
+
+                validated_instance: PSU = super().update(instance, validated_data)
+
+        except ValidationError as error:
+            raise serializers.ValidationError({"power_ports": error.messages[0]})
+
+        return validated_instance
 
 
 class RAMModuleSerializer(FSUModelSerializer):

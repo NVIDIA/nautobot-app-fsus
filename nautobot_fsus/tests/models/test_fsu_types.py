@@ -14,154 +14,82 @@
 #  limitations under the License.
 
 """Tests for FSU Type models defined by the Nautobot FSUS app."""
-from django.core.exceptions import ValidationError
-from django.test import TestCase
-from nautobot.dcim.models import Manufacturer
-
 from nautobot_fsus import models
+from nautobot_fsus.utilities.testing import NautobotFSUModelTestCases
 
 
-class FSUTypeTestCase(TestCase):
-    """Test case for FSU type models."""
+class CPUTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the CPUType model."""
 
-    def test_export_fsu_type(self):  # pylint: disable=too-many-statements
-        """Test exporting an FSU type model to CSV."""
-        with self.subTest(fsu_type="cputype"):
-            instance = models.CPUType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test CPU",
-                part_number="0001",
-                architecture="arm",
-            )
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 8)
-            self.assertEqual(csv[3], "arm")
+    type_model = models.CPUType
+    model_fields = {"architecture": "arm"}
 
-        with self.subTest(fsu_type="disktype"):
-            instance = models.DiskType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test Disk",
-                part_number="2001",
-                disk_type="NVME",
-                size=1024,
-            )
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 7)
-            self.assertEqual(csv[3], "NVME")
 
-        with self.subTest(fsu_type="gpubaseboardtype"):
-            instance = models.GPUBaseboardType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test Baseboard",
-                part_number="0001",
-                slot_count=8,
-            )
-            instance.save()
+class DiskTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the DiskType model."""
 
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 6)
-            self.assertEqual(csv[3], "8")
+    type_model = models.DiskType
+    model_fields = {"architecture": "arm"}
 
-        with self.subTest(fsu_type="gputype"):
-            instance = models.GPUType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test GPU",
-                part_number="0001",
-            )
-            instance.save()
 
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 5)
-            self.assertEqual(csv[1], instance.name)
+class FanTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the FanType model."""
 
-        with self.subTest(fsu_type="hbatype"):
-            instance = models.HBAType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test HBA",
-                part_number="0001",
-            )
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 5)
-            self.assertEqual(csv[1], instance.name)
+    type_model = models.FanType
+    model_fields = {"architecture": "arm"}
 
-        with self.subTest(fsu_type="mainboard"):
-            instance = models.MainboardType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test Mainboard",
-                part_number="0001",
-                pcie_generation=7,
-                cpu_socket_count=4,
-            )
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 7)
-            self.assertEqual(csv[3], "7.x")
-            self.assertEqual(csv[4], "4")
 
-        with self.subTest(fsu_type="nictype"):
-            instance = models.NICType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test NIC",
-                part_number="0001",
-                interface_count=4,
-            )
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 6)
-            self.assertEqual(csv[3], "4")
+class GPUTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the GPUType model."""
 
-        with self.subTest(fsu_type="psutype"):
-            instance = models.PSUType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test PSU",
-                part_number="1001",
-                power_provided=1000,
-                hot_swappable=True,
-            )
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 9)
-            self.assertEqual(csv[3], "DC")
+    type_model = models.GPUType
+    model_fields = {"architecture": "arm"}
 
-        with self.subTest(fsu_type="rammoduletype"):
-            instance = models.RAMModuleType(
-                manufacturer=Manufacturer.objects.first(),
-                name="Test DIMM",
-                part_number="3001",
-                capacity=64,
-            )
-            csv = instance.to_csv()
-            self.assertIsInstance(csv, tuple)
-            self.assertEqual(len(csv), 10)
-            self.assertEqual(csv[3], "UDIMM")
-            self.assertEqual(csv[4], "DDR5")
-            self.assertEqual(csv[6], "64")
-            self.assertEqual(csv[7], "1")
 
-    def test_fsutype_duplicate_part_number(self):
-        """Verify unique part number constraint for FSU types."""
-        instance1 = models.NICType(
-            manufacturer=Manufacturer.objects.first(),
-            name="Test NIC",
-            part_number="0001",
-        )
-        instance1.validated_save()
+class GPUBaseboardTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the GPUBaseboardType model."""
 
-        instance2 = models.NICType(
-            manufacturer=Manufacturer.objects.first(),
-            name="Test NIC 2",
-            part_number="0001",
-        )
+    type_model = models.GPUBaseboardType
+    model_fields = {"architecture": "arm"}
 
-        # Same manufacturer and part number should fail
-        with self.assertRaises(ValidationError):
-            instance2.full_clean()
 
-        # Different manufacturer, but same part number should pass
-        instance2.manufacturer = Manufacturer.objects.last()
-        instance2.full_clean()
+class HBATypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the HBAType model."""
+
+    type_model = models.HBAType
+    model_fields = {"architecture": "arm"}
+
+
+class MainboardTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the MainboardType model."""
+
+    type_model = models.MainboardType
+    model_fields = {"architecture": "arm"}
+
+
+class NICTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the NICType model."""
+
+    type_model = models.NICType
+    model_fields = {"architecture": "arm"}
+
+
+class OtherFSUTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the OtherFSUType model."""
+
+    type_model = models.OtherFSUType
+    model_fields = {"architecture": "arm"}
+
+
+class PSUTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the PSUType model."""
+
+    type_model = models.PSUType
+    model_fields = {"architecture": "arm"}
+
+
+class RAMModuleTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the RAMModuleType model."""
+
+    type_model = models.RAMModuleType
+    model_fields = {"architecture": "arm"}

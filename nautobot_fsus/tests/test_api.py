@@ -16,7 +16,7 @@
 """Tests for API endpoints defined in the Nautobot FSUs app."""
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from nautobot.dcim.models import Device
+from nautobot.dcim.models import Device, Interface, PowerPort
 from nautobot.extras.models import Status
 from rest_framework import status
 
@@ -213,6 +213,9 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
         self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
         self.assertIsInstance(response.data, dict)
         self.assertIn("gpus", response.data)
+        error_message = response.data["gpus"]
+        if isinstance(error_message, list):
+            error_message = error_message[0].message
         self.assertEqual(
             "Number of GPUs being added to Baseboard (3) is greater than the "
             "number of available slots (2)",
@@ -244,10 +247,13 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
         self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
         self.assertIsInstance(response.data, dict)
         self.assertIn("gpus", response.data)
+        error_message = response.data["gpus"]
+        if isinstance(error_message, list):
+            error_message = error_message[0].message
         self.assertEqual(
             "Number of GPUs being added to Baseboard (3) is greater than the "
             "number of available slots (2)",
-            str(response.data["gpus"]),
+            str(error_message),
         )
 
 
@@ -298,6 +304,101 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
     child_type = models.CPUType
     child_field = "cpus"
 
+    @classmethod
+    def setUpTestData(cls):
+        """Create objects and data for the tests."""
+        super().setUpTestData()
+        cls.fsu_types[0].cpu_socket_count = 2
+        cls.fsu_types[1].cpu_socket_count = 4
+        for i in cls.fsu_types:
+            i.validated_save()
+            i.refresh_from_db()
+
+        cls.extra_children = [
+            cls.child_model.objects.create(
+                fsu_type=cls.child_fsu_type,
+                device=Device.objects.last(),
+                name=f"test_{cls.child_model._meta.model_name}_2",
+                serial_number="a0003",
+                firmware_version="1.0",
+                driver_name="test_driver",
+                driver_version="1.0",
+                status=Status.objects.get(slug="active"),
+                description=f"Third test {cls.child_model._meta.verbose_name}",
+            ),
+            cls.child_model.objects.create(
+                fsu_type=cls.child_fsu_type,
+                device=Device.objects.last(),
+                name=f"test_{cls.child_model._meta.model_name}_3",
+                serial_number="a0004",
+                firmware_version="1.0",
+                driver_name="test_driver",
+                driver_version="1.0",
+                status=Status.objects.get(slug="active"),
+                description=f"Fourth test {cls.child_model._meta.verbose_name}",
+            ),
+        ]
+
+    def test_add_mainboard_with_too_many_children(self):
+        """Test adding a Mainboard with more CPUs than available sockets."""
+        self.children[0].device = Device.objects.last()
+        self.children[0].validated_save()
+        data = self.create_data[0]
+        data["cpus"] = [str(x.pk) for x in self.children]
+        data["cpus"].append(self.extra_children[0].pk)
+
+        self.assertEqual(len(data["cpus"]), 3)
+        self.assertEqual(self.fsu_types[0].cpu_socket_count, 2)
+
+        self.add_permissions("nautobot_fsus.add_mainboard")
+        url = reverse("plugins-api:nautobot_fsus-api:mainboard-list")
+        response = self.client.post(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
+        self.assertIsInstance(response.data, dict)
+        self.assertIn("cpus", response.data)
+        error_message = response.data["cpus"]
+        if isinstance(error_message, list):
+            error_message = error_message[0].message
+        self.assertEqual(
+            "Number of CPUs being added to Mainboard (3) is greater than the "
+            "number of available sockets (2)",
+            str(response.data["cpus"]),
+        )
+
+    def test_update_mainboard_with_too_many_children(self):
+        """Test updating a Mainboard with more CPUs than available sockets."""
+        self.children[0].device = Device.objects.last()
+        self.children[0].validated_save()
+        data = self.create_data[0]
+        data["cpus"] = [str(x.pk) for x in self.children]
+
+        self.add_permissions("nautobot_fsus.add_mainboard")
+        url = reverse("plugins-api:nautobot_fsus-api:mainboard-list")
+        response = self.client.post(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_201_CREATED)
+        mainboard_id = response.data["id"]
+        self.assertEqual(models.Mainboard.objects.get(id=mainboard_id).cpus.count(), 2)
+
+        self.add_permissions("nautobot_fsus.change_mainboard")
+        data = [{
+            "id": mainboard_id,
+            "cpus": [str(self.children[1].pk)],
+        }]
+        data[0]["cpus"].extend([str(x.pk) for x in self.extra_children])
+        self.assertEqual(len(data[0]["cpus"]), 3)
+        response = self.client.patch(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
+        self.assertIsInstance(response.data, dict)
+        self.assertIn("cpus", response.data)
+        error_message = response.data["cpus"]
+        if isinstance(error_message, list):
+            error_message = error_message[0].message
+        self.assertEqual(
+            "Number of CPUs being added to Mainboard (3) is greater than the "
+            "number of available sockets (2)",
+            str(error_message),
+        )
+
 
 class MainboardTemplateAPITestCase(FSUAPITestCases.FSUTemplateAPIViewTestCase):
     """Test the API views for the MainboardTemplate model."""
@@ -314,11 +415,116 @@ class MainboardTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
     choices_fields = ["pcie_generation"]
 
 
-class NICAPITestCase(FSUAPITestCases.FSUAPIViewTestCase):
+class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
     """Test the API views for the NIC model."""
 
     model = models.NIC
     type_model = models.NICType
+    child_model = Interface
+    child_field = "interfaces"
+
+    @classmethod
+    def setUpTestData(cls):
+        """Fix the test data for the NIC model."""
+        super().setUpTestData()
+        cls.fsu_types[0].interface_count = 2
+        cls.fsu_types[1].interface_count = 4
+        for i in cls.fsu_types:
+            i.validated_save()
+            i.refresh_from_db()
+
+        statuses = {
+            "device": Status.objects.get(name="Active"),
+            "location": Status.objects.get(name="Available"),
+            "interface": Status.objects.get_for_model(Interface).first()
+        }
+
+        cls.children = [
+            Interface.objects.create(
+                device=Device.objects.first(),
+                name="eth0",
+                type="1000base-x-gbic",
+                status=statuses["interface"],
+            ),
+            Interface.objects.create(
+                device=Device.objects.last(),
+                name="eth1",
+                type="1000base-x-gbic",
+                status=statuses["interface"],
+            ),
+        ]
+
+        cls.extra_children = [
+            Interface.objects.create(
+                device=Device.objects.last(),
+                name="eth2",
+                type="1000base-x-gbic",
+                status=statuses["interface"],
+            ),
+            Interface.objects.create(
+                device=Device.objects.last(),
+                name="eth3",
+                type="1000base-x-gbic",
+                status=statuses["interface"],
+            ),
+        ]
+
+    def test_add_nic_with_too_many_children(self):
+        """Test adding a NIC with more Interfaces than available connections."""
+        self.children[0].device = Device.objects.last()
+        self.children[0].validated_save()
+        data = self.create_data[0]
+        data["interfaces"] = [str(x.pk) for x in self.children]
+        data["interfaces"].append(self.extra_children[0].pk)
+
+        self.assertEqual(len(data["interfaces"]), 3)
+        self.assertEqual(self.fsu_types[0].interface_count, 2)
+
+        self.add_permissions("nautobot_fsus.add_nic")
+        url = reverse("plugins-api:nautobot_fsus-api:nic-list")
+        response = self.client.post(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
+        self.assertIsInstance(response.data, dict)
+        self.assertIn("interfaces", response.data)
+        error_message = response.data["interfaces"]
+        if isinstance(error_message, list):
+            error_message = error_message[0].message
+        self.assertEqual(
+            "Number of Interfaces being added to NIC (3) is greater than the number of "
+            "available connections (2)",
+            str(error_message)
+        )
+
+    def test_update_nic_with_too_many_children(self):
+        """Test updating a NIC with more Interfaces than available connections."""
+        self.children[0].device = Device.objects.last()
+        self.children[0].validated_save()
+        data = self.create_data[0]
+        data["interfaces"] = [str(x.pk) for x in self.children]
+
+        self.add_permissions("nautobot_fsus.add_nic")
+        url = reverse("plugins-api:nautobot_fsus-api:nic-list")
+        response = self.client.post(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_201_CREATED)
+        nic_id = response.data["id"]
+        self.assertEqual(models.NIC.objects.get(id=nic_id).interfaces.count(), 2)
+
+        self.add_permissions("nautobot_fsus.change_nic")
+        data = [{"id": nic_id, "interfaces": [str(self.children[1].pk)]}]
+        data[0]["interfaces"].extend([str(x.pk) for x in self.extra_children])
+        self.assertEqual(len(data[0]["interfaces"]), 3)
+        response = self.client.patch(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
+        self.assertIsInstance(response.data, dict)
+        self.assertIn("interfaces", response.data)
+        error_message = response.data["interfaces"]
+        if isinstance(error_message, list):
+            error_message = error_message[0].message
+        self.assertEqual(
+            "Number of Interfaces being added to NIC (3) is greater than the number of "
+            "available connections (2)",
+            str(error_message)
+        )
 
 
 class NICTemplateAPITestCase(FSUAPITestCases.FSUTemplateAPIViewTestCase):
@@ -356,11 +562,29 @@ class OtherFSUTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
     model = models.OtherFSUType
 
 
-class PSUAPITestCase(FSUAPITestCases.FSUAPIViewTestCase):
+class PSUAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
     """Test the API views for the PSU model."""
 
     model = models.PSU
     type_model = models.PSUType
+    child_model = PowerPort
+    child_field = "power_ports"
+
+    @classmethod
+    def setUpTestData(cls):
+        """Fix the test data for the PSU model."""
+        super().setUpTestData()
+
+        cls.children = [
+            PowerPort.objects.create(
+                device=Device.objects.first(),
+                name="PP0",
+            ),
+            PowerPort.objects.create(
+                device=Device.objects.last(),
+                name="PP1",
+            ),
+        ]
 
 
 class PSUTemplateAPITestCase(FSUAPITestCases.FSUTemplateAPIViewTestCase):

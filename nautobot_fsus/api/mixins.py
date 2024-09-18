@@ -23,15 +23,12 @@ from nautobot.dcim.api.nested_serializers import (
     NestedLocationSerializer,
     NestedManufacturerSerializer,
 )
-from nautobot.dcim.models import Device
 from nautobot.extras.api.serializers import (
     NautobotModelSerializer,
     StatusModelSerializerMixin,
     TaggedModelSerializerMixin,
 )
 from rest_framework import serializers
-
-from nautobot_fsus.models.fsus import FSUModel
 
 
 class FSUModelSerializer(
@@ -63,37 +60,6 @@ class FSUModelSerializer(
             "status",
             "description",
         ]
-
-    def validate_parent_device(self, fsus: list[FSUModel], parent_device: Device | None,
-                               field_name: str) -> None:
-        """
-        Ensure that child FSUs set for a parent instance are assigned to the same Device.
-
-        Args:
-            fsus (list[FieldServiceableUnitModel]): List of FSU units being assigned to
-                the parent instance.
-            parent_device (Device): Parent Device the instance is assigned to.
-            field_name (str): API field name for the fsus list.
-        """
-        # Gotta have a parent device
-        if parent_device is None:
-            raise serializers.ValidationError(
-                {
-                    field_name: "Parent FSU must be assigned to a device in order to add "
-                                "child FSUs"
-                }
-            )
-
-        # All child FSUs must be assigned to the same parent Device as the instance.
-        for fsu in fsus:
-            if fsu.device != parent_device:
-                raise serializers.ValidationError(
-                    {
-                        field_name: f"{fsu._meta.verbose_name} {fsu.name} has a different parent "
-                                    f"device ({getattr(fsu.device, 'name', 'No device set')}) than "
-                                    f"that of its parent FSU ({parent_device.name})"
-                    }
-                )
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         """Validate the incoming POST/PUT/PATCH data."""

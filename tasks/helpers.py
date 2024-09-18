@@ -72,7 +72,7 @@ def docker_compose(context: Context, command: str, **kwargs: Any) -> Result:
         build_env.update(env_vars)
 
     compose_command = [
-        "docker-compose",
+        "docker compose",
         f"--project-name {context.nautobot_fsus.project_name}",
         f"--project-directory {context.nautobot_fsus.compose_dir}",
     ]

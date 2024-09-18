@@ -65,7 +65,7 @@ def flake8(context: Context, verbose: bool = False, show_source: bool = False) -
 
 @task(
     help={
-        "verbose": "Enable verbose output for the flake8 command.",
+        "verbose": "Enable verbose output for the pydocstyle command.",
         "debug": "Print debug information.",
         "explain": "Show explanations for each error.",
         "source": "Show the source for each error.",
