@@ -16,7 +16,7 @@
 """Table definitions for FSUTemplate models."""
 import django_tables2 as tables
 from django_tables2.utils import Accessor
-from nautobot.utilities.tables import ButtonsColumn
+from nautobot.apps.tables import ButtonsColumn
 
 from nautobot_fsus import models
 from nautobot_fsus.tables.mixins import FSUTemplateModelTable
