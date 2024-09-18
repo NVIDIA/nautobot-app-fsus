@@ -16,13 +16,11 @@
 """Mixin classes to support user-definable fields in model filters."""
 import django_filters
 from nautobot.apps.filters import (
-    NaturalKeyOrPKMultipleChoiceFilter,
     MultiValueCharFilter,
     MultiValueUUIDFilter,
     NaturalKeyOrPKMultipleChoiceFilter,
     RelatedMembershipBooleanFilter,
     SearchFilter,
-    TagFilter,
 )
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 

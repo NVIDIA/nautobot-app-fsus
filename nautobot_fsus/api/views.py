@@ -14,8 +14,7 @@
 #  limitations under the License.
 
 """API endpoint views for the Nautobot FSUs app."""
-from nautobot.core.api.views import ModelViewSet
-from nautobot.apps.api import NautobotModelViewSet, NotesViewSetMixin
+from nautobot.apps.api import NautobotModelViewSet
 
 from nautobot_fsus.api import serializers
 from nautobot_fsus import filters, models

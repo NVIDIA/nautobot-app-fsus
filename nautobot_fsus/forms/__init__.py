@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 """Form definitions for the Nautobot FSUs app."""
-from nautobot_fsus.forms.fsu_fields import FSUFieldChoiceFormSet, FSUFieldForm
 from nautobot_fsus.forms.fsu_templates import (
     CPUTemplateBulkEditForm,
     CPUTemplateCreateForm,
@@ -155,8 +154,6 @@ __all__ = (
     "CPUTypeFilterForm",
     "CPUTypeForm",
     "CPUTypeImportForm",
-    "FSUFieldChoiceFormSet",
-    "FSUFieldForm",
     "DiskBulkEditForm",
     "DiskFilterForm",
     "DiskForm",
