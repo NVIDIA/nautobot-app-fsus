@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nautobot-fsus"
-version = "1.0.1a0"
+version = "2.0.0a1"
 description = "Field Serviceable Units for Nautobot"
 authors = ["Mark Troyer <mtroyer@nvidia.com>"]
 maintainers = ["Mark Troyer <mtroyer@nvidia.com>"]
@@ -8,7 +8,12 @@ license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/NVIDIA/nautobot-app-fsus"
 repository = "https://github.com/NVIDIA/nautobot-app-fsus"
-keywords = ["nautobot", "nautobot-plugin"]
+keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
 include = [
     "nautobot_fsus/static/nautobot_fsus/**/*",
 ]
@@ -23,7 +28,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.dependencies]
 # Used for local development
 python = ">=3.10,<3.12"
-nautobot = "^1.6.1"
+nautobot = ">=2.0.0,<2.3"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.5"
@@ -106,7 +111,7 @@ disable = [
 ]
 
 [tool.pylint-nautobot]
-supported_nautobot_versions = ["1"]
+supported_nautobot_versions = ["1", "2"]
 
 [tool.pydocstyle]
 convention = "google"
