@@ -182,7 +182,7 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
                 firmware_version="1.0",
                 driver_name="test_driver",
                 driver_version="1.0",
-                status=Status.objects.get(slug="active"),
+                status=Status.objects.get(name="Active"),
                 description=f"Third test {cls.child_model._meta.verbose_name}",
             ),
             cls.child_model.objects.create(
@@ -193,7 +193,7 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
                 firmware_version="1.0",
                 driver_name="test_driver",
                 driver_version="1.0",
-                status=Status.objects.get(slug="active"),
+                status=Status.objects.get(name="Active"),
                 description=f"Fourth test {cls.child_model._meta.verbose_name}",
             ),
         ]
@@ -325,7 +325,7 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
                 firmware_version="1.0",
                 driver_name="test_driver",
                 driver_version="1.0",
-                status=Status.objects.get(slug="active"),
+                status=Status.objects.get(name="Active"),
                 description=f"Third test {cls.child_model._meta.verbose_name}",
             ),
             cls.child_model.objects.create(
@@ -336,7 +336,7 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
                 firmware_version="1.0",
                 driver_name="test_driver",
                 driver_version="1.0",
-                status=Status.objects.get(slug="active"),
+                status=Status.objects.get(name="Active"),
                 description=f"Fourth test {cls.child_model._meta.verbose_name}",
             ),
         ]

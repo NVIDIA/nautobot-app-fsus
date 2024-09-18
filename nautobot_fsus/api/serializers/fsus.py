@@ -24,22 +24,6 @@ from rest_framework import serializers
 from rest_framework.relations import HyperlinkedIdentityField
 
 from nautobot_fsus.api.mixins import FSUModelSerializer
-from nautobot_fsus.api.nested_serializers import (
-    NestedCPUTypeSerializer,
-    NestedDiskTypeSerializer,
-    NestedFanTypeSerializer,
-    NestedGPUBaseboardSerializer,
-    NestedGPUBaseboardTypeSerializer,
-    NestedGPUTypeSerializer,
-    NestedHBASerializer,
-    NestedHBATypeSerializer,
-    NestedMainboardSerializer,
-    NestedMainboardTypeSerializer,
-    NestedNICTypeSerializer,
-    NestedOtherFSUTypeSerializer,
-    NestedPSUTypeSerializer,
-    NestedRAMModuleTypeSerializer,
-)
 from nautobot_fsus.models import (
     CPU,
     Disk,
@@ -60,65 +44,28 @@ class CPUSerializer(FSUModelSerializer):
     """API serializer for CPU model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:cpu-detail")
-    parent_mainboard = NestedMainboardSerializer(required=False, allow_null=True)
-    fsu_type = NestedCPUTypeSerializer()
 
     class Meta(FSUModelSerializer.Meta):
         """CPUserializer model options."""
 
         model = CPU
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "parent_mainboard",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "description",
-        ]
 
 
 class DiskSerializer(FSUModelSerializer):
     """API serializer for Disk model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:disk-detail")
-    parent_hba = NestedHBASerializer(required=False, allow_null=True)
-    fsu_type = NestedDiskTypeSerializer()
 
     class Meta(FSUModelSerializer.Meta):
         """DiskSerializer model options."""
 
         model = Disk
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "parent_hba",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "description",
-        ]
 
 
 class FanSerializer(FSUModelSerializer):
     """API serializer for Fan model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:fan-detail")
-    fsu_type = NestedFanTypeSerializer()
 
     class Meta(FSUModelSerializer.Meta):
         """FanSerializer model options."""
@@ -130,7 +77,6 @@ class GPUBaseboardSerializer(FSUModelSerializer):
     """API serializer for GPUBaseboard model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:gpubaseboard-detail")
-    fsu_type = NestedGPUBaseboardTypeSerializer()
     gpus = serializers.PrimaryKeyRelatedField(
         queryset=GPU.objects.all(),
         many=True,
@@ -142,22 +88,6 @@ class GPUBaseboardSerializer(FSUModelSerializer):
         """GPUBaseboardSerializer model options."""
 
         model = GPUBaseboard
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "gpus",
-            "description",
-        ]
 
     def validate(self, data: Any):
         """Need to hide the gpus field from normal validation."""
@@ -294,36 +224,17 @@ class GPUSerializer(FSUModelSerializer):
     """API serializer for GPU model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:gpu-detail")
-    parent_gpubaseboard = NestedGPUBaseboardSerializer(required=False, allow_null=True)
-    fsu_type = NestedGPUTypeSerializer()
 
     class Meta(FSUModelSerializer.Meta):
         """GPUSerializer model options."""
 
         model = GPU
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "parent_gpubaseboard",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "description",
-        ]
 
 
 class HBASerializer(FSUModelSerializer):
     """API serializer for HBA model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:hba-detail")
-    fsu_type = NestedHBATypeSerializer()
     disks = serializers.PrimaryKeyRelatedField(
         queryset=Disk.objects.all(),
         many=True,
@@ -335,22 +246,6 @@ class HBASerializer(FSUModelSerializer):
         """HBASerializer model options."""
 
         model = HBA
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "disks",
-            "description",
-        ]
 
     def validate(self, data: Any):
         """Need to hide the disks field from normal validation."""
@@ -465,7 +360,6 @@ class MainboardSerializer(FSUModelSerializer):
     """API serializer for Mainboard model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:mainboard-detail")
-    fsu_type = NestedMainboardTypeSerializer()
     cpus = serializers.PrimaryKeyRelatedField(
         queryset=CPU.objects.all(),
         many=True,
@@ -477,22 +371,6 @@ class MainboardSerializer(FSUModelSerializer):
         """MainboardSerializer model options."""
 
         model = Mainboard
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "cpus",
-            "description",
-        ]
 
     def validate(self, data: Any):
         """Need to hide the cpus field from normal validation."""
@@ -629,7 +507,6 @@ class NICSerializer(FSUModelSerializer):
     """API serializer for NIC model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:nic-detail")
-    fsu_type = NestedNICTypeSerializer()
     interfaces = serializers.PrimaryKeyRelatedField(
         queryset=Interface.objects.all(),
         many=True,
@@ -641,22 +518,6 @@ class NICSerializer(FSUModelSerializer):
         """NICSerializer model options."""
 
         model = NIC
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "interfaces",
-            "description",
-        ]
 
     def create(self, validated_data: Any) -> NIC:
         """Create a new NIC instance with child Interface validation."""
@@ -767,7 +628,6 @@ class OtherFSUSerializer(FSUModelSerializer):
     """API serializer for Other FSU model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:otherfsu-detail")
-    fsu_type = NestedOtherFSUTypeSerializer()
 
     class Meta(FSUModelSerializer.Meta):
         """OtherFSUSerializer model options."""
@@ -779,7 +639,6 @@ class PSUSerializer(FSUModelSerializer):
     """API serializer for PSU model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:psu-detail")
-    fsu_type = NestedPSUTypeSerializer()
     power_ports = serializers.PrimaryKeyRelatedField(
         queryset=PowerPort.objects.all(),
         many=True,
@@ -791,22 +650,6 @@ class PSUSerializer(FSUModelSerializer):
         """PSUSerializer model options."""
 
         model = PSU
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "power_ports",
-            "description",
-        ]
 
     def create(self, validated_data: Any) -> PSU:
         """Create a new PSU instance with child PowerPort validation."""
@@ -897,25 +740,8 @@ class RAMModuleSerializer(FSUModelSerializer):
     """API serializer for RAM Module model."""
 
     url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:rammodule-detail")
-    fsu_type = NestedRAMModuleTypeSerializer()
 
     class Meta(FSUModelSerializer.Meta):
         """RAMModuleSerializer model options."""
 
         model = RAMModule
-        fields = [
-            "id",
-            "url",
-            "name",
-            "device",
-            "location",
-            "fsu_type",
-            "slot_id",
-            "serial_number",
-            "firmware_version",
-            "driver_version",
-            "driver_name",
-            "asset_tag",
-            "status",
-            "description",
-        ]

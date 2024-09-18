@@ -43,19 +43,6 @@ class CPUTypeSerializer(FSUTypeModelSerializer):
         """CPUTypeSerializer model options."""
 
         model = CPUType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "architecture",
-            "cpu_speed",
-            "cores",
-            "pcie_generation",
-            "description",
-        ]
 
 
 class DiskTypeSerializer(FSUTypeModelSerializer):
@@ -69,17 +56,6 @@ class DiskTypeSerializer(FSUTypeModelSerializer):
         """DiskTypeSerializer model options."""
 
         model = DiskType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "disk_type",
-            "size",
-            "description",
-        ]
 
 
 class FanTypeSerializer(FSUTypeModelSerializer):
@@ -106,16 +82,6 @@ class GPUBaseboardTypeSerializer(FSUTypeModelSerializer):
         """GPUBaseboardTypeSerializer model options."""
 
         model = GPUBaseboardType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "slot_count",
-            "description",
-        ]
 
 
 class GPUTypeSerializer(FSUTypeModelSerializer):
@@ -155,16 +121,6 @@ class MainboardTypeSerializer(FSUTypeModelSerializer):
         """MainboardTypeSerializer model options."""
 
         model = MainboardType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "cpu_socket_count",
-            "description",
-        ]
 
 
 class NICTypeSerializer(FSUTypeModelSerializer):
@@ -178,16 +134,6 @@ class NICTypeSerializer(FSUTypeModelSerializer):
         """NICTypeSerializer model options."""
 
         model = NICType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "interface_count",
-            "description",
-        ]
 
 
 class OtherFSUTypeSerializer(FSUTypeModelSerializer):
@@ -214,19 +160,6 @@ class PSUTypeSerializer(FSUTypeModelSerializer):
         """PSUTypeSerializer model options."""
 
         model = PSUType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "feed_type",
-            "power_provided",
-            "required_voltage",
-            "hot_swappable",
-            "description",
-        ]
 
 
 class RAMModuleTypeSerializer(FSUTypeModelSerializer):
@@ -240,17 +173,3 @@ class RAMModuleTypeSerializer(FSUTypeModelSerializer):
         """RAMModuleTypeSerializer model options."""
 
         model = RAMModuleType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "module_type",
-            "technology",
-            "speed",
-            "capacity",
-            "quantity",
-            "description",
-        ]

@@ -14,13 +14,14 @@
 #  limitations under the License.
 
 """API endpoint views for the Nautobot FSUs app."""
-from nautobot.extras.api.views import NautobotModelViewSet, StatusViewSetMixin
+from nautobot.core.api.views import ModelViewSet
+from nautobot.apps.api import NautobotModelViewSet, NotesViewSetMixin
 
 from nautobot_fsus.api import serializers
 from nautobot_fsus import filters, models
 
 
-class CPUAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class CPUAPIView(NautobotModelViewSet):
     """API view set for CPUs."""
 
     queryset = models.CPU.objects.all()
@@ -44,7 +45,7 @@ class CPUTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.CPUTypeFilterSet
 
 
-class DiskAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class DiskAPIView(NautobotModelViewSet):
     """API view set for Disks."""
 
     queryset = models.Disk.objects.all()
@@ -68,7 +69,7 @@ class DiskTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.DiskTypeFilterSet
 
 
-class FanAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class FanAPIView(NautobotModelViewSet):
     """API view set for Fans."""
 
     queryset = models.Fan.objects.all()
@@ -92,7 +93,7 @@ class FanTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.FanTypeFilterSet
 
 
-class GPUAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class GPUAPIView(NautobotModelViewSet):
     """API view set for GPUs."""
 
     queryset = models.GPU.objects.all()
@@ -100,7 +101,7 @@ class GPUAPIView(NautobotModelViewSet, StatusViewSetMixin):
     filterset_class = filters.GPUFilterSet
 
 
-class GPUBaseboardAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class GPUBaseboardAPIView(NautobotModelViewSet):
     """API view set for GPU Baseboards."""
 
     queryset = models.GPUBaseboard.objects.all()
@@ -140,7 +141,7 @@ class GPUTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.GPUTypeFilterSet
 
 
-class HBAAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class HBAAPIView(NautobotModelViewSet):
     """API view set for HBAs."""
 
     queryset = models.HBA.objects.all()
@@ -164,7 +165,7 @@ class HBATypeAPIView(NautobotModelViewSet):
     filterset_class = filters.HBATypeFilterSet
 
 
-class MainboardAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class MainboardAPIView(NautobotModelViewSet):
     """API view set for Mainboards."""
 
     queryset = models.Mainboard.objects.all()
@@ -188,7 +189,7 @@ class MainboardTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.MainboardTypeFilterSet
 
 
-class NICAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class NICAPIView(NautobotModelViewSet):
     """API view set for NICs."""
 
     queryset = models.NIC.objects.all()
@@ -212,7 +213,7 @@ class NICTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.NICTypeFilterSet
 
 
-class OtherFSUAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class OtherFSUAPIView(NautobotModelViewSet):
     """API view set for Other FSUs."""
 
     queryset = models.OtherFSU.objects.all()
@@ -236,7 +237,7 @@ class OtherFSUTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.OtherFSUTypeFilterSet
 
 
-class PSUAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class PSUAPIView(NautobotModelViewSet):
     """API view set for PSUs."""
 
     queryset = models.PSU.objects.all()
@@ -260,7 +261,7 @@ class PSUTypeAPIView(NautobotModelViewSet):
     filterset_class = filters.PSUTypeFilterSet
 
 
-class RAMModuleAPIView(NautobotModelViewSet, StatusViewSetMixin):
+class RAMModuleAPIView(NautobotModelViewSet):
     """API view set for RAM Modules."""
 
     queryset = models.RAMModule.objects.all()

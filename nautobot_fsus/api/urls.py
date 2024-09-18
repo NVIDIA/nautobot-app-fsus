@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 """URL routes for FSU API endpoint views."""
-from nautobot.core.api import OrderedDefaultRouter
+from nautobot.apps.api import OrderedDefaultRouter
 
 from nautobot_fsus.api import views
 
