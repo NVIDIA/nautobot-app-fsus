@@ -20,10 +20,10 @@ For example, a GPUType may be:
 
 Some FSU types have additional product-specific fields:
 
-- CPU type has fields for architecture, clock speed, and number of cores.
+- CPU type has fields for architecture, clock speed, number of cores, and the PCIe generation.
 - Disk type has fields for the type of disk, e.g. NVME, and the size.
 - GPU Baseboard type has a field for the number of GPU slots provided.
-- Mainboard type has fields for the PCIe generation, and the number of CPU sockets provided.
+- Mainboard type has a field for the number of CPU sockets provided.
 - NIC type has a field for the number of interfaces provided.
 - PSU type has fields for the feed type (AC, DC, or Switchable), the power provided in Watts, the required voltage (e.g. `-40V - -72` for DC or `100-240V` for AC), and whether the unit is hot-swappable.
 - RAM Module type has fields for the module type, e.g. UDIMM, the memory technology, e.g. DDR5, memory speed in MHz, memory size in GB, and the number of modules that are included in the part number.

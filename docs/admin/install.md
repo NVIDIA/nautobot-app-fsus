@@ -10,7 +10,7 @@
 !!! note
     Nautobot apps can be installed manually or using Python's `pip`.
     See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details.
-    The pip package name for this Nautobot app is [`nautobot-ssot`](https://pypi.org/project/nautobot-fsus/).
+    The pip package name for this Nautobot app is [`nautobot-fsus`](https://pypi.org/project/nautobot-fsus/).
 
 The app is available as a Python package via PyPI and can be installed with `pip`:
 
