@@ -247,11 +247,6 @@ class GPUBaseboardSerializer(FSUModelSerializer):
                         gpu.validated_save()
 
                 elif gpus:
-                    if location is not None:
-                        raise ValidationError(
-                            "Child GPUs cannot be set on a GPU Baseboard in storage."
-                        )
-
                     # Validate the parent device
                     validate_parent_device(gpus, parent_device)
 
@@ -434,11 +429,6 @@ class HBASerializer(FSUModelSerializer):
                         disk.validated_save()
 
                 elif disks:
-                    if location is not None:
-                        raise ValidationError(
-                            "Child Disks cannot be set on an HBA in storage."
-                        )
-
                     # Validate the parent device
                     validate_parent_device(disks, parent_device)
 
@@ -592,11 +582,6 @@ class MainboardSerializer(FSUModelSerializer):
                         cpu.validated_save()
 
                 elif cpus:
-                    if location is not None:
-                        raise ValidationError(
-                            "Child CPUs cannot be set on a Mainboard in storage."
-                        )
-
                     # Validate the parent device
                     validate_parent_device(cpus, parent_device)
 
@@ -744,11 +729,6 @@ class NICSerializer(FSUModelSerializer):
                     instance.interfaces.clear()
 
                 elif interfaces:
-                    if location is not None:
-                        raise ValidationError(
-                            "Child Interfaces cannot be set on a NIC in storage."
-                        )
-
                     # Validate the parent device
                     validate_parent_device(interfaces, parent_device)
 
@@ -889,11 +869,6 @@ class PSUSerializer(FSUModelSerializer):
                     instance.power_ports.clear()
 
                 elif power_ports:
-                    if location is not None:
-                        raise ValidationError(
-                            "Child Power Ports cannot be set on a PSU in storage."
-                        )
-
                     # Validate the parent device
                     validate_parent_device(power_ports, parent_device)
 
