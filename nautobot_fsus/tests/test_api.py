@@ -105,11 +105,13 @@ class DiskTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
 
         for i in cls.fsu_types:
             i.size = 512
+            i.disk_type = "NVME"
             i.validated_save()
             i.refresh_from_db()
 
         for i in cls.create_data:
             i["size"] = 1024
+            i["disk_type"] = "SSD"
 
 
 class FanAPITestCase(FSUAPITestCases.FSUAPIViewTestCase):
@@ -608,15 +610,21 @@ class PSUTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
         super().setUpTestData()
 
         cls.fsu_types[0].power_provided = 500
+        cls.fsu_types[0].feed_type = "ac"
         cls.fsu_types[1].power_provided = 600
+        cls.fsu_types[1].feed_type = "dc"
         cls.fsu_types[2].power_provided = 700
+        cls.fsu_types[2].feed_type = "switchable"
         for i in cls.fsu_types:
             i.validated_save()
             i.refresh_from_db()
 
         cls.create_data[0]["power_provided"] = 800
+        cls.create_data[0]["feed_type"] = "switchable"
         cls.create_data[1]["power_provided"] = 900
+        cls.create_data[1]["feed_type"] = "dc"
         cls.create_data[2]["power_provided"] = 1000
+        cls.create_data[2]["feed_type"] = "ac"
 
 
 class RAMModuleAPITestCase(FSUAPITestCases.FSUAPIViewTestCase):
@@ -682,8 +690,12 @@ class RAMModuleTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
 
         for i in cls.fsu_types:
             i.capacity = 32
+            i.module_type = "l"
+            i.technology = "ddr5"
             i.validated_save()
             i.refresh_from_db()
 
         for i in cls.create_data:
             i["capacity"] = 64
+            i["module_type"] = "l"
+            i["technology"] = "ddr5"

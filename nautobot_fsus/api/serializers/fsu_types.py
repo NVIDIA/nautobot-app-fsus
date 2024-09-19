@@ -14,8 +14,10 @@
 #  limitations under the License.
 
 """Model serializers for FSU type API endpoints."""
+from nautobot.apps.api import ChoiceField
 from rest_framework import serializers
 
+from nautobot_fsus import choices
 from nautobot_fsus.api.mixins import FSUTypeModelSerializer
 from nautobot_fsus.models import (
     CPUType,
@@ -39,6 +41,8 @@ class CPUTypeSerializer(FSUTypeModelSerializer):
         view_name="plugins-api:nautobot_fsus-api:cputype-detail"
     )
 
+    architecture = ChoiceField(choices=choices.CPUArchitectures)
+
     class Meta(FSUTypeModelSerializer.Meta):
         """CPUTypeSerializer model options."""
 
@@ -51,6 +55,8 @@ class DiskTypeSerializer(FSUTypeModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="plugins-api:nautobot_fsus-api:disktype-detail"
     )
+
+    disk_type = ChoiceField(choices=choices.DiskTypes)
 
     class Meta(FSUTypeModelSerializer.Meta):
         """DiskTypeSerializer model options."""
@@ -156,6 +162,8 @@ class PSUTypeSerializer(FSUTypeModelSerializer):
         view_name="plugins-api:nautobot_fsus-api:psutype-detail"
     )
 
+    feed_type = ChoiceField(choices=choices.PSUFeedType)
+
     class Meta(FSUTypeModelSerializer.Meta):
         """PSUTypeSerializer model options."""
 
@@ -168,6 +176,9 @@ class RAMModuleTypeSerializer(FSUTypeModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="plugins-api:nautobot_fsus-api:rammoduletype-detail"
     )
+
+    module_type = ChoiceField(choices=choices.MemoryModuleTypes)
+    technology = ChoiceField(choices=choices.MemoryTechnologies)
 
     class Meta(FSUTypeModelSerializer.Meta):
         """RAMModuleTypeSerializer model options."""
