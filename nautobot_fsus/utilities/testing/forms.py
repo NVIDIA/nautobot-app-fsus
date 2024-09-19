@@ -106,8 +106,8 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
                 data={
                     "fsu_type": self.fsu_type,
                     "device_type": DeviceType.objects.first(),
-                    "name": f"{ instance_type.lower() }_0",
-                    "description": f"Test { instance_type }",
+                    "name": f"{instance_type.lower()}_0",
+                    "description": f"Test {instance_type}",
                 }
             )
             self.assertTrue(form.is_valid())
@@ -119,7 +119,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
             fsu_template = self.model.objects.create(
                 fsu_type=self.fsu_type,
                 device_type=DeviceType.objects.first(),
-                name=f"test_{ instance_type }",
+                name=f"test_{instance_type}",
             )
 
             form = self.form_model(instance=fsu_template)
@@ -157,7 +157,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
             form = self.form_model(
                 data={
                     "manufacturer": Manufacturer.objects.first(),
-                    "name": f"Test { self.instance_model }",
+                    "name": f"Test {self.instance_model}",
                     "part_number": "X0001Z",
                 }
             )
@@ -168,7 +168,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
             """Test creating the form with an existing FSU type."""
             fsu_type = self.type_model.objects.create(
                 manufacturer=Manufacturer.objects.first(),
-                name=f"Test { self.instance_model }",
+                name=f"Test {self.instance_model}",
                 part_number="X0001Z",
             )
 

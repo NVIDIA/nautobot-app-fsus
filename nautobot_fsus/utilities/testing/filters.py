@@ -60,11 +60,11 @@ class FSUFilterTestCases:
             cls.fsu_types = [
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.first(),
-                    name=f"Test { cls.model._meta.verbose_name }",
+                    name=f"Test {cls.model._meta.verbose_name}",
                 ),
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.last(),
-                    name=f"Another { cls.model._meta.verbose_name }",
+                    name=f"Another {cls.model._meta.verbose_name}",
                 )
             ]
 
@@ -72,34 +72,34 @@ class FSUFilterTestCases:
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
                     device=cls.device,
-                    name=f"test_{ cls.model._meta.model_name }_0",
+                    name=f"test_{cls.model._meta.model_name}_0",
                     serial_number="a0001",
                     firmware_version="1.0",
                     driver_name="test_driver",
                     driver_version="1.0",
-                    description=f"First test { cls.model._meta.verbose_name }",
+                    description=f"First test {cls.model._meta.verbose_name}",
                     status=Status.objects.get(name="Active"),
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[1],
                     device=cls.device,
-                    name=f"test_{ cls.model._meta.model_name }_1",
+                    name=f"test_{cls.model._meta.model_name}_1",
                     serial_number="a0002",
                     firmware_version="1.1",
                     driver_name="test_driver",
                     driver_version="1.0",
-                    description=f"Second test { cls.model._meta.verbose_name }",
+                    description=f"Second test {cls.model._meta.verbose_name}",
                     status=Status.objects.get(name="Active"),
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
                     location=location,
-                    name=f"test_{ cls.model._meta.model_name }_2",
+                    name=f"test_{cls.model._meta.model_name}_2",
                     serial_number="b0003",
                     firmware_version="1.0",
                     driver_name="test_driver",
                     driver_version="1.1",
-                    description=f"Third test { cls.model._meta.verbose_name }",
+                    description=f"Third test {cls.model._meta.verbose_name}",
                     status=Status.objects.get(name="Available"),
                 ),
             ]
@@ -173,11 +173,11 @@ class FSUFilterTestCases:
             cls.fsu_types = [
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.first(),
-                    name=f"Test { cls.model._meta.verbose_name }",
+                    name=f"Test {cls.model._meta.verbose_name}",
                 ),
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.last(),
-                    name=f"Another { cls.model._meta.verbose_name }",
+                    name=f"Another {cls.model._meta.verbose_name}",
                 )
             ]
 
@@ -185,20 +185,20 @@ class FSUFilterTestCases:
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
                     device_type=DeviceType.objects.first(),
-                    name=f"test_{ cls.model._meta.model_name }_0",
-                    description=f"First test { cls.model._meta.verbose_name } template",
+                    name=f"test_{cls.model._meta.model_name}_0",
+                    description=f"First test {cls.model._meta.verbose_name} template",
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[1],
                     device_type=DeviceType.objects.last(),
-                    name=f"test_{ cls.model._meta.model_name }_1",
-                    description=f"Second test { cls.model._meta.verbose_name } template",
+                    name=f"test_{cls.model._meta.model_name}_1",
+                    description=f"Second test {cls.model._meta.verbose_name} template",
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
                     device_type=DeviceType.objects.first(),
-                    name=f"test_{ cls.model._meta.model_name }_2",
-                    description=f"Third test { cls.model._meta.verbose_name } template",
+                    name=f"test_{cls.model._meta.model_name}_2",
+                    description=f"Third test {cls.model._meta.verbose_name} template",
                 ),
             ]
 
@@ -252,22 +252,22 @@ class FSUFilterTestCases:
             cls.types = [
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.first(),
-                    name=f"Test { cls.model._meta.object_name }",
+                    name=f"Test {cls.model._meta.object_name}",
                     part_number="A10001",
-                    description=f"{ cls.model._meta.object_name } for testing.",
+                    description=f"{cls.model._meta.object_name} for testing.",
                 ),
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.last(),
-                    name=f"Another { cls.model._meta.object_name }",
+                    name=f"Another {cls.model._meta.object_name}",
                     part_number="A10002",
-                    description=f"A completely different { cls.model._meta.object_name }.",
+                    description=f"A completely different {cls.model._meta.object_name}.",
                 ),
             ]
             for instance in cls.types:
                 instance.tags.set([Tag.objects.get(name="Purple"), Tag.objects.get(name="Fuchsia")])
 
             cls.model.objects.create(
-                name=f"test_{ cls.model._meta.model_name }",
+                name=f"test_{cls.model._meta.model_name}",
                 fsu_type=cls.type_model.objects.first(),
                 device=Device.objects.first(),
                 status=Status.objects.get(name="Active"),
