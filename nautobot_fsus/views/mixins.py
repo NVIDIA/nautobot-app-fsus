@@ -20,6 +20,7 @@ from typing import Any, Type
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.forms import Form
 from django.http.response import HttpResponseRedirect
 from django.http.request import HttpRequest
 from django.template.loader import select_template, TemplateDoesNotExist
@@ -47,6 +48,21 @@ class FSUModelViewSet(NautobotUIViewSet):
 
     base_template = "nautobot_fsus/fsu.html"
     bulk_table_class: Type[BaseTable]
+
+    def get_form_class(self, **kwargs) -> Type[Form]:
+        """Add FSU-specific help text to import form class."""
+        form_class: Type[Form] = super().get_form_class(**kwargs)
+
+        if self.action == "bulk_create":
+            initial = form_class.base_fields["csv_data"].initial
+            help_text = form_class.base_fields["csv_data"].help_text
+            form_class.base_fields["csv_data"].initial = f"device,location,{initial}"
+            form_class.base_fields["csv_data"].help_text = (
+                f"{help_text} Note that one of either a `device` or a `location` (but not "
+                f"both) is required."
+            )
+
+        return form_class
 
     def get_table_class(self) -> Type[BaseTable]:
         """Get the appropriate table class for the view."""
