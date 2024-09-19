@@ -16,6 +16,8 @@
 """Test runner wrapper for Nautobot FSUs app."""
 from django.core.management import call_command
 from django.conf import settings
+from django.db import connections
+from django.test.utils import get_unique_databases_and_mirrors
 from xmlrunner.extra.djangotestrunner import XMLTestRunner
 
 
@@ -83,33 +85,74 @@ class NautobotFSUsTestRunner(XMLTestRunner):
 
     def setup_databases(self, **kwargs):
         """Create the test databases and add base set of factory data."""
-        result = super().setup_databases(**kwargs)
-        if result:
-            command = ["create_fsus_env", "--flush", "--no-input"]
-            if settings.TEST_FACTORY_SEED:
-                command.extend(["--seed", settings.TEST_FACTORY_SEED])
-            if self.cache_test_fixtures:
-                command.append("--cache-fixtures")
-            if self.fixture_file:
-                command.extend(["--fixture-file", self.fixture_file])
+        test_dbs, mirrored_aliases = get_unique_databases_and_mirrors(kwargs.get("aliases", None))
 
-            for connection in result:
-                db_name = connection[0].alias
-                print(f"Pre-populating test database {db_name}...")
-                db_command = command + ["--database", db_name]
-                call_command(*db_command)
+        old_names = []
 
-        return result
+        for db_name, aliases in test_dbs.values():
+            first_alias = None
+            for alias in aliases:
+                connection = connections[alias]
+                old_names.append((connection, db_name, first_alias is None))
+
+                # Create the database for the first connection
+                if first_alias is None:
+                    first_alias = alias
+                    with self.time_keeper.timed(f"  Creating '{alias}'"):
+                        connection.creation.create_test_db(
+                            verbosity=self.verbosity,
+                            autoclobber=not self.interactive,
+                            keepdb=self.keepdb,
+                            serialize=connection.settings_dict["TEST"].get("SERIALIZE", True),
+                        )
+
+                    command = ["create_fsus_env", "--flush", "--no-input"]
+                    if settings.TEST_FACTORY_SEED is not None:
+                        command.extend(["--seed", settings.TEST_FACTORY_SEED])
+                    if self.cache_test_fixtures:
+                        command.append("--cache-fixtures")
+                    if self.fixture_file:
+                        command.extend(["--fixture-file", self.fixture_file])
+
+                    with self.time_keeper.timed(f"  Pre-populating test database {alias}..."):
+                        db_command = [*command, "--database", alias]
+                        call_command(*db_command)
+
+                    if self.parallel > 1:
+                        for index in range(self.parallel):
+                            with self.time_keeper.timed(f"  Cloning '{alias}'"):
+                                connection.creation.clone_test_db(
+                                    suffix=str(index + 1),
+                                    verbosity=self.verbosity,
+                                    keepdb=False,
+                                )
+
+                else:
+                    connection.creation.set_as_test_mirror(connections[first_alias].settings_dict)
+
+        for alias, mirror_alias in mirrored_aliases.items():
+            connections[alias].creation.set_as_test_mirror(connections[mirror_alias].settings_dict)
+
+        if self.debug_sql:
+            for alias in connections:
+                connections[alias].force_debug_cursor = True
+
+        return old_names
 
     def teardown_databases(self, old_config, **kwargs):
         """Clean up the test databases."""
-        # If keepdb is set, the test database won't be dropped, so we'll clean up the test data.
-        if self.keepdb:
-            command = ["flush_fsus_env", "--no-input"]
-            for connection in old_config:
-                db_name = connection[0].alias
-                print(f"Cleaning up test database {db_name}...")
-                db_command = command + ["--database", db_name]
-                call_command(*db_command)
+        for connection, old_name, destroy in old_config:
+            if destroy:
+                if self.parallel > 1:
+                    for index in range(self.parallel):
+                        connection.creation.destroy_test_db(
+                            suffix=str(index + 1),
+                            verbosity=self.verbosity,
+                            keepdb=False,
+                        )
 
-        super().teardown_databases(old_config, **kwargs)
+                db_name = connection.alias
+                print(f"Cleaning up test database {db_name}...")
+                call_command("flush_fsus_env", "--no-input", "--database", db_name)
+
+                connection.creation.destroy_test_db(old_name, self.verbosity, self.keepdb)
