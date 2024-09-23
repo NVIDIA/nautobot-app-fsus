@@ -11,9 +11,11 @@
 
 import os
 from pathlib import Path
+import re
 from typing import Any
 
 from invoke import Context
+from invoke.exceptions import Exit
 from invoke.runners import Result
 import dotenv
 
@@ -22,6 +24,35 @@ def load_dotenv() -> None:
     """Load environment variables from the development configs."""
     dotenv.load_dotenv("./development/development.env")
     dotenv.load_dotenv("./development/creds.env")
+
+
+def get_docker_nautobot_version(context: Context) -> str:
+    """Extract the Nautobot version installed in the base Docker image."""
+    nautobot_ver = context.nautobot_fsus.nautobot_ver
+    python_ver = context.nautobot_fsus.python_ver
+
+    dockerfile_path = os.path.join(context.nautobot_fsus.compose_dir, "Dockerfile")
+    base_image = context.run(
+        f"grep --max-count=1 '^FROM ' {dockerfile_path}",
+        hide=True
+    ).stdout.strip().split(" ")[1]
+    base_image = base_image.replace(
+        r"${NAUTOBOT_VER}",
+        nautobot_ver
+    ).replace(r"${PYTHON_VER}", python_ver)
+    pip_nautobot_ver = context.run(
+        f"docker run --rm --entrypoint '' {base_image} pip show nautobot",
+        hide=True
+    )
+    match_version = re.search(
+        r"^Version: (.*)$",
+        pip_nautobot_ver.stdout.strip(),
+        flags=re.MULTILINE,
+    )
+    if match_version:
+        return match_version.group(1)
+    else:
+        raise Exit(f"Could not extract Nautobot version from Docker base image {base_image}.")
 
 
 def is_truthy(arg: bool | str | int) -> bool:

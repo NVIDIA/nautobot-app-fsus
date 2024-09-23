@@ -19,7 +19,7 @@ FROM ghcr.io/nautobot/nautobot-dev:${NAUTOBOT_VER}-py${PYTHON_VER}
 ARG NAUTOBOT_ROOT=/opt/nautobot
 
 ENV prometheus_multiproc_dir=/prom_cache
-ENV NAUTOBOT_ROOT ${NAUTOBOT_ROOT}
+ENV NAUTOBOT_ROOT=${NAUTOBOT_ROOT}
 
 WORKDIR $NAUTOBOT_ROOT
 
@@ -28,8 +28,7 @@ WORKDIR $NAUTOBOT_ROOT
 # and CI and local development may have a newer version of Poetry
 # Since this is only used for development and we don't ship this container, pinning Poetry back is not expressly necessary
 # We also don't need virtual environments in container
-ENV POETRY_VERSION=1.5.1
-RUN curl -sSL https://install.python-poetry.org | python3 - && \
+RUN which poetry || curl -sSL https://install.python-poetry.org | python3 - && \
   poetry config virtualenvs.create false
 
 # !!! USE CAUTION WHEN MODIFYING LINES ABOVE
@@ -54,28 +53,16 @@ WORKDIR /source
 COPY . /source
 
 # Get container's installed Nautobot version as a forced constraint
-# NAUTOBOT_VER may be a branch name and not a published release therefor we need to get the installed version
-#  so pip can use it to recognize local constraints.
-RUN pip show nautobot | grep "^Version: " | sed -e 's/Version: /nautobot==/' > constraints.txt
+# In a CI environment, this should be done outside the Dockerfile to prevent cross-compile build failures.
+ARG CI
+ARG PYTHON_VER
+RUN if [ -z "${CI+x}" ]; then \
+    INSTALLED_NAUTOBOT_VERSION=$(pip show nautobot | grep "^Version: " | sed -e 's/Version: //'); \
+    poetry add --lock nautobot@${INSTALLED_NAUTOBOT_VERSION} --python ${PYTHON_VER}; \
+fi
 
-# Use Poetry to grab dev dependencies from the lock file
-# Can be improved in Poetry 1.2 which allows `poetry install --only dev`
-#
-# We can't use the entire freeze as it takes forever to resolve with rigidly fixed non-direct dependencies,
-#   especially those that are only direct to Nautobot but the container included versions slightly mismatch
-RUN poetry export -f requirements.txt --without-hashes --output poetry_freeze_base.txt
-RUN poetry export -f requirements.txt --without-hashes --with dev --with docs --output poetry_freeze_all.txt
-RUN sort poetry_freeze_base.txt poetry_freeze_all.txt | uniq -u > poetry_freeze_dev.txt
-
-# Install all local project as editable, constrained on Nautobot version, to get any additional
-#   direct dependencies of the app
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -c constraints.txt -e .[all]
-
-# Install any dev dependencies frozen from Poetry
-# Can be improved in Poetry 1.2 which allows `poetry install --only dev`
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -c constraints.txt -r poetry_freeze_dev.txt
+# Install the app and any dependencies
+RUN poetry install --with=dev --with=docs
 
 COPY development/nautobot_config.py ${NAUTOBOT_ROOT}/nautobot_config.py
 # !!! USE CAUTION WHEN MODIFYING LINES ABOVE

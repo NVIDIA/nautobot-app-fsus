@@ -12,34 +12,11 @@ import os
 from pathlib import Path
 
 from invoke import Collection
-import toml
 
 from tasks import control
 from tasks import test
 
 BASE_DIR = Path(os.path.dirname(__file__)).parent
-
-
-def _required_nautobot_version() -> str:
-    """Check the plugin package metadata for the required Nautobot version."""
-    pyproject = toml.load("pyproject.toml")
-    metadata = pyproject.get("tool", {}).get("poetry", {})
-
-    # Get the nautobot version from pyproject.toml. It should be [tool.poetry.dependencies],
-    # but if it's not there, try [tool.poetry.group.localdev.dependencies], and finally
-    # return "latest" as the default if neither path is set.
-    version = metadata["dependencies"].get(
-        "nautobot",
-        metadata.get("group", {}).get("localdev", {}).get("dependencies", {}).get(
-            "nautobot",
-            "stable",
-        )
-    )
-
-    # The nautobot version dependency should be specified with a leading ^ for safety, so
-    # that if the environment deploy image is updated to a newer version of nautobot, the
-    # plugin dependency doesn't step on that and downgrade the version in the image.
-    return version.lstrip("^~")
 
 
 # Create the namespace here and load the tasks from a module
@@ -49,7 +26,7 @@ namespace.add_collection(Collection.from_module(test))
 namespace.configure(
     {
         "nautobot_fsus": {
-            "nautobot_ver": _required_nautobot_version(),
+            "nautobot_ver": "1.6.1",
             "project_name": "nautobot-fsus",
             "project_source": "nautobot_fsus",
             "python_ver": "3.10",

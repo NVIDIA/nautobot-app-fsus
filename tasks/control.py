@@ -54,25 +54,44 @@ def build(context: Context, force_rm: bool = False, cache: bool = True) -> None:
 )
 def mkdocs(context: Context, local: bool = False) -> None:
     """Runs `mkdocs` to create the static documentation for the plugin."""
-    command = ["mkdocs build --no-directory-urls --strict"]
-    if local:
-        context = context
-        context.nautobot_fsus.local = True
-        command.insert(0, "poetry run")
-
-    helpers.run_command(context, " ".join(command))
+    command = "mkdocs build --no-directory-urls --strict"
+    helpers.run_command(context, command)
 
 
 @task(mkdocs)
 def generate_packages(context: Context) -> None:
-    """Generate all python packages inside a docker container and copy them to ./dist"""
+    """Generate all python packages inside a docker container and copy them to ./dist."""
     helpers.run_command(context, "poetry build")
 
 
-@task
-def lock(context: Context) -> None:
-    """Generate the poetry.lock file in the Nautobot container"""
-    helpers.run_command(context, "poetry lock --no-update")
+@task(
+    help={
+        "check": "Check for outdated dependencies in the poetry.lock file instead of "
+                 "generating a new one",
+        "constrain_nautobot_ver": "Run poetry add --lock nautobot@[version] where `version` is "
+                                  "the version installed in the Docker container. For use in "
+                                  "CI environment, not local dev environment.",
+        "constrain_python_ver": "Use with `constrain_nautobot_ver` to further constrain the "
+                                "nautobot version to PYTHON_VER so poetry doesn't complain "
+                                "about python version incompatibilities.",
+    }
+)
+def lock(context: Context, check: bool = False, constrain_nautobot_ver: bool = False,
+         constrain_python_ver: bool = False) -> None:
+    """Generate the poetry.lock file."""
+    command = ["poetry"]
+    if constrain_nautobot_ver:
+        docker_nautobot_version = helpers.get_docker_nautobot_version(context)
+        command.extend(["add", "--lock", f"nautobot@{docker_nautobot_version}"])
+        if constrain_python_ver:
+            command.extend(["--python", context.nautobot_fsus.python_ver])
+    else:
+        if check:
+            command.append("check")
+        else:
+            command.extend(["lock", "--no-update"])
+
+    helpers.run_command(context, " ".join(command))
 
 
 # =================================================================== #
@@ -355,6 +374,14 @@ def makemigrations(context: Context, name: str | None = None) -> None:
         command.extend(["--name", name])
 
     helpers.run_command(context, " ".join(command))
+
+
+@task
+def check_migrations(context: Context) -> None:
+    """Check for missing migrations."""
+    command = "nautobot-server makemigrations --dry-run --check"
+
+    helpers.run_command(context, command)
 
 
 @task(
