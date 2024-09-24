@@ -313,6 +313,11 @@ class FSUTypeModel(PrimaryModel):
         """Display string for an FSU type - manufacturer, name, and part number."""
         return f"{self.manufacturer.name} {self.name} [{self.part_number}]"
 
+    @property
+    def instance_count(self) -> int:
+        """Calculate the number of child FSU instances."""
+        return int(self.instances.all().count())
+
     def get_absolute_url(self) -> str:
         """Calculate the absolute URL for an FSU type."""
         return reverse(f"plugins:nautobot_fsus:{self._meta.model_name}", kwargs={"pk": self.pk})
