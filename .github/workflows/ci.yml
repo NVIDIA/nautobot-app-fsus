@@ -55,7 +55,7 @@ jobs:
       - name: "Setup environment"
         uses: "./.github/actions/poetry"
       - name: "Linting: flake8"
-        run: poetry run invoke flake8
+        run: poetry run invoke test.flake8
 
   mypy:
     runs-on: "ubuntu-20.04"
@@ -67,7 +67,7 @@ jobs:
       - name: "Setup environment"
         uses: "./.github/actions/poetry"
       - name: "Linting: mypy"
-        run: poetry run invoke mypy
+        run: poetry run invoke test.mypy
 
   poetry:
     runs-on: "ubuntu-20.04"
