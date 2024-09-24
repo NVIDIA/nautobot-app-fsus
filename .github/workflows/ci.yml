@@ -27,7 +27,7 @@ jobs:
       - name: "Check out repository"
         uses: "actions/checkout@v4"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v6"
+        uses: "./.github/actions/poetry"
       - name: "Linting: bandit"
         run: poetry run invoke test.bandit
 
@@ -39,7 +39,7 @@ jobs:
       - name: "Check out repository"
         uses: "actions/checkout@v4"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v6"
+        uses: "./.github/actions/poetry"
       - name: "Linting: pydocstyle"
         run: poetry run invoke test.pydocstyle
 
@@ -51,9 +51,9 @@ jobs:
       - name: "Check out repository"
         uses: "actions/checkout@v4"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v6"
+        uses: "./.github/actions/poetry"
       - name: "Linting: flake8"
-        run: poetry run invoke flake8
+        run: poetry run invoke test.flake8
 
   mypy:
     runs-on: "ubuntu-20.04"
@@ -63,9 +63,9 @@ jobs:
       - name: "Check out repository"
         uses: "actions/checkout@v4"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v6"
+        uses: "./.github/actions/poetry"
       - name: "Linting: mypy"
-        run: poetry run invoke mypy
+        run: poetry run invoke test.mypy
 
   poetry:
     runs-on: "ubuntu-20.04"
@@ -75,7 +75,7 @@ jobs:
       - name: "Check out repository"
         uses: "actions/checkout@v4"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v6"
+        uses: "./.github/actions/poetry"
       - name: "Checking: poetry lock file"
         run: poetry run invoke lock --check
 
@@ -99,7 +99,7 @@ jobs:
       - name: "Check out repository"
         uses: "actions/checkout@v4"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v6"
+        uses: "./.github/actions/poetry"
       - name: "Generate lock file with constrained Nautobot version"
         env:
           INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
@@ -114,7 +114,7 @@ jobs:
           context: "./"
           push: false
           load: true
-          tags: "${{ env.APP_NAME }}/nautobot:%{{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
+          tags: "${{ env.APP_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
           file: "development/Dockerfile"
           cache-from: "type=gha,scope=${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
           cache-to: "type=gha,scope=${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
@@ -146,7 +146,7 @@ jobs:
       - name: "Check out repository"
         uses: "actions/checkout@v4"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v6"
+        uses: "./.github/actions/poetry"
       - name: "Generate lock file with constrained Nautobot version"
         env:
           INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
@@ -161,7 +161,7 @@ jobs:
           context: "./"
           push: false
           load: true
-          tags: "${{ env.APP_NAME }}/nautobot:%{{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
+          tags: "${{ env.APP_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
           file: "development/Dockerfile"
           cache-from: "type=gha,scope=${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
           cache-to: "type=gha,scope=${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"

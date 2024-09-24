@@ -1,0 +1,64 @@
+---
+name: "Setup poetry for tests"
+description: "Creates a poetry environment for linting and testing"
+
+inputs:
+  install-options:
+    description: "Command-line options to pass to poetry install command"
+    required: false
+    default: "--with dev"
+  poetry-version:
+    description: "Install a specific version of poetry"
+    required: false
+    default: ""
+  python-version:
+    description: "Python version to use with poetry"
+    required: false
+    default: "3.10"
+  cache-version:
+    description: "Version of the cache to use for the environment, can be used to invalidate the current cache"
+    required: false
+    default: ""
+
+outputs:
+  cache-used:
+    description: "Whether or not the cache was used"
+    value: "${{ steps.poetry-cache.outputs.cache-hit }}"
+  python-version:
+    description: "Python version used in the environment"
+    value: "${{ steps.setup-python.outputs.python-version }}"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Set up Python"
+      uses: "actions/setup-python@v5"
+      id: "setup-python"
+      with:
+        python-version: "${{ inputs.python-version }}"
+    - name: "Log: Installing poetry"
+      run: "echo Installing Poetry"
+      shell: "bash"
+    - name: "Install Poetry"
+      run: |
+        if [ -z "${{ inputs.poetry-version }}" ]; then
+          curl sSL https://install.python-poetry.org | python -
+        else
+          curl sSL https://install.python-poetry.org | python - --version ${{ inputs.poetry-version }}
+        fi
+      shell: "bash"
+    - name: "Add Poetry to PATH"
+      run: "ln -s /root/.local/bin/poetry /usr/local/bin/poetry"
+      shell: "bash"
+    - name: "Log: Checking Cache"
+      run: "echo Checking cache"
+      shell: "bash"
+    - name: "Check Cache"
+      uses: "actions/cache@v4"
+      id: "poetry-cache"
+      with:
+        path: "~/.cache/pypoetry/virtualenvs/"
+        key: "${{ runner.os }}-poetry-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('./poetry.lock') }}${{ inputs.cache-version }}"
+    - name: "Install package"
+      run: "poetry install ${{ inputs.install-options }}"
+      shell: "bash"
