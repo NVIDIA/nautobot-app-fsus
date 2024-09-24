@@ -295,9 +295,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
         def test_clear_children(self):
             """Test that setting child field to an empty list clears the children."""
-            fsu = self.model.objects.first()
+            fsu = self.model.objects.exclude(device__isnull=True).first()
             model = fsu._meta.model_name
-            self.children[1].device = Device.objects.first()
+            self.children[1].device = fsu.device
             for child in self.children:
                 setattr(child, f"parent_{model}", fsu)
                 child.save()
@@ -313,9 +313,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
         def test_setting_storage_location_clears_children(self):
             """Test that setting the storage location clears the children."""
-            fsu = self.model.objects.first()
+            fsu = self.model.objects.exclude(device__isnull=True).first()
             model = fsu._meta.model_name
-            self.children[1].device = Device.objects.first()
+            self.children[1].device = fsu.device
             for child in self.children:
                 setattr(child, f"parent_{model}", fsu)
                 child.save()
@@ -335,9 +335,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
         def test_update_children(self):
             """Test setting a new list of children updates the instances."""
-            fsu = self.model.objects.first()
+            fsu = self.model.objects.exclude(device__isnull=True).first()
             model = fsu._meta.model_name
-            self.children[1].device = Device.objects.first()
+            self.children[1].device = fsu.device
             setattr(self.children[1], f"parent_{model}", fsu)
             self.children[1].save()
 
@@ -444,9 +444,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
         def test_clear_children(self):
             """Test that setting child field to an empty list clears the children."""
-            fsu = self.model.objects.first()
+            fsu = self.model.objects.exclude(device__isnull=True).first()
             model = fsu._meta.model_name
-            self.children[1].device = Device.objects.first()
+            self.children[1].device = fsu.device
             self.children[1].save()
             for child in self.children:
                 getattr(child, f"parent_{model}").set([fsu])
@@ -462,9 +462,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
         def test_setting_storage_location_clears_children(self):
             """Test that setting the storage location clears the children."""
-            fsu = self.model.objects.first()
+            fsu = self.model.objects.exclude(device__isnull=True).first()
             model = fsu._meta.model_name
-            self.children[1].device = Device.objects.first()
+            self.children[1].device = fsu.device
             self.children[1].save()
             for child in self.children:
                 getattr(child, f"parent_{model}").set([fsu])
@@ -484,9 +484,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
         def test_update_children(self):
             """Test setting a new list of children updates the instances."""
-            fsu = self.model.objects.first()
+            fsu = self.model.objects.exclude(device__isnull=True).first()
             model = fsu._meta.model_name
-            self.children[1].device = Device.objects.first()
+            self.children[1].device = fsu.device
             self.children[1].save()
             getattr(self.children[1], f"parent_{model}").set([fsu])
 

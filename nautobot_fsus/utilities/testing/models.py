@@ -279,7 +279,7 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             child_instance = self.child_model(
                 fsu_type=child_type,
                 device=self.device,
-                name=f"test_{self.child_model._meta.model_name}",
+                name=f"test_child_{self.child_model._meta.model_name}",
                 status=self.status,
             )
             child_instance.save()
@@ -287,11 +287,11 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             instance = self.model(
                 fsu_type=self.fsu_type,
                 device=self.device,
-                name=f"test_{self.model._meta.model_name}",
+                name=f"test_parent_{self.model._meta.model_name}",
                 status=self.status,
             )
-            getattr(instance, self.child_field).set([child_instance])
             instance.validated_save()
+            getattr(instance, self.child_field).set([child_instance])
 
             self.assertEqual(
                 getattr(child_instance, f"parent_{self.model._meta.model_name}"),
