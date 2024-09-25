@@ -14,11 +14,14 @@
 #  limitations under the License.
 
 """Form mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
-from typing import Any, Type
+from typing import Type
 
 from django import forms
-from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
-from nautobot.extras.forms import (
+from nautobot.apps.forms import (
+    BootstrapMixin,
+    CommentField,
+    DynamicModelChoiceField,
+    ExpandableNameField,
     NautobotBulkEditForm,
     NautobotFilterForm,
     NautobotModelForm,
@@ -26,13 +29,7 @@ from nautobot.extras.forms import (
     StatusModelBulkEditFormMixin,
     StatusModelFilterFormMixin,
 )
-from nautobot.extras.forms.mixins import StatusModelCSVFormMixin
-from nautobot.utilities.forms import BootstrapMixin, CommentField, CSVModelForm
-from nautobot.utilities.forms.fields import (
-    CSVModelChoiceField,
-    DynamicModelChoiceField,
-    ExpandableNameField,
-)
+from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 
 from nautobot_fsus.models.mixins import FSUModel
 
@@ -48,18 +45,6 @@ class FSUTemplateModelForm(NautobotModelForm):
         abstract = True
         fields = ["fsu_type", "device_type", "name", "description"]
         widgets = {"device_type": forms.HiddenInput()}
-
-
-class FSUTemplateCSVForm(CSVModelForm):
-    """Abstract form model for bulk importing FSU templates from CSV data."""
-
-    device_type = CSVModelChoiceField(queryset=DeviceType.objects.all(), label="Device Type")
-
-    class Meta:
-        """FSUTemplateCSVForm model options."""
-
-        abstract = True
-        fields = ["fsu_type", "device_type", "name", "description"]
 
 
 class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
@@ -144,18 +129,6 @@ class FSUTypeModelForm(NautobotModelForm):
             "comments",
             "tags",
         ]
-
-
-class FSUTypeCSVForm(CSVModelForm):
-    """Abstract form model for bulk importing FSU types from CSV data."""
-
-    manufacturer = CSVModelChoiceField(queryset=Manufacturer.objects.all(), to_field_name="name")
-
-    class Meta:
-        """FSUTypeCSVForm model options."""
-
-        abstract = True
-        fields = ["manufacturer", "name", "part_number", "description", "comments"]
 
 
 class FSUTypeImportModelForm(BootstrapMixin, forms.ModelForm):
@@ -279,71 +252,3 @@ class FSUImportModelForm(BootstrapMixin, forms.ModelForm):
             "description",
             "comments",
         ]
-
-
-class BaseFSUCSVForm(StatusModelCSVFormMixin):
-    """Base form for CSV exports of FSUs."""
-    device = CSVModelChoiceField(
-        queryset=Device.objects.all(),
-        to_field_name="name",
-        required=False,
-        blank=True,
-        help_text="Parent device (must be empty if storage location is set)."
-    )
-
-    location = CSVModelChoiceField(
-        queryset=Location.objects.all(),
-        to_field_name="name",
-        required=False,
-        blank=True,
-        help_text="Parent storage location (must be empty if device is set)."
-    )
-
-    manufacturer = CSVModelChoiceField(
-        queryset=Manufacturer.objects.all(),
-        to_field_name="name",
-        required=False,
-        help_text="FSU type manufacturer"
-    )
-
-    class Meta:
-        """Metadata attributes."""
-        abstract = True
-        fields = [
-            "device",
-            "location",
-            "name",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_name",
-            "driver_version",
-            "asset_tag",
-            "status",
-            "description",
-            "comments",
-        ]
-
-    def __init__(self, *args: Any, data: dict[str, Any] | None = None, **kwargs: Any) -> None:
-        """Initialize the form."""
-        if "headers" not in kwargs:
-            headers = {
-                "device": "name",
-                "location": "name",
-                "name": None,
-                "fsu_type": "id",
-                "status": "slug",
-            }
-        else:
-            headers = kwargs.pop("headers")
-            headers.setdefault("device", "name")
-            headers.setdefault("location", "name")
-
-        super().__init__(*args, headers=headers, **kwargs)
-
-        if data is not None:
-            if manufacturer_name := data.get("manufacturer"):
-                params = {
-                    f"manufacturer__{self.fields['manufacturer'].to_field_name}": manufacturer_name
-                }
-                self.fields["fsu_type"].queryset = self.fields["fsu_type"].queryset.filter(**params)

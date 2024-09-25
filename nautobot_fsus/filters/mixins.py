@@ -15,15 +15,14 @@
 
 """Mixin classes to support user-definable fields in model filters."""
 import django_filters
-from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
-from nautobot.utilities.filters import (
-    NaturalKeyOrPKMultipleChoiceFilter,
+from nautobot.apps.filters import (
     MultiValueCharFilter,
     MultiValueUUIDFilter,
+    NaturalKeyOrPKMultipleChoiceFilter,
     RelatedMembershipBooleanFilter,
     SearchFilter,
-    TagFilter,
 )
+from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 
 
 class FSUModelFilterSetMixin(django_filters.FilterSet):
@@ -32,10 +31,10 @@ class FSUModelFilterSetMixin(django_filters.FilterSet):
         filter_predicates={
             "name": "icontains",
             "fsu_type__name": "icontains",
-            "serial": "icontains",
-            "firmware": "icontains",
+            "serial_number": "icontains",
+            "firmware_version": "icontains",
             "driver_name": "icontains",
-            "driver": "icontains",
+            "driver_version": "icontains",
         }
     )
 
@@ -63,8 +62,6 @@ class FSUModelFilterSetMixin(django_filters.FilterSet):
         label="Storage Location (ID)",
     )
 
-    tags = TagFilter()
-
 
 class FSUTemplateModelFilterSetMixin(django_filters.FilterSet):
     """Mixin with the common filter code for FSU templates."""
@@ -78,7 +75,8 @@ class FSUTemplateModelFilterSetMixin(django_filters.FilterSet):
 
     device_type = NaturalKeyOrPKMultipleChoiceFilter(
         queryset=DeviceType.objects.all(),
-        label="Device type (slug or ID)",
+        to_field_name="model",
+        label="Device type (model or ID)",
     )
 
     id = MultiValueUUIDFilter(label="ID")
@@ -114,5 +112,3 @@ class FSUTypeModelFilterSetMixin(django_filters.FilterSet):
         field_name="instances",
         label="Has Instances",
     )
-
-    tags = TagFilter()

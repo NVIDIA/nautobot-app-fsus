@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 """Choice sets for FSUs and Consumables models and forms."""
-from nautobot.utilities.choices import ChoiceSet
+from nautobot.apps.choices import ChoiceSet
 
 
 class CPUArchitectures(ChoiceSet):

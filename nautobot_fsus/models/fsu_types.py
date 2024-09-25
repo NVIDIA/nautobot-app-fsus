@@ -61,36 +61,10 @@ class CPUType(FSUTypeModel):
         choices=choices.PCIeGenerations,
     )
 
-    csv_headers = [
-        "manufacturer",
-        "name",
-        "part_number",
-        "architecture",
-        "cpu_speed",
-        "cores",
-        "pcie_generation",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
         verbose_name = "CPU Type"
         verbose_name_plural = "CPU Types"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,
-            self.name,
-            self.part_number,
-            self.get_architecture_display,
-            str(self.cpu_speed) if self.cpu_speed else "",
-            str(self.cores) if self.cores else "",
-            self.get_pcie_generation_display,
-            self.description,
-            self.comments,
-        )
 
 
 @extras_features(
@@ -117,32 +91,10 @@ class DiskType(FSUTypeModel):
         help_text="Disk size, in GB",
     )
 
-    csv_headers = [
-        "manufacturer",
-        "name",
-        "part_number",
-        "disk_type",
-        "size",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
         verbose_name = "Disk Type"
         verbose_name_plural = "Disk Types"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,
-            self.name,
-            self.part_number,
-            self.get_disk_type_display,
-            str(self.size) if self.size else "",
-            self.description,
-            self.comments,
-        )
 
 
 @extras_features(
@@ -179,30 +131,10 @@ class GPUBaseboardType(FSUTypeModel):
         help_text="The number of physical GPU slots provided by this GPU Baseboard."
     )
 
-    csv_headers = [
-        "manufacturer",
-        "name",
-        "part_number",
-        "slot_count",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
         verbose_name = "GPU Baseboard Type"
         verbose_name_plural = "GPU Baseboard Types"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,
-            self.name,
-            self.part_number,
-            str(self.slot_count) if self.slot_count else "",
-            self.description,
-            self.comments,
-        )
 
 
 @extras_features(
@@ -256,30 +188,10 @@ class MainboardType(FSUTypeModel):
         validators=[MinValueValidator(1)],
     )
 
-    csv_headers = [
-        "manufacturer",
-        "name",
-        "part_number",
-        "cpu_socket_count",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
         verbose_name = "Mainboard Type"
         verbose_name_plural = "Mainboard Types"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,
-            self.name,
-            self.part_number,
-            str(self.cpu_socket_count) if self.cpu_socket_count else "",
-            self.description,
-            self.comments,
-        )
 
 
 @extras_features(
@@ -298,30 +210,11 @@ class NICType(FSUTypeModel):
         null=True,
         help_text="The number of physical interfaces provided by the NIC.",
     )
-    csv_headers = [
-        "manufacturer",
-        "name",
-        "part_number",
-        "interface_count",
-        "description",
-        "comments",
-    ]
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
         verbose_name = "NIC Type"
         verbose_name_plural = "NIC Types"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,
-            self.name,
-            self.part_number,
-            str(self.interface_count) if self.interface_count else "",
-            self.description,
-            self.comments,
-        )
 
 
 @extras_features(
@@ -372,36 +265,10 @@ class PSUType(FSUTypeModel):
 
     hot_swappable = models.BooleanField(default=False)
 
-    csv_headers = [
-        "manufacturer",
-        "name",
-        "part_number",
-        "feed_type",
-        "power_provided",
-        "required_voltage",
-        "hot_swappable",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
         verbose_name = "PSU Type"
         verbose_name_plural = "PSU Types"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,
-            self.name,
-            self.part_number,
-            self.get_feed_type_display,
-            str(self.power_provided) if self.power_provided else "",
-            self.required_voltage,
-            str(self.hot_swappable),
-            self.description,
-            self.comments,
-        )
 
 
 @extras_features(
@@ -447,35 +314,7 @@ class RAMModuleType(FSUTypeModel):
         help_text="Number of RAM Modules included in part number",
     )
 
-    csv_headers = [
-        "manufacturer",
-        "name",
-        "part_number",
-        "module_type",
-        "technology",
-        "speed",
-        "capacity",
-        "quantity",
-        "description",
-        "comments",
-    ]
-
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
         verbose_name = "RAM Module Type"
         verbose_name_plural = "RAM Module Types"
-
-    def to_csv(self) -> tuple[str, ...]:
-        """Return a tuple of values suitable for CSV export."""
-        return (
-            self.manufacturer.name,
-            self.name,
-            self.part_number,
-            self.get_module_type_display,
-            self.get_technology_display,
-            str(self.speed) if self.speed else "",
-            str(self.capacity) if self.capacity else "",
-            str(self.quantity),
-            self.description,
-            self.comments,
-        )

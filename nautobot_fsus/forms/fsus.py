@@ -15,15 +15,17 @@
 
 """Form definitions for FSU models."""
 from django import forms
+from nautobot.apps.forms import (
+    DynamicModelChoiceField,
+    DynamicModelMultipleChoiceField,
+    StaticSelect2,
+    TagFilterField,
+)
+from nautobot.core.forms.constants import BOOLEAN_WITH_BLANK_CHOICES
 from nautobot.dcim.models import Interface, PowerPort
-from nautobot.utilities.forms import DynamicModelChoiceField, DynamicModelMultipleChoiceField
-from nautobot.utilities.forms.constants import BOOLEAN_WITH_BLANK_CHOICES
-from nautobot.utilities.forms.fields import CSVModelChoiceField, TagFilterField
-from nautobot.utilities.forms.widgets import StaticSelect2
 
 from nautobot_fsus import models
 from nautobot_fsus.forms.mixins import (
-    BaseFSUCSVForm,
     FSUModelBulkEditForm,
     FSUModelFilterForm,
     FSUModelForm,
@@ -46,44 +48,6 @@ class CPUBulkEditForm(FSUModelBulkEditForm):
 
     class Meta(FSUModelBulkEditForm.Meta):
         """CPUBulkEditForm model options."""
-
-
-class CPUCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of CPU instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.CPUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="CPU type ID (name is not guaranteed to be unique)",
-    )
-
-    parent_mainboard = CSVModelChoiceField(
-        queryset=models.Mainboard.objects.all(),
-        to_field_name="id",
-        required=False,
-        help_text="Parent Mainboard ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """CPUCSVForm model options."""
-
-        model = models.CPU
-        fields = [
-            "device",
-            "location",
-            "name",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_name",
-            "driver_version",
-            "parent_mainboard",
-            "asset_tag",
-            "status",
-            "description",
-            "comments",
-        ]
 
 
 class CPUFilterForm(FSUModelFilterForm):
@@ -187,44 +151,6 @@ class DiskBulkEditForm(FSUModelBulkEditForm):
         """DiskBulkEditForm model options."""
 
 
-class DiskCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of Disk instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.DiskType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="Disk type ID (name is not guaranteed to be unique)",
-    )
-
-    parent_hba = CSVModelChoiceField(
-        queryset=models.HBA.objects.all(),
-        to_field_name="id",
-        required=False,
-        help_text="Parent HBA ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """DiskCSVForm model options."""
-
-        model = models.Disk
-        fields = [
-            "device",
-            "location",
-            "name",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_name",
-            "driver_version",
-            "parent_hba",
-            "asset_tag",
-            "status",
-            "description",
-            "comments",
-        ]
-
-
 class DiskFilterForm(FSUModelFilterForm):
     """Form for filtering Disk instances."""
 
@@ -320,22 +246,6 @@ class FanBulkEditForm(FSUModelBulkEditForm):
         """FanBulkEditForm model options."""
 
 
-class FanCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of Fan instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.FanType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="Fan type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """FanCSVForm model options."""
-
-        model = models.Fan
-
-
 class FanFilterForm(FSUModelFilterForm):
     """Form for filtering Fan instances."""
 
@@ -386,45 +296,6 @@ class GPUBulkEditForm(FSUModelBulkEditForm):
 
     class Meta(FSUModelBulkEditForm.Meta):
         """GPUBulkEditForm model options."""
-
-
-class GPUCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of GPU instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.GPUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="GPU type ID (name is not guaranteed to be unique)",
-    )
-
-    parent_gpubaseboard = CSVModelChoiceField(
-        queryset=models.GPUBaseboard.objects.all(),
-        to_field_name="id",
-        required=False,
-        help_text="Parent GPU Baseboard ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """GPUCSVForm model options."""
-
-        model = models.GPU
-        fields = [
-            "device",
-            "location",
-            "name",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_name",
-            "driver_version",
-            "pci_slot_id",
-            "parent_gpubaseboard",
-            "asset_tag",
-            "status",
-            "description",
-            "comments",
-        ]
 
 
 class GPUFilterForm(FSUModelFilterForm):
@@ -533,22 +404,6 @@ class GPUBaseboardBulkEditForm(FSUModelBulkEditForm):
         """GPUBaseboardBulkEditForm model options."""
 
 
-class GPUBaseboardCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of GPUBaseboard instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.GPUBaseboardType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="GPUBaseboard type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """GPUBaseboardCSVForm model options."""
-
-        model = models.GPUBaseboard
-
-
 class GPUBaseboardFilterForm(FSUModelFilterForm):
     """Form for filtering GPUBaseboard instances."""
 
@@ -630,37 +485,6 @@ class HBABulkEditForm(FSUModelBulkEditForm):
 
     class Meta(FSUModelBulkEditForm.Meta):
         """HBABulkEditForm model options."""
-
-
-class HBACSVForm(BaseFSUCSVForm):
-    """Form for CSV import of HBA instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.HBAType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="HBA type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """HBACSVForm model options."""
-
-        model = models.HBA
-        fields = [
-            "device",
-            "location",
-            "name",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_name",
-            "driver_version",
-            "pci_slot_id",
-            "asset_tag",
-            "status",
-            "description",
-            "comments",
-        ]
 
 
 class HBAFilterForm(FSUModelFilterForm):
@@ -759,22 +583,6 @@ class MainboardBulkEditForm(FSUModelBulkEditForm):
         """MainboardBulkEditForm model options."""
 
 
-class MainboardCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of Mainboard instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.MainboardType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="Mainboard type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """MainboardCSVForm model options."""
-
-        model = models.Mainboard
-
-
 class MainboardFilterForm(FSUModelFilterForm):
     """Form for filtering Mainboard instances."""
 
@@ -856,37 +664,6 @@ class NICBulkEditForm(FSUModelBulkEditForm):
 
     class Meta(FSUModelBulkEditForm.Meta):
         """NICBulkEditForm model options."""
-
-
-class NICCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of NIC instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.NICType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="NIC type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """NICCSVForm model options."""
-
-        model = models.NIC
-        fields = [
-            "device",
-            "location",
-            "name",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_name",
-            "driver_version",
-            "pci_slot_id",
-            "asset_tag",
-            "status",
-            "description",
-            "comments",
-        ]
 
 
 class NICFilterForm(FSUModelFilterForm):
@@ -989,22 +766,6 @@ class OtherFSUBulkEditForm(FSUModelBulkEditForm):
         """OtherFSUBulkEditForm model options."""
 
 
-class OtherFSUCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of OtherFSU instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.OtherFSUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="OtherFSU type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """OtherFSUCSVForm model options."""
-
-        model = models.OtherFSU
-
-
 class OtherFSUFilterForm(FSUModelFilterForm):
     """Form for filtering OtherFSU instances."""
 
@@ -1055,22 +816,6 @@ class PSUBulkEditForm(FSUModelBulkEditForm):
 
     class Meta(FSUModelBulkEditForm.Meta):
         """PSUBulkEditForm model options."""
-
-
-class PSUCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of PSU instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.PSUType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="PSU type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """PSUCSVForm model options."""
-
-        model = models.PSU
 
 
 class PSUFilterForm(FSUModelFilterForm):
@@ -1154,37 +899,6 @@ class RAMModuleBulkEditForm(FSUModelBulkEditForm):
 
     class Meta(FSUModelBulkEditForm.Meta):
         """RAMModuleBulkEditForm model options."""
-
-
-class RAMModuleCSVForm(BaseFSUCSVForm):
-    """Form for CSV import of RAMModule instances."""
-
-    fsu_type = CSVModelChoiceField(
-        queryset=models.RAMModuleType.objects.all(),
-        to_field_name="id",
-        required=True,
-        help_text="RAMModule type ID (name is not guaranteed to be unique)",
-    )
-
-    class Meta(BaseFSUCSVForm.Meta):
-        """RAMModuleCSVForm model options."""
-
-        model = models.RAMModule
-        fields = [
-            "device",
-            "location",
-            "name",
-            "fsu_type",
-            "serial_number",
-            "firmware_version",
-            "driver_name",
-            "driver_version",
-            "slot_id",
-            "asset_tag",
-            "status",
-            "description",
-            "comments",
-        ]
 
 
 class RAMModuleFilterForm(FSUModelFilterForm):

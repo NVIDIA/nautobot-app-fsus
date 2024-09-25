@@ -29,7 +29,6 @@ from nautobot_fsus.views.mixins import FSUBulkRenameView, FSUModelViewSet
 class CPUUIViewSet(FSUModelViewSet):
     """View set for CPU model."""
 
-    bulk_create_form_class = forms.CPUCSVForm
     bulk_update_form_class = forms.CPUBulkEditForm
     filterset_class = filters.CPUFilterSet
     filterset_form_class = forms.CPUFilterForm
@@ -50,7 +49,6 @@ class CPUBulkRenameView(FSUBulkRenameView):
 class DiskUIViewSet(FSUModelViewSet):
     """View set for Disk model."""
 
-    bulk_create_form_class = forms.DiskCSVForm
     bulk_update_form_class = forms.DiskBulkEditForm
     filterset_class = filters.DiskFilterSet
     filterset_form_class = forms.DiskFilterForm
@@ -71,7 +69,6 @@ class DiskBulkRenameView(FSUBulkRenameView):
 class FanUIViewSet(FSUModelViewSet):
     """View set for Fan model."""
 
-    bulk_create_form_class = forms.FanCSVForm
     bulk_update_form_class = forms.FanBulkEditForm
     filterset_class = filters.FanFilterSet
     filterset_form_class = forms.FanFilterForm
@@ -92,7 +89,6 @@ class FanBulkRenameView(FSUBulkRenameView):
 class GPUUIViewSet(FSUModelViewSet):
     """View set for GPU model."""
 
-    bulk_create_form_class = forms.GPUCSVForm
     bulk_update_form_class = forms.GPUBulkEditForm
     filterset_class = filters.GPUFilterSet
     filterset_form_class = forms.GPUFilterForm
@@ -113,7 +109,6 @@ class GPUBulkRenameView(FSUBulkRenameView):
 class GPUBaseboardUIViewSet(FSUModelViewSet):
     """View set for GPUBaseboard model."""
 
-    bulk_create_form_class = forms.GPUBaseboardCSVForm
     bulk_update_form_class = forms.GPUBaseboardBulkEditForm
     filterset_class = filters.GPUBaseboardFilterSet
     filterset_form_class = forms.GPUBaseboardFilterForm
@@ -151,7 +146,6 @@ class GPUBaseboardBulkRenameView(FSUBulkRenameView):
 class HBAUIViewSet(FSUModelViewSet):
     """View set for HBA model."""
 
-    bulk_create_form_class = forms.HBACSVForm
     bulk_update_form_class = forms.HBABulkEditForm
     filterset_class = filters.HBAFilterSet
     filterset_form_class = forms.HBAFilterForm
@@ -188,7 +182,6 @@ class HBABulkRenameView(FSUBulkRenameView):
 class MainboardUIViewSet(FSUModelViewSet):
     """View set for Mainboard model."""
 
-    bulk_create_form_class = forms.MainboardCSVForm
     bulk_update_form_class = forms.MainboardBulkEditForm
     filterset_class = filters.MainboardFilterSet
     filterset_form_class = forms.MainboardFilterForm
@@ -226,7 +219,6 @@ class MainboardBulkRenameView(FSUBulkRenameView):
 class NICUIViewSet(FSUModelViewSet):
     """View set for NIC model."""
 
-    bulk_create_form_class = forms.NICCSVForm
     bulk_update_form_class = forms.NICBulkEditForm
     filterset_class = filters.NICFilterSet
     filterset_form_class = forms.NICFilterForm
@@ -273,7 +265,6 @@ class NICBulkRenameView(FSUBulkRenameView):
 class OtherFSUUIViewSet(FSUModelViewSet):
     """View set for OtherFSU model."""
 
-    bulk_create_form_class = forms.OtherFSUCSVForm
     bulk_update_form_class = forms.OtherFSUBulkEditForm
     filterset_class = filters.OtherFSUFilterSet
     filterset_form_class = forms.OtherFSUFilterForm
@@ -294,7 +285,6 @@ class OtherFSUBulkRenameView(FSUBulkRenameView):
 class PSUUIViewSet(FSUModelViewSet):
     """View set for PSU model."""
 
-    bulk_create_form_class = forms.PSUCSVForm
     bulk_update_form_class = forms.PSUBulkEditForm
     filterset_class = filters.PSUFilterSet
     filterset_form_class = forms.PSUFilterForm
@@ -335,7 +325,6 @@ class PSUBulkRenameView(FSUBulkRenameView):
 class RAMModuleUIViewSet(FSUModelViewSet):
     """View set for RAMModule model."""
 
-    bulk_create_form_class = forms.RAMModuleCSVForm
     bulk_update_form_class = forms.RAMModuleBulkEditForm
     filterset_class = filters.RAMModuleFilterSet
     filterset_form_class = forms.RAMModuleFilterForm

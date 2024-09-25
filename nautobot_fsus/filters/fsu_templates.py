@@ -15,8 +15,11 @@
 
 """FilterSets for FSU template models."""
 import django_filters.constants
-from nautobot.extras.filters.mixins import CustomFieldModelFilterSetMixin
-from nautobot.utilities.filters import BaseFilterSet, MultiValueCharFilter
+from nautobot.apps.filters import (
+    BaseFilterSet,
+    CustomFieldModelFilterSetMixin,
+    MultiValueCharFilter,
+)
 
 from nautobot_fsus import models
 from nautobot_fsus.filters.mixins import FSUTemplateModelFilterSetMixin

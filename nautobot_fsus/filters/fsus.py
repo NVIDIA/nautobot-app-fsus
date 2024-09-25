@@ -15,22 +15,18 @@
 
 """FilterSets for FSU models."""
 import django_filters
-from nautobot.extras.filters import NautobotFilterSet
-from nautobot.extras.filters.mixins import StatusModelFilterSetMixin
-from nautobot.utilities.filters import (
+from nautobot.apps.filters import (
+    NautobotFilterSet,
     NaturalKeyOrPKMultipleChoiceFilter,
     RelatedMembershipBooleanFilter,
+    StatusModelFilterSetMixin,
 )
 
 from nautobot_fsus import models
 from nautobot_fsus.filters.mixins import FSUModelFilterSetMixin
 
 
-class CPUFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class CPUFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for CPUs."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -65,14 +61,11 @@ class CPUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class DiskFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class DiskFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for Disks."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -107,14 +100,11 @@ class DiskFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class FanFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class FanFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for Fans."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -137,14 +127,11 @@ class FanFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class GPUBaseboardFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class GPUBaseboardFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for GPU Baseboards."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -172,14 +159,11 @@ class GPUBaseboardFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class GPUFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class GPUFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for GPUs."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -215,14 +199,11 @@ class GPUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class HBAFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class HBAFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for HBAs."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -251,14 +232,11 @@ class HBAFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class MainboardFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class MainboardFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for Mainboards."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -286,14 +264,11 @@ class MainboardFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class NICFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class NICFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for NICs."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -322,14 +297,11 @@ class NICFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class OtherFSUFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class OtherFSUFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for Other FSUs."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -352,14 +324,11 @@ class OtherFSUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class PSUFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class PSUFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for PSUs."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -388,14 +357,11 @@ class PSUFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]
 
 
-class RAMModuleFilterSet(
-    NautobotFilterSet,
-    FSUModelFilterSetMixin,
-    StatusModelFilterSetMixin,
-):
+class RAMModuleFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for RAM Modules."""
 
     fsu_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -419,4 +385,5 @@ class RAMModuleFilterSet(
             "status",
             "description",
             "comments",
+            "tags",
         ]

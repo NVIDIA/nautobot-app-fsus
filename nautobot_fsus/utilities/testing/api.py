@@ -17,10 +17,10 @@
 from typing import Type
 
 from django.urls import reverse
+from nautobot.core.testing.api import APIViewTestCases
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 from nautobot.dcim.models.device_components import ComponentModel
 from nautobot.extras.models import Status
-from nautobot.utilities.testing.api import APIViewTestCases
 from rest_framework import status
 
 from nautobot_fsus.models.mixins import FSUModel, FSUTemplateModel, FSUTypeModel
@@ -38,7 +38,6 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
         fsus: list[FSUModel]
         validation_excluded_fields = ["status"]
         bulk_update_data = {"firmware_version": "2.0"}
-        choices_fields = ["status"]
 
         @classmethod
         def setUpTestData(cls):
@@ -109,7 +108,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                     "name": f"test_{model_name}_3",
                     "serial_number": "c0001",
                     "firmware_version": "1.0",
-                    "status": "active",
+                    "status": "Active",
                 },
                 {
                     "fsu_type": cls.fsu_types[0].pk,
@@ -118,7 +117,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                     "name": f"test_{model_name}_4",
                     "serial_number": "c0002",
                     "firmware_version": "1.0",
-                    "status": "active",
+                    "status": "Active",
                 },
                 {
                     "fsu_type": cls.fsu_types[1].pk,
@@ -127,7 +126,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                     "name": f"test_{model_name}_5",
                     "serial_number": "d0001",
                     "firmware_version": "1.0",
-                    "status": "available",
+                    "status": "Available",
                 },
             ]
 
@@ -226,7 +225,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 error_message = error_message[0]
             self.assertEqual(
                 f"{self.child_model._meta.verbose_name} {self.children[0].name} has a different "
-                f"parent device (Device 1-1) than that of its parent FSU (Device 5-2)",
+                f"parent device ({Device.objects.first().name}) than that of its parent FSU "
+                f"({Device.objects.last().name})",
                 str(error_message)
             )
 
@@ -323,7 +323,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = [{
                 "id": str(fsu.pk),
                 "location": str(Location.objects.first().pk),
-                "status": "available",
+                "status": "Available",
             }]
             self.add_permissions(f"nautobot_fsus.change_{ model }")
             url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
@@ -376,7 +376,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 error_message = error_message[0]
             self.assertEqual(
                 f"{self.child_model._meta.verbose_name} {self.children[0].name} has a different "
-                f"parent device (Device 1-1) than that of its parent FSU (Device 5-2)",
+                f"parent device ({Device.objects.first().name}) than that of its parent FSU "
+                f"({Device.objects.last().name})",
                 str(error_message)
             )
 
@@ -472,7 +473,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = [{
                 "id": str(fsu.pk),
                 "location": str(Location.objects.first().pk),
-                "status": "available",
+                "status": "Available",
             }]
             self.add_permissions(f"nautobot_fsus.change_{ model }")
             url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
@@ -517,7 +518,6 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             device_type = DeviceType.objects.create(
                 manufacturer=Manufacturer.objects.last(),
                 model="Test Device Type",
-                slug="test-device-type",
             )
 
             cls.fsu_types = [
@@ -600,7 +600,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
         def setUpTestData(cls):
             """Set up the data for the tests."""
             cls.bulk_update_data = {
-                "manufacturer": Manufacturer.objects.last().pk
+                "manufacturer": Manufacturer.objects.last().id
             }
 
             mfgr = Manufacturer.objects.first()

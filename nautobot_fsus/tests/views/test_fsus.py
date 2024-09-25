@@ -16,9 +16,9 @@
 """Tests for FSU model views defined in the Nautobot FSUs app."""
 from typing import Type
 
+from nautobot.core.testing import ViewTestCases
 from nautobot.dcim.models import Device, Location, Manufacturer
 from nautobot.extras.models import Status
-from nautobot.utilities.testing import ViewTestCases
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUModel, FSUTypeModel
@@ -93,11 +93,13 @@ class FSUViewTestCases:  # pylint: disable=too-few-public-methods
                 "location": None,
             }
 
+            status_available = Status.objects.get(name="Available")
+            status_active = Status.objects.get(name="Active")
             cls.csv_data = (
                 "device,location,name,fsu_type,status",
-                f"{devices[1].name},,test_{model_name}_7,{fsu_types[1].id},active",
-                f"{devices[1].name},,test_{model_name}_8,{fsu_types[1].id},active",
-                f",{location.name},test_{model_name}_9,{fsu_types[1].id},available",
+                f"{devices[1].pk},,test_{model_name}_A,{fsu_types[1].id},{status_active.pk}",
+                f"{devices[1].pk},,test_{model_name}_B,{fsu_types[1].id},{status_active.pk}",
+                f",{location.pk},test_{model_name}_C,{fsu_types[1].id},{status_available.pk}",
             )
 
 

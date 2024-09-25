@@ -16,11 +16,12 @@
 """Test cases and helpers for testing the Nautobot FSUs app."""
 from typing import Type
 
-from nautobot.dcim.models import Device, DeviceRole, DeviceType, Location, Manufacturer
+from django.contrib.contenttypes.models import ContentType
+from nautobot.core.models.querysets import RestrictedQuerySet
+from nautobot.core.testing import FilterTestCases
+from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Manufacturer
 from nautobot.extras.filters import NautobotFilterSet
-from nautobot.extras.models import Status
-from nautobot.utilities.querysets import RestrictedQuerySet
-from nautobot.utilities.testing import FilterTestCases
+from nautobot.extras.models import Role, Status, Tag
 
 from nautobot_fsus.models.mixins import FSUModel, FSUTemplateModel, FSUTypeModel
 
@@ -42,15 +43,18 @@ class FSUFilterTestCases:
             device_type = DeviceType.objects.create(
                 manufacturer=Manufacturer.objects.last(),
                 model="Test Device Type",
-                slug="test-device-type",
             )
-            location = Location.objects.first()
+            location = Location.objects.filter(
+                location_type__in=LocationType.objects.filter(
+                    content_types__in=[ContentType.objects.get_for_model(Device)]
+                )
+            ).first()
             cls.device = Device.objects.create(
                 device_type=device_type,
-                device_role=DeviceRole.objects.first(),
+                role=Role.objects.first(),
                 name="Test Device",
-                site=location.base_site,
                 location=location,
+                status=Status.objects.get_for_model(Device).first(),
             )
 
             cls.fsu_types = [
@@ -74,7 +78,7 @@ class FSUFilterTestCases:
                     driver_name="test_driver",
                     driver_version="1.0",
                     description=f"First test { cls.model._meta.verbose_name }",
-                    status=Status.objects.get(slug="active"),
+                    status=Status.objects.get(name="Active"),
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[1],
@@ -85,7 +89,7 @@ class FSUFilterTestCases:
                     driver_name="test_driver",
                     driver_version="1.0",
                     description=f"Second test { cls.model._meta.verbose_name }",
-                    status=Status.objects.get(slug="active"),
+                    status=Status.objects.get(name="Active"),
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
@@ -96,9 +100,10 @@ class FSUFilterTestCases:
                     driver_name="test_driver",
                     driver_version="1.1",
                     description=f"Third test { cls.model._meta.verbose_name }",
-                    status=Status.objects.get(slug="available"),
+                    status=Status.objects.get(name="Available"),
                 ),
             ]
+            cls.fsus[0].tags.set([Tag.objects.get(name="Aqua"), Tag.objects.get(name="Cyan")])
 
         def test_name(self):
             """Test filtering on FSU name."""
@@ -163,7 +168,6 @@ class FSUFilterTestCases:
             DeviceType.objects.create(
                 manufacturer=Manufacturer.objects.last(),
                 model="Test Device Type",
-                slug="test-device-type",
             )
 
             cls.fsu_types = [
@@ -217,7 +221,7 @@ class FSUFilterTestCases:
                 params = {"device_type_id": [DeviceType.objects.first().id]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
             with self.subTest(filte="name"):
-                params = {"device_type": [DeviceType.objects.last().slug]}
+                params = {"device_type": [DeviceType.objects.last().model]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
         def test_fsu_type(self):
@@ -259,6 +263,15 @@ class FSUFilterTestCases:
                     description=f"A completely different { cls.model._meta.object_name }.",
                 ),
             ]
+            for instance in cls.types:
+                instance.tags.set([Tag.objects.get(name="Purple"), Tag.objects.get(name="Fuchsia")])
+
+            cls.model.objects.create(
+                name=f"test_{ cls.model._meta.model_name }",
+                fsu_type=cls.type_model.objects.first(),
+                device=Device.objects.first(),
+                status=Status.objects.get(name="Active"),
+            )
 
         def test_model_name(self):
             """Test filtering on the model name."""
@@ -288,21 +301,3 @@ class FSUFilterTestCases:
             with self.subTest(filter="name"):
                 params = {"id": [x.pk for x in self.types], "manufacturer": [manufacturer.name]}
                 self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
-
-        def test_has_instances(self):
-            """Test filtering on if the FSU type has instances."""
-            self.model.objects.create(
-                name=f"test_{ self.model._meta.model_name }",
-                fsu_type=self.types[0],
-                device=Device.objects.first(),
-            )
-            with self.subTest(filter="True"):
-                params = {"id": [x.pk for x in self.types], "has_instances": True}
-                filtered = self.filterset(params, self.queryset).qs
-                self.assertEqual(filtered.count(), 1)
-                self.assertEqual(filtered.first().name, self.types[0].name)
-            with self.subTest(filter="False"):
-                params = {"id": [x.pk for x in self.types], "has_instances": False}
-                filtered = self.filterset(params, self.queryset).qs
-                self.assertEqual(filtered.count(), 1)
-                self.assertEqual(filtered.first().name, self.types[1].name)

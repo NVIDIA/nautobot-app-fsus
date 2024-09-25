@@ -16,13 +16,17 @@
 """Form definitions for FSU type models."""
 from django import forms
 from nautobot.dcim.models import Manufacturer
-from nautobot.extras.forms import NautobotBulkEditForm, NautobotFilterForm, TagsBulkEditFormMixin
-from nautobot.utilities.forms.fields import DynamicModelChoiceField, TagFilterField
+from nautobot.apps.forms import (
+    DynamicModelChoiceField,
+    NautobotBulkEditForm,
+    NautobotFilterForm,
+    TagsBulkEditFormMixin,
+    TagFilterField,
+)
 
 from nautobot_fsus import choices, models
 from nautobot_fsus.forms.mixins import (
     FSUTypeModelForm,
-    FSUTypeCSVForm,
     FSUTypeImportModelForm,
 )
 
@@ -57,26 +61,6 @@ class CPUTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         """CPUTypeBulkEditForm model options."""
 
         nullable_fields: list[str] = ["pcie_generation"]
-
-
-class CPUTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk import of CPUType instances."""
-
-    class Meta:
-        """CPUTypeCSVForm model options."""
-
-        model = models.CPUType
-        fields = [
-            "manufacturer",
-            "name",
-            "part_number",
-            "architecture",
-            "cpu_speed",
-            "cores",
-            "pcie_generation",
-            "description",
-            "comments",
-        ]
 
 
 class CPUTypeFilterForm(NautobotFilterForm):
@@ -170,24 +154,6 @@ class DiskTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         nullable_fields: list[str] = ["size"]
 
 
-class DiskTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk import of DiskType instances."""
-
-    class Meta:
-        """DiskTypeCSVForm model options."""
-
-        model = models.DiskType
-        fields = [
-            "manufacturer",
-            "name",
-            "part_number",
-            "disk_type",
-            "size",
-            "description",
-            "comments",
-        ]
-
-
 class DiskTypeFilterForm(NautobotFilterForm):
     """Form for filtering DiskType instances."""
 
@@ -261,15 +227,6 @@ class FanTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         nullable_fields: list[str] = []
 
 
-class FanTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk import of FanType instances."""
-
-    class Meta(FSUTypeCSVForm.Meta):
-        """FanTypeCSVForm model options."""
-
-        model = models.FanType
-
-
 class FanTypeFilterForm(NautobotFilterForm):
     """Form for filtering FanType instances."""
 
@@ -319,15 +276,6 @@ class GPUTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         """GPUTypeBulkEditForm model options."""
 
         nullable_fields: list[str] = []
-
-
-class GPUTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk editing GPUType instances."""
-
-    class Meta(FSUTypeCSVForm.Meta):
-        """GPUTypeBulkEditForm model options."""
-
-        model = models.GPUType
 
 
 class GPUTypeFilterForm(NautobotFilterForm):
@@ -380,23 +328,6 @@ class GPUBaseboardTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         """GPUBaseboardTypeBulkEditForm model options."""
 
         nullable_fields: list[str] = ["slot_count"]
-
-
-class GPUBaseboardTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk editing GPUBaseboardType instances."""
-
-    class Meta:
-        """GPUBaseboardTypeCSVForm model options."""
-
-        model = models.GPUBaseboardType
-        fields = [
-            "manufacturer",
-            "name",
-            "part_number",
-            "slot_count",
-            "description",
-            "comments",
-        ]
 
 
 class GPUBaseboardTypeFilterForm(NautobotFilterForm):
@@ -468,15 +399,6 @@ class HBATypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         nullable_fields: list[str] = []
 
 
-class HBATypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk editing HBAType instances."""
-
-    class Meta(FSUTypeCSVForm.Meta):
-        """HBATypeCSVForm model options."""
-
-        model = models.HBAType
-
-
 class HBATypeFilterForm(NautobotFilterForm):
     """Form for filtering HBAType instances."""
 
@@ -527,23 +449,6 @@ class MainboardTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         """MainboardTypeBulkEditForm model options."""
 
         nullable_fields: list[str] = ["cpu_socket_count"]
-
-
-class MainboardTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk importing MainboardType instances."""
-
-    class Meta:
-        """MainboardTypeCSVForm model options."""
-
-        model = models.MainboardType
-        fields = [
-            "manufacturer",
-            "name",
-            "part_number",
-            "cpu_socket_count",
-            "description",
-            "comments",
-        ]
 
 
 class MainboardTypeFilterForm(NautobotFilterForm):
@@ -616,23 +521,6 @@ class NICTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         nullable_fields: list[str] = ["interface_count"]
 
 
-class NICTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk importing NICType instances."""
-
-    class Meta:
-        """NICTypeCSVForm model options."""
-
-        model = models.NICType
-        fields = [
-            "manufacturer",
-            "name",
-            "part_number",
-            "interface_count",
-            "description",
-            "comments",
-        ]
-
-
 class NICTypeFilterForm(NautobotFilterForm):
     """Form for filtering NICType instances."""
 
@@ -702,15 +590,6 @@ class OtherFSUTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         nullable_fields: list[str] = []
 
 
-class OtherFSUTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk importing OtherFSUType instances."""
-
-    class Meta(FSUTypeCSVForm.Meta):
-        """OtherFSUTypeCSVForm model options."""
-
-        model = models.OtherFSUType
-
-
 class OtherFSUTypeFilterForm(NautobotFilterForm):
     """Form for filtering OtherFSUType instances."""
 
@@ -769,26 +648,6 @@ class PSUTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         """PSUTypeBulkEditForm model options."""
 
         nullable_fields: list[str] = ["power_provided", "required_voltage"]
-
-
-class PSUTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk importing PSUType instances."""
-
-    class Meta:
-        """PSUTypeCSVForm model options."""
-
-        model = models.PSUType
-        fields = [
-            "manufacturer",
-            "name",
-            "part_number",
-            "feed_type",
-            "power_provided",
-            "required_voltage",
-            "hot_swappable",
-            "description",
-            "comments",
-        ]
 
 
 class PSUTypeFilterForm(NautobotFilterForm):
@@ -885,27 +744,6 @@ class RAMModuleTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
         """RAMModuleTypeBulkEditForm model options."""
 
         nullable_fields: list[str] = ["speed", "capacity", "quantity"]
-
-
-class RAMModuleTypeCSVForm(FSUTypeCSVForm):
-    """Form for bulk importing RAMModuleType instances."""
-
-    class Meta:
-        """RAMModuleTypeCSVForm model options."""
-
-        model = models.RAMModuleType
-        fields = [
-            "manufacturer",
-            "name",
-            "part_number",
-            "module_type",
-            "technology",
-            "speed",
-            "capacity",
-            "quantity",
-            "description",
-            "comments",
-        ]
 
 
 class RAMModuleTypeFilterForm(NautobotFilterForm):

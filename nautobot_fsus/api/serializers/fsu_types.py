@@ -14,8 +14,10 @@
 #  limitations under the License.
 
 """Model serializers for FSU type API endpoints."""
+from nautobot.apps.api import ChoiceField
 from rest_framework import serializers
 
+from nautobot_fsus import choices
 from nautobot_fsus.api.mixins import FSUTypeModelSerializer
 from nautobot_fsus.models import (
     CPUType,
@@ -39,23 +41,12 @@ class CPUTypeSerializer(FSUTypeModelSerializer):
         view_name="plugins-api:nautobot_fsus-api:cputype-detail"
     )
 
+    architecture = ChoiceField(choices=choices.CPUArchitectures)
+
     class Meta(FSUTypeModelSerializer.Meta):
         """CPUTypeSerializer model options."""
 
         model = CPUType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "architecture",
-            "cpu_speed",
-            "cores",
-            "pcie_generation",
-            "description",
-        ]
 
 
 class DiskTypeSerializer(FSUTypeModelSerializer):
@@ -65,21 +56,12 @@ class DiskTypeSerializer(FSUTypeModelSerializer):
         view_name="plugins-api:nautobot_fsus-api:disktype-detail"
     )
 
+    disk_type = ChoiceField(choices=choices.DiskTypes)
+
     class Meta(FSUTypeModelSerializer.Meta):
         """DiskTypeSerializer model options."""
 
         model = DiskType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "disk_type",
-            "size",
-            "description",
-        ]
 
 
 class FanTypeSerializer(FSUTypeModelSerializer):
@@ -106,16 +88,6 @@ class GPUBaseboardTypeSerializer(FSUTypeModelSerializer):
         """GPUBaseboardTypeSerializer model options."""
 
         model = GPUBaseboardType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "slot_count",
-            "description",
-        ]
 
 
 class GPUTypeSerializer(FSUTypeModelSerializer):
@@ -155,16 +127,6 @@ class MainboardTypeSerializer(FSUTypeModelSerializer):
         """MainboardTypeSerializer model options."""
 
         model = MainboardType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "cpu_socket_count",
-            "description",
-        ]
 
 
 class NICTypeSerializer(FSUTypeModelSerializer):
@@ -178,16 +140,6 @@ class NICTypeSerializer(FSUTypeModelSerializer):
         """NICTypeSerializer model options."""
 
         model = NICType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "interface_count",
-            "description",
-        ]
 
 
 class OtherFSUTypeSerializer(FSUTypeModelSerializer):
@@ -210,23 +162,12 @@ class PSUTypeSerializer(FSUTypeModelSerializer):
         view_name="plugins-api:nautobot_fsus-api:psutype-detail"
     )
 
+    feed_type = ChoiceField(choices=choices.PSUFeedType)
+
     class Meta(FSUTypeModelSerializer.Meta):
         """PSUTypeSerializer model options."""
 
         model = PSUType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "feed_type",
-            "power_provided",
-            "required_voltage",
-            "hot_swappable",
-            "description",
-        ]
 
 
 class RAMModuleTypeSerializer(FSUTypeModelSerializer):
@@ -236,21 +177,10 @@ class RAMModuleTypeSerializer(FSUTypeModelSerializer):
         view_name="plugins-api:nautobot_fsus-api:rammoduletype-detail"
     )
 
+    module_type = ChoiceField(choices=choices.MemoryModuleTypes)
+    technology = ChoiceField(choices=choices.MemoryTechnologies)
+
     class Meta(FSUTypeModelSerializer.Meta):
         """RAMModuleTypeSerializer model options."""
 
         model = RAMModuleType
-        fields = [
-            "id",
-            "url",
-            "name",
-            "instance_count",
-            "manufacturer",
-            "part_number",
-            "module_type",
-            "technology",
-            "speed",
-            "capacity",
-            "quantity",
-            "description",
-        ]

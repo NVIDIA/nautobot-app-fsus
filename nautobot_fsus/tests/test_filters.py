@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 """Tests for filters defined in the Nautobot FSUs app."""
-from nautobot.dcim.models import Device, Manufacturer
+from nautobot.dcim.models import Device, Interface, Manufacturer, PowerPort
 from nautobot.extras.models import Status
 
 from nautobot_fsus import filters, models
@@ -48,27 +48,11 @@ class CPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
             driver_name="test_driver",
             driver_version="1.0",
             description="Mainboard",
-            status=Status.objects.get(slug="active"),
+            status=Status.objects.get(name="Active"),
         )
 
         cls.fsus[0].parent_mainboard = mainboard
         cls.fsus[0].validated_save()
-
-    def test_has_parent_mainboard_filter(self):
-        """Test filtering on CPUs that have a parent Mainboard."""
-        self.assertGreater(self.queryset.count(), 1)
-        params = {"has_parent_mainboard": True}
-        filter_result = self.filterset(params, self.queryset).qs
-        self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, "test_cpu_0")
-
-    def test_parent_mainboard_filter(self):
-        """Test filtering on a CPU's parent mainboard."""
-        self.assertGreater(self.queryset.count(), 1)
-        params = {"parent_mainboard": ["Test Mainboard"]}
-        filter_result = self.filterset(params, self.queryset).qs
-        self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, "test_cpu_0")
 
 
 class DiskTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
@@ -98,27 +82,11 @@ class DiskTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
             driver_name="test_driver",
             driver_version="1.0",
             description="HBA",
-            status=Status.objects.get(slug="active"),
+            status=Status.objects.get(name="Active"),
         )
 
         cls.fsus[0].parent_hba = hba
         cls.fsus[0].validated_save()
-
-    def test_has_parent_hba_filter(self):
-        """Test filtering on Disks that have a parent HBA."""
-        self.assertGreater(self.queryset.count(), 1)
-        params = {"has_parent_hba": True}
-        filter_result = self.filterset(params, self.queryset).qs
-        self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, "test_disk_0")
-
-    def test_parent_hba_filter(self):
-        """Test filtering on a Disk's parent HBA."""
-        self.assertGreater(self.queryset.count(), 1)
-        params = {"parent_hba": ["Test HBA"]}
-        filter_result = self.filterset(params, self.queryset).qs
-        self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, "test_disk_0")
 
 
 class FanTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
@@ -135,6 +103,25 @@ class GPUBaseboardTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     type_model = models.GPUBaseboardType
     queryset = models.GPUBaseboard.objects.all()
     filterset = filters.GPUBaseboardFilterSet
+
+    @classmethod
+    def setUpTestData(cls):
+        """Load initial data for the test case."""
+        super().setUpTestData()
+
+        gpu_type = models.GPUType.objects.create(
+            manufacturer=Manufacturer.objects.first(),
+            name="Test GPU Type",
+            part_number="test01",
+        )
+
+        models.GPU.objects.create(
+            fsu_type=gpu_type,
+            name="Child GPU",
+            device=cls.fsus[0].device,
+            parent_gpubaseboard=cls.fsus[0],
+            status=Status.objects.get(name="Active"),
+        )
 
 
 class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
@@ -164,27 +151,11 @@ class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
             driver_name="test_driver",
             driver_version="1.0",
             description="GPU Baseboard",
-            status=Status.objects.get(slug="active"),
+            status=Status.objects.get(name="Active"),
         )
 
         gpubaseboard.gpus.set([cls.fsus[0]])
         gpubaseboard.validated_save()
-
-    def test_has_parent_baseboard_filter(self):
-        """Test filtering on GPUs that have a parent Baseboard."""
-        self.assertGreater(self.queryset.count(), 1)
-        params = {"has_parent_gpubaseboard": True}
-        filter_result = self.filterset(params, self.queryset).qs
-        self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, "test_gpu_0")
-
-    def test_parent_baseboard_filter(self):
-        """Test filtering on a GPU's parent Baseboard."""
-        self.assertGreater(self.queryset.count(), 1)
-        params = {"parent_gpubaseboard": ["Test Parent"]}
-        filter_result = self.filterset(params, self.queryset).qs
-        self.assertEqual(filter_result.count(), 1)
-        self.assertEqual(filter_result.first().name, "test_gpu_0")
 
 
 class HBATestCase(FSUFilterTestCases.FSUModelFilterTestCase):
@@ -194,6 +165,25 @@ class HBATestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     queryset = models.HBA.objects.all()
     filterset = filters.HBAFilterSet
 
+    @classmethod
+    def setUpTestData(cls):
+        """Load initial data for the test case."""
+        super().setUpTestData()
+
+        disk_type = models.DiskType.objects.create(
+            manufacturer=Manufacturer.objects.first(),
+            name="Test Disk Type",
+            part_number="test01",
+        )
+
+        models.Disk.objects.create(
+            fsu_type=disk_type,
+            name="Child Disk",
+            device=cls.fsus[0].device,
+            parent_hba=cls.fsus[0],
+            status=Status.objects.get(name="Active"),
+        )
+
 
 class MainboardTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for Mainboard filters."""
@@ -202,6 +192,25 @@ class MainboardTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     queryset = models.Mainboard.objects.all()
     filterset = filters.MainboardFilterSet
 
+    @classmethod
+    def setUpTestData(cls):
+        """Load initial data for the test case."""
+        super().setUpTestData()
+
+        cpu_type = models.CPUType.objects.create(
+            manufacturer=Manufacturer.objects.first(),
+            name="Test CPU Type",
+            part_number="test01",
+        )
+
+        models.CPU.objects.create(
+            fsu_type=cpu_type,
+            name="Child CPU 1",
+            device=cls.fsus[0].device,
+            parent_mainboard=cls.fsus[0],
+            status=Status.objects.get(name="Active"),
+        )
+
 
 class NICTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for NIC filters."""
@@ -209,6 +218,18 @@ class NICTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     type_model = models.NICType
     queryset = models.NIC.objects.all()
     filterset = filters.NICFilterSet
+
+    @classmethod
+    def setUpTestData(cls):
+        """Load initial data for the test case."""
+        super().setUpTestData()
+
+        cls.fsus[0].interfaces.set([Interface.objects.create(
+            device=cls.fsus[0].device,
+            name="eth0",
+            type="1000base-x-gbic",
+            status=Status.objects.get_for_model(Interface).first(),
+        )])
 
 
 class OtherFSUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
@@ -225,6 +246,16 @@ class PSUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     type_model = models.PSUType
     queryset = models.PSU.objects.all()
     filterset = filters.PSUFilterSet
+
+    @classmethod
+    def setUpTestData(cls):
+        """Load initial data for the test case."""
+        super().setUpTestData()
+
+        cls.fsus[0].power_ports.set([PowerPort.objects.create(
+            device=cls.fsus[0].device,
+            name="PPort1",
+        )])
 
 
 class RAMModuleTestCase(FSUFilterTestCases.FSUModelFilterTestCase):

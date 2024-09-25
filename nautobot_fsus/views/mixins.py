@@ -20,14 +20,14 @@ from typing import Any, Type
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.forms import Form
 from django.http.response import HttpResponseRedirect
 from django.http.request import HttpRequest
 from django.template.loader import select_template, TemplateDoesNotExist
-from nautobot.core.views.generic import BulkRenameView
-from nautobot.core.views.viewsets import NautobotUIViewSet
+from nautobot.apps.tables import BaseTable
+from nautobot.apps.utils import resolve_permission
+from nautobot.apps.views import BulkRenameView, NautobotUIViewSet
 from nautobot.dcim.models import DeviceType
-from nautobot.utilities.permissions import resolve_permission
-from nautobot.utilities.tables import BaseTable
 from rest_framework.response import Response
 
 from nautobot_fsus.forms.mixins import FSUTemplateCreateForm, FSUTemplateModelForm
@@ -49,21 +49,10 @@ class FSUModelViewSet(NautobotUIViewSet):
     base_template = "nautobot_fsus/fsu.html"
     bulk_table_class: Type[BaseTable]
 
-    def get_extra_context(self, request, instance=None) -> dict[str, Any]:
-        """Override the `fields` context in bulk_create requests."""
-        context: dict[str, Any] = super().get_extra_context(request, instance)
+    def get_form_class(self, **kwargs) -> Type[Form]:
+        """Add FSU-specific help text to import form class."""
+        form_class: Type[Form] = super().get_form_class(**kwargs)
 
-        if self.action == "bulk_create" and hasattr(self, "bulk_create_form_class"):
-            fields = self.bulk_create_form_class().fields  # pylint: disable=not-callable
-            fields["device"].required = True
-            fields["location"].required = True
-            context["fields"] = fields
-
-        return context
-
-    def get_form_class(self, **kwargs):
-        """Override default headers for csv imports."""
-        form_class = super().get_form_class(**kwargs)
         if self.action == "bulk_create":
             initial = form_class.base_fields["csv_data"].initial
             help_text = form_class.base_fields["csv_data"].help_text
@@ -75,12 +64,13 @@ class FSUModelViewSet(NautobotUIViewSet):
 
         return form_class
 
-    def get_table_class(self) -> BaseTable:
+    def get_table_class(self) -> Type[BaseTable]:
         """Get the appropriate table class for the view."""
         if self.action.startswith("bulk"):
             return self.bulk_table_class
 
-        return super().get_table_class()
+        table_class: Type[BaseTable] = super().get_table_class()
+        return table_class
 
     def get_template_name(self) -> str:
         """Determine the appropriate template name for a request."""

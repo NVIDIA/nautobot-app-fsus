@@ -28,7 +28,7 @@ jobs:
       - name: "Set up Python"
         uses: "actions/setup-python@v5"
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: "Install Poetry"
         run: curl sSL https://install.python-poetry.org | python -
         shell: bash
@@ -40,7 +40,7 @@ jobs:
       - name: "Run poetry version command"
         run: poetry version $RELEASE_VERSION
       - name: "Install mkdocs dependencies"
-        run: poetry install --no-root --only=docs
+        run: poetry install --no-root --with=dev --with=docs
       - name: "Build distribution packages"
         run: poetry run invoke generate-packages
       - name: "Save the distribution package artifacts"
@@ -57,7 +57,7 @@ jobs:
     runs-on: "ubuntu-20.04"
     environment:
       name: "pypi"
-      url: "https://pypi.org/p/"
+      url: "https://pypi.org/p/nautobot-fsus"
     permissions:
       id-token: "write"
     steps:
