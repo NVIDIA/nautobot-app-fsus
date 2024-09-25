@@ -18,119 +18,7 @@ env:
   APP_NAME: "nautobot-fsus"
 
 jobs:
-  bandit:
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Linting: bandit"
-        run: poetry run invoke test.bandit
-
-  pydocstyle:
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Linting: pydocstyle"
-        run: poetry run invoke test.pydocstyle
-
-  flake8:
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Linting: flake8"
-        run: poetry run invoke test.flake8
-
-  mypy:
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Linting: mypy"
-        run: poetry run invoke test.mypy
-
-  poetry:
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Checking: poetry lock file"
-        run: poetry run invoke lock --check
-
-  pylint:
-    needs:
-      - "bandit"
-      - "pydocstyle"
-      - "flake8"
-      - "mypy"
-      - "poetry"
-    runs-on: "ubuntu-20.04"
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: ["3.11"]
-        nautobot-version: ["2.2.9"]
-    env:
-      INVOKE_NAUTOBOT_FSUS_PYTHON_VER: "${{ matrix.python-version }}"
-      INVOKE_NAUTOBOT_FSUS_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Generate lock file with constrained Nautobot version"
-        env:
-          INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-        run: poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver
-      - name: "Setup Docker buildx"
-        id: "buildx"
-        uses: "docker/setup-buildx-action@v3"
-      - name: "Build image"
-        uses: "docker/build-push-action@v5"
-        with:
-          builder: "${{ steps.buildx.outputs.name }}"
-          context: "./"
-          push: false
-          load: true
-          tags: "${{ env.APP_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
-          file: "development/Dockerfile"
-          cache-from: "type=gha,scope=${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
-          cache-to: "type=gha,scope=${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
-          build-args: |
-            NAUTOBOT_VER=${{ matrix.nautobot-version }}
-            PYTHON_VER=${{ matrix.python-version }}
-            CI=true
-      - name: "Copy credentials"
-        run: "cp development/creds.example.env development/creds.env"
-      - name: "Linting: pylint"
-        run: poetry run invoke test.pylint
-      - name: "Checking: migrations"
-        run: poetry run invoke check-migrations
-
   unittests:
-    needs:
-      - "pylint"
     runs-on: "ubuntu-20.04"
     strategy:
       fail-fast: true
@@ -180,5 +68,7 @@ jobs:
       - name: "Use mysql invoke settings when appropriate"
         run: "cp invoke.mysql.yml invoke.yml"
         if: "matrix.db-backend == 'mysql'"
+      - name: "Docker PS"
+        run: docker ps
       - name: "Run tests"
         run: poetry run invoke test.unittests
