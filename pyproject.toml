@@ -13,6 +13,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 include = [
     "nautobot_fsus/static/nautobot_fsus/**/*",
@@ -27,8 +28,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 # Used for local development
-python = ">=3.10,<3.12"
-nautobot = ">=2.0.0,<2.3"
+python = ">=3.10,<3.13"
+nautobot = "^2.3.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.5"
@@ -37,7 +38,7 @@ coverage = "^7.2.7"
 django-debug-toolbar = "^4.1.0"
 django-slowtests = "^1.1.1"
 django-types = "^0.18.0"
-factory-boy = "3.2.1"
+factory-boy = "~3.3.1"
 flake8 = "^6.0.0"
 flake8-bugbear = "^23.7.10"
 invoke = "^2.1.3"
@@ -45,9 +46,8 @@ ipython = "^8.14.0"
 junit2html = "^30.1.3"
 mypy = "^1.4.1"
 pydocstyle = "^6.3.0"
-pylint = "^2.17.4"
+pylint = "^3.2.5"
 pylint-django = "^2.5.3"
-pylint-nautobot = "^0.2.1"
 python-dotenv = "^1.0.1"
 toml = "^0.10.2"
 types-factory-boy = "0.4.1"
@@ -72,7 +72,7 @@ ignore=".venv"
 jobs = 0
 # Include the pylint_django plugin to avoid spurious warnings about Django patterns
 # Include pylint_nautobot to prep for Nautobot v2 migration
-load-plugins="pylint_django,pylint_nautobot"
+load-plugins="pylint_django"
 django-settings-module="nautobot_fsus.config"
 py-version = "3.10"
 
@@ -109,9 +109,6 @@ disable = [
     "too-many-ancestors",
     "fixme",
 ]
-
-[tool.pylint-nautobot]
-supported_nautobot_versions = ["1", "2"]
 
 [tool.pydocstyle]
 convention = "google"
