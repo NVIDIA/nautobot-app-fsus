@@ -1,5 +1,5 @@
 ---
-name: "Publish app packages to PyPi"
+name: "Build and publish app packages to PyPi"
 
 concurrency:
   group: publish
@@ -10,6 +10,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      skip_publish:
+        description: "True to skip publishing to PyPi when triggering manually"
+        required: true
+        type: boolean
 
 jobs:
   build-packages:
@@ -45,6 +50,7 @@ jobs:
           path: "dist/"
 
   pypi-publish:
+    if: ${{ github.event_name == 'push' || ! inputs.skip_publish }} # Run on push events to v* tags, check for the skip_publish input when triggered manually
     needs:
       - "build-packages"
     name: "Pull the app package artifacts and publish them to PyPi"
