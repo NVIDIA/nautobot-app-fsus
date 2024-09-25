@@ -11,9 +11,8 @@ on:
       - "main"
       - "dev"
       - "ltm-*"
-    tags:
-      - "v*"
   pull_request: ~
+  workflow_dispatch:
 
 env:
   APP_NAME: "nautobot-fsus"
