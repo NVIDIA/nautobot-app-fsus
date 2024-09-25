@@ -1,0 +1,66 @@
+---
+name: "Publish app packages to PyPi"
+
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-packages:
+    name: "Build new release packages"
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
+    steps:
+      - name: "Check out repository"
+        uses: "actions/checkout@v4"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v5"
+        with:
+          python-version: "3.10"
+      - name: "Install Poetry"
+        run: curl sSL https://install.python-poetry.org | python -
+        shell: bash
+      - name: "Add Poetry to PATH"
+        run: ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+        shell: bash
+      - name: "Add release version to env"
+        run: echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV
+      - name: "Run poetry version command"
+        run: poetry version $RELEASE_VERSION
+      - name: "Install mkdocs dependencies"
+        run: poetry install --no-root --only=docs
+      - name: "Build distribution packages"
+        run: poetry run invoke generate-packages
+      - name: "Save the distribution package artifacts"
+        uses: "actions/upload-artifact@v4"
+        with:
+          name: "python-package-distributions"
+          path: "dist/"
+
+  pypi-publish:
+    needs:
+      - "build-packages"
+    name: "Pull the app package artifacts and publish them to PyPi"
+    runs-on: "ubuntu-20.04"
+    if: "startsWith(github.ref, 'refs/tags/v')"
+    environment:
+      name: "pypi"
+      url: "https://pypi.org/p/"
+    permissions:
+      id-token: "write"
+    steps:
+      - name: "Pull the saved distribution package artifacts"
+        uses: "actions/download-artifact@v4"
+        with:
+          name: "python-package-distributions"
+          path: "dist/"
+      - name: "Push packages to PyPi"
+        uses: "pypa/gh-action-pypi-publish@release/v1"
+
