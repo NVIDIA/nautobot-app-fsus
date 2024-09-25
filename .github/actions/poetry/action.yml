@@ -14,7 +14,7 @@ inputs:
   python-version:
     description: "Python version to use with poetry"
     required: false
-    default: "3.10"
+    default: "3.11"
   cache-version:
     description: "Version of the cache to use for the environment, can be used to invalidate the current cache"
     required: false

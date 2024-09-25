@@ -28,7 +28,7 @@ jobs:
       - name: "Set up Python"
         uses: "actions/setup-python@v5"
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: "Install Poetry"
         run: curl sSL https://install.python-poetry.org | python -
         shell: bash
@@ -57,7 +57,7 @@ jobs:
     runs-on: "ubuntu-20.04"
     environment:
       name: "pypi"
-      url: "https://pypi.org/p/"
+      url: "https://pypi.org/p/nautobot-fsus"
     permissions:
       id-token: "write"
     steps:
