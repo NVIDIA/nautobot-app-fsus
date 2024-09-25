@@ -40,7 +40,7 @@ jobs:
       - name: "Run poetry version command"
         run: poetry version $RELEASE_VERSION
       - name: "Install mkdocs dependencies"
-        run: poetry install --no-root --only=docs
+        run: poetry install --no-root --with=dev --with=docs
       - name: "Build distribution packages"
         run: poetry run invoke generate-packages
       - name: "Save the distribution package artifacts"
