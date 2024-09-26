@@ -30,15 +30,15 @@ class NautobotFSUsConfig(NautobotAppConfig):
 
     name: str = "nautobot_fsus"
     verbose_name: str = "Field Serviceable Units for Nautobot"
-    version: str = __version__
-    author: str = dist.metadata.get("Author")  # type: ignore[attr-defined]
-    author_email: str = dist.metadata.get("Author-email")  # type: ignore[attr-defined]
-    description: str = dist.metadata.get("Summary")  # type: ignore[attr-defined]
-    base_url = "fsus"
-    docs_view_name = "plugins:nautobot_fsus:docs"
+    version: str = f"{__version__}"
+    author: str = f"{dist.metadata.get('Author')}"  # type: ignore[attr-defined]
+    author_email: str = f"{dist.metadata.get('Author-email')}"  # type: ignore[attr-defined]
+    description: str = f"{dist.metadata.get('Summary')}"  # type: ignore[attr-defined]
+    base_url: str = "fsus"
+    docs_view_name: str = "plugins:nautobot_fsus:docs"
     required_settings: list[str] = []
-    min_version: str = "2.0.0"
-    max_version: str = "2.2.9999"
+    min_version: str = "2.3.0"
+    max_version: str = "2.9999"
     caching_config: dict[str, str | dict[str, str]] = {}
 
     def ready(self):

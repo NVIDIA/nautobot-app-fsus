@@ -19,7 +19,7 @@ from typing import Type
 from django.urls import reverse
 from nautobot.core.testing.api import APIViewTestCases
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
-from nautobot.dcim.models.device_components import ComponentModel
+from nautobot.dcim.models.device_components import ModularComponentModel
 from nautobot.extras.models import Status
 from rest_framework import status
 
@@ -140,8 +140,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 "name": fsu.name,
             }
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
 
@@ -151,8 +151,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = self.create_data[2]
             data["device"] = Device.objects.first().pk
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
             self.assertIsInstance(response.data, dict)
@@ -214,8 +214,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = self.create_data[0]
             data[self.child_field] = [str(x.pk) for x in self.children]
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
             self.assertIsInstance(response.data, dict)
@@ -237,8 +237,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data[self.child_field] = [self.children[1].pk]
 
             initial_count = self._get_queryset().count()
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_201_CREATED)
             self.assertEqual(self._get_queryset().count(), initial_count + 1)
@@ -250,8 +250,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = self.create_data[2]
             data[self.child_field] = [self.children[1].pk]
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
             self.assertIsInstance(response.data, dict)
@@ -278,8 +278,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = self.create_data[0]
             data[self.child_field] = [child.pk]
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
             self.assertIsInstance(response.data, dict)
@@ -303,8 +303,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 child.save()
 
             data = [{"id": str(fsu.pk), self.child_field: []}]
-            self.add_permissions(f"nautobot_fsus.change_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.change_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 2)
             response = self.client.patch(url, data, format="json", **self.header)
@@ -325,8 +325,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 "location": str(Location.objects.first().pk),
                 "status": "Available",
             }]
-            self.add_permissions(f"nautobot_fsus.change_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.change_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 2)
             response = self.client.patch(url, data, format="json", **self.header)
@@ -342,8 +342,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.children[1].save()
 
             data = [{"id": str(fsu.pk), self.child_field: [str(self.children[0].pk)]}]
-            self.add_permissions(f"nautobot_fsus.change_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.change_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 1)
             self.assertEqual(getattr(fsu, self.child_field).first(), self.children[1])
@@ -355,9 +355,9 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
     class ParentNonFSUChildAPIViewTestCase(FSUAPIViewTestCase):
         """Additional tests for a parent FSU where the children are not FSUs."""
 
-        child_model: Type[ComponentModel]
+        child_model: Type[ModularComponentModel]
         child_field: str
-        children: list[ComponentModel]
+        children: list[ModularComponentModel]
 
         def test_create_parent_with_child_in_wrong_device(self):
             """Test that creating a parent FSU with a child in a different device fails."""
@@ -365,8 +365,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = self.create_data[0]
             data[self.child_field] = [str(x.pk) for x in self.children]
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
             self.assertIsInstance(response.data, dict)
@@ -388,8 +388,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data[self.child_field] = [self.children[1].pk]
 
             initial_count = self._get_queryset().count()
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_201_CREATED)
             self.assertEqual(self._get_queryset().count(), initial_count + 1)
@@ -401,8 +401,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = self.create_data[2]
             data[self.child_field] = [self.children[1].pk]
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
             self.assertIsInstance(response.data, dict)
@@ -428,8 +428,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             data = self.create_data[0]
             data[self.child_field] = [child.pk]
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
             self.assertIsInstance(response.data, dict)
@@ -453,8 +453,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 getattr(child, f"parent_{model}").set([fsu])
 
             data = [{"id": str(fsu.pk), self.child_field: []}]
-            self.add_permissions(f"nautobot_fsus.change_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.change_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 2)
             response = self.client.patch(url, data, format="json", **self.header)
@@ -475,8 +475,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 "location": str(Location.objects.first().pk),
                 "status": "Available",
             }]
-            self.add_permissions(f"nautobot_fsus.change_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.change_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 2)
             response = self.client.patch(url, data, format="json", **self.header)
@@ -492,8 +492,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             getattr(self.children[1], f"parent_{model}").set([fsu])
 
             data = [{"id": str(fsu.pk), self.child_field: [str(self.children[0].pk)]}]
-            self.add_permissions(f"nautobot_fsus.change_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.change_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 1)
             self.assertEqual(getattr(fsu, self.child_field).first(), self.children[1])
@@ -584,8 +584,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 "name": template.name,
             }
 
-            self.add_permissions(f"nautobot_fsus.add_{ model }")
-            url = reverse(f"plugins-api:nautobot_fsus-api:{ model }-list")
+            self.add_permissions(f"nautobot_fsus.add_{model}")
+            url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
 
