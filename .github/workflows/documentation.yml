@@ -38,7 +38,7 @@ jobs:
       - name: "Install mkdocs dependencies"
         run: poetry install --no-root --with=dev --with=docs
       - name: "Build documentation"
-        run: poetry run invok mkdocs
+        run: poetry run invoke mkdocs
       - name: "Upload documentation artifacts"
         uses: actions/upload-pages-artifact@v3
         with:
