@@ -121,7 +121,7 @@ class CPUForm(FSUModelForm):
 
     parent_mainboard = DynamicModelChoiceField(
         queryset=models.Mainboard.objects.all(),
-        query_params={"device": "$device"},
+        query_params={"device_id": "$device"},
         required=False,
     )
 
@@ -254,7 +254,7 @@ class DiskForm(FSUModelForm):
 
     parent_hba = DynamicModelChoiceField(
         queryset=models.HBA.objects.all(),
-        query_params={"device": "$device"},
+        query_params={"device_id": "$device"},
         required=False,
     )
 
@@ -456,7 +456,7 @@ class GPUForm(FSUModelForm):
 
     parent_gpubaseboard = DynamicModelChoiceField(
         queryset=models.GPUBaseboard.objects.all(),
-        query_params={"device": "$device"},
+        query_params={"device_id": "$device"},
         required=False,
     )
 
