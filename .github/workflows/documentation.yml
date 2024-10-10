@@ -22,6 +22,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
     steps:
       - name: "Check out repository"
         uses: actions/checkout@v4
