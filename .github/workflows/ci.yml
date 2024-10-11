@@ -1,17 +1,15 @@
 ---
-name: "CICD Nautobot FSUs"
+name: "Linting and Testing"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - "main"
-      - "dev"
-      - "ltm-*"
-  pull_request: ~
+  pull_request:
+    paths:
+      - "nautobot_fsus/**"
+      - "!nautobot_fsus/templates/**"
   workflow_dispatch:
 
 env:
