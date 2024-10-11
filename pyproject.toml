@@ -8,6 +8,7 @@ license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/NVIDIA/nautobot-app-fsus"
 repository = "https://github.com/NVIDIA/nautobot-app-fsus"
+documentation = "https://nvidia.github.io/nautobot-app-fsus/index.html"
 keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
 classifiers = [
     "Programming Language :: Python :: 3",
