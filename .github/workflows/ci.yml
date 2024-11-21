@@ -25,7 +25,7 @@ jobs:
         uses: "actions/checkout@v4"
       - name: "Setup environment"
         uses: "./.github/actions/poetry"
-      - name: "Linting: bandit"
+      - name: "Linting: ruff"
         run: poetry run invoke test.ruff -a both
 
   mypy:

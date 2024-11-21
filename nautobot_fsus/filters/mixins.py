@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Mixin classes to support user-definable fields in model filters."""
+
 import django_filters
 from nautobot.apps.filters import (
     MultiValueCharFilter,
@@ -27,6 +28,7 @@ from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 
 class FSUModelFilterSetMixin(django_filters.FilterSet):
     """Mixin with the common filter code for FSUs."""
+
     q = SearchFilter(
         filter_predicates={
             "name": "icontains",
@@ -65,6 +67,7 @@ class FSUModelFilterSetMixin(django_filters.FilterSet):
 
 class FSUTemplateModelFilterSetMixin(django_filters.FilterSet):
     """Mixin with the common filter code for FSU templates."""
+
     q = SearchFilter(filter_predicates={"name": "icontains"})
 
     device_type_id = django_filters.ModelMultipleChoiceFilter(
@@ -86,6 +89,7 @@ class FSUTemplateModelFilterSetMixin(django_filters.FilterSet):
 
 class FSUTypeModelFilterSetMixin(django_filters.FilterSet):
     """Mixin with the common filter code for FSU types."""
+
     q = SearchFilter(
         filter_predicates={
             "manufacturer__name": "icontains",

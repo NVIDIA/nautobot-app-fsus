@@ -18,6 +18,7 @@ Models for Field Serviceable Unit types.
 
 An FSU type is an individual product, defined by manufacturer, model name, and part number.
 """
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from nautobot.extras.utils import extras_features
@@ -63,6 +64,7 @@ class CPUType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "CPU Type"
         verbose_name_plural = "CPU Types"
 
@@ -93,6 +95,7 @@ class DiskType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Disk Type"
         verbose_name_plural = "Disk Types"
 
@@ -110,6 +113,7 @@ class FanType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Fan Type"
         verbose_name_plural = "Fan Types"
 
@@ -128,11 +132,12 @@ class GPUBaseboardType(FSUTypeModel):
     slot_count = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        help_text="The number of physical GPU slots provided by this GPU Baseboard."
+        help_text="The number of physical GPU slots provided by this GPU Baseboard.",
     )
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Baseboard Type"
         verbose_name_plural = "GPU Baseboard Types"
 
@@ -150,6 +155,7 @@ class GPUType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Type"
         verbose_name_plural = "GPU Types"
 
@@ -167,6 +173,7 @@ class HBAType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "HBA Type"
         verbose_name_plural = "HBA Types"
 
@@ -190,6 +197,7 @@ class MainboardType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Mainboard Type"
         verbose_name_plural = "Mainboard Types"
 
@@ -213,6 +221,7 @@ class NICType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "NIC Type"
         verbose_name_plural = "NIC Types"
 
@@ -230,6 +239,7 @@ class OtherFSUType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Other FSU Type"
         verbose_name_plural = "Other FSU Types"
 
@@ -244,6 +254,7 @@ class OtherFSUType(FSUTypeModel):
 )
 class PSUType(FSUTypeModel):
     """Represents a Power Supply Unit type."""
+
     feed_type = models.CharField(
         max_length=16,
         choices=choices.PSUFeedType,
@@ -258,15 +269,14 @@ class PSUType(FSUTypeModel):
     )
 
     required_voltage = models.CharField(
-        max_length=32,
-        blank=True,
-        help_text="Example: `-40V - -72` (DC), `100-240V` (AC)"
+        max_length=32, blank=True, help_text="Example: `-40V - -72` (DC), `100-240V` (AC)"
     )
 
     hot_swappable = models.BooleanField(default=False)
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "PSU Type"
         verbose_name_plural = "PSU Types"
 
@@ -316,5 +326,6 @@ class RAMModuleType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "RAM Module Type"
         verbose_name_plural = "RAM Module Types"

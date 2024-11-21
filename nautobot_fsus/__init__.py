@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """App config declaration for Nautobot Field Serviceable Units."""
+
 # Metadata is inherited from Nautobot. If not including Nautobot
 # in the environment, this should be added
 from importlib import metadata
@@ -45,6 +46,7 @@ class NautobotFSUsConfig(NautobotAppConfig):
         """Register custom signals."""
         # pylint:disable=import-outside-toplevel
         from nautobot_fsus.signals import post_migrate_create_defaults
+
         post_migrate.connect(post_migrate_create_defaults, sender=self)
 
         super().ready()

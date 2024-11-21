@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Test cases the api."""
+
 from typing import Type
 
 from django.urls import reverse
@@ -31,6 +32,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
     class FSUAPIViewTestCase(APIViewTestCases.APIViewTestCase):
         """Common test case for FSU APIs."""
+
         model: Type[FSUModel]
         type_model: Type[FSUTypeModel]
 
@@ -158,11 +160,12 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertIsInstance(response.data, dict)
             self.assertEqual(
                 "FSUs must be assigned to either a Device or a Storage location, but not both",
-                str(response.data["non_field_errors"][0])
+                str(response.data["non_field_errors"][0]),
             )
 
     class ParentFSUAPIViewTestCase(FSUAPIViewTestCase):
         """Additional tests for a parent FSU."""
+
         child_model: Type[FSUModel]
         child_type: Type[FSUTypeModel]
         child_field: str
@@ -227,7 +230,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 f"{self.child_model._meta.verbose_name} {self.children[0].name} has a different "
                 f"parent device ({Device.objects.first().name}) than that of its parent FSU "
                 f"({Device.objects.last().name})",
-                str(error_message)
+                str(error_message),
             )
 
         def test_add_parent_with_children(self):
@@ -261,7 +264,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 error_message = error_message[0].message
             self.assertEqual(
                 "Parent FSU must be assigned to a device in order to add child FSUs",
-                str(error_message)
+                str(error_message),
             )
 
         def test_create_parent_with_taken_child(self):
@@ -290,7 +293,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertEqual(
                 f"{child._meta.verbose_name} {child.name} is already "
                 f"assigned to {getattr(child, f'parent_{model}')}",
-                str(error_message)
+                str(error_message),
             )
 
         def test_clear_children(self):
@@ -320,11 +323,13 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 setattr(child, f"parent_{model}", fsu)
                 child.save()
 
-            data = [{
-                "id": str(fsu.pk),
-                "location": str(Location.objects.first().pk),
-                "status": "Available",
-            }]
+            data = [
+                {
+                    "id": str(fsu.pk),
+                    "location": str(Location.objects.first().pk),
+                    "status": "Available",
+                }
+            ]
             self.add_permissions(f"nautobot_fsus.change_{model}")
             url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
@@ -378,7 +383,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 f"{self.child_model._meta.verbose_name} {self.children[0].name} has a different "
                 f"parent device ({Device.objects.first().name}) than that of its parent FSU "
                 f"({Device.objects.last().name})",
-                str(error_message)
+                str(error_message),
             )
 
         def test_add_parent_with_children(self):
@@ -412,7 +417,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 error_message = error_message[0].message
             self.assertEqual(
                 "Parent FSU must be assigned to a device in order to add child FSUs",
-                str(error_message)
+                str(error_message),
             )
 
         def test_create_parent_with_taken_child(self):
@@ -440,7 +445,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertEqual(
                 f"{child._meta.verbose_name} {child.name} is already "
                 f"assigned to {getattr(child, f'parent_{model}').first()}",
-                str(error_message)
+                str(error_message),
             )
 
         def test_clear_children(self):
@@ -470,11 +475,13 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             for child in self.children:
                 getattr(child, f"parent_{model}").set([fsu])
 
-            data = [{
-                "id": str(fsu.pk),
-                "location": str(Location.objects.first().pk),
-                "status": "Available",
-            }]
+            data = [
+                {
+                    "id": str(fsu.pk),
+                    "location": str(Location.objects.first().pk),
+                    "status": "Available",
+                }
+            ]
             self.add_permissions(f"nautobot_fsus.change_{model}")
             url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
@@ -504,6 +511,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
     class FSUTemplateAPIViewTestCase(APIViewTestCases.APIViewTestCase):
         """Common test case for FSU Template APIs."""
+
         model: Type[FSUTemplateModel]
         type_model: Type[FSUTypeModel]
         target_model_name: str
@@ -591,6 +599,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
 
     class FSUTypeAPIViewTestCase(APIViewTestCases.APIViewTestCase):
         """Common test case for FSU Type APIs."""
+
         model: Type[FSUTypeModel]
         brief_fields = ["display", "id", "name", "part_number", "url"]
 
@@ -599,9 +608,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
         @classmethod
         def setUpTestData(cls):
             """Set up the data for the tests."""
-            cls.bulk_update_data = {
-                "manufacturer": Manufacturer.objects.last().id
-            }
+            cls.bulk_update_data = {"manufacturer": Manufacturer.objects.last().id}
 
             mfgr = Manufacturer.objects.first()
 

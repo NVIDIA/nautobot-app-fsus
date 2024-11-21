@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Table definitions for FSUType models."""
+
 from django.conf import settings
 from nautobot.apps.tables import ButtonsColumn, TagColumn
 

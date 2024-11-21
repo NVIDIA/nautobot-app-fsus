@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Views definitions for the Nautobot FSUs app."""
+
 from typing import Any, Type
 
 from nautobot.core.views import generic
@@ -82,6 +83,7 @@ class DeviceFSUViewTab(generic.ObjectView):
 
     def get_extra_context(self, request, instance) -> dict[str, Any]:
         """Add the tables to the view context."""
+
         def _fsu_table(table: Type[FSUModelTable], fsu: Type[FSUModel]) -> FSUModelTable:
             """Helper method to set up the table for an FSU."""
             fsu_table: FSUModelTable = table(fsu.objects.filter(device__pk=instance.pk))
@@ -151,6 +153,7 @@ class LocationFSUViewTab(generic.ObjectView):
 
     def get_extra_context(self, request, instance) -> dict[str, Any]:
         """Add the tables to the view context."""
+
         def _fsu_table(table: Type[FSUModelTable], fsu: Type[FSUModel]) -> FSUModelTable:
             """Helper method to set up the table for an FSU."""
             fsu_table: FSUModelTable = table(fsu.objects.filter(location__pk=instance.pk))

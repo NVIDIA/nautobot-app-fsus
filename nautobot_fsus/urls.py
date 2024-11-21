@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Routes and url patterns for the Nautobot FSUs app."""
+
 from django.templatetags.static import static
 from django.urls import path
 from django.views.generic import RedirectView

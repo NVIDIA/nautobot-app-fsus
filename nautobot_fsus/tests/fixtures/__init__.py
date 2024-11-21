@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Nautobot FSUS tests fixtures."""
+
 from nautobot_fsus.tests.fixtures.create_obj_fixtures import create_env
 
 __all__ = ("create_env",)
