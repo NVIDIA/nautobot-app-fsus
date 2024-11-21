@@ -16,9 +16,9 @@
 """Table mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
 from typing import Any
 
-import django_tables2 as tables
 from django.urls import reverse
 from django.utils.html import format_html
+import django_tables2 as tables
 from nautobot.apps.tables import (
     BaseTable,
     ButtonsColumn,
