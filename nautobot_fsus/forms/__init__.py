@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Form definitions for the Nautobot FSUs app."""
+
 from nautobot_fsus.forms.fsu_templates import (
     CPUTemplateBulkEditForm,
     CPUTemplateCreateForm,

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Signal handlers for Nautobot FSUs app."""
+
 import logging
 from typing import Any
 

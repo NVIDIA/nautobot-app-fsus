@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Base classes for object models."""
+
 import logging
 from typing import Any
 
@@ -56,7 +57,7 @@ class FSUModel(PrimaryModel):
         blank=True,
         null=True,
         help_text="Device the FSU is installed in - an FSU requires either a parent Device "
-                  "or a parent Location."
+        "or a parent Location.",
     )
 
     location: ForeignKey = models.ForeignKey(
@@ -66,7 +67,7 @@ class FSUModel(PrimaryModel):
         blank=True,
         null=True,
         help_text="Location where the FSU is stored - an FSU requires either a parent Device "
-                  "or a parent Location."
+        "or a parent Location.",
     )
 
     name = models.CharField(max_length=100, db_index=True)
@@ -124,6 +125,7 @@ class FSUModel(PrimaryModel):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         ordering = ["device", "location", "_name"]
         unique_together = [["name", "device"], ["name", "location"]]
@@ -193,6 +195,7 @@ class FSUTemplateModel(BaseModel, ChangeLoggedModel, CustomFieldModel, Relations
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         ordering = ["device_type", "_name"]
         unique_together = ["name", "device_type"]
@@ -255,6 +258,7 @@ class FSUTypeModel(PrimaryModel):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         ordering = ["manufacturer", "_name", "part_number"]
         unique_together = ["part_number", "manufacturer"]
@@ -281,4 +285,5 @@ class PCIFSUModel(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         abstract = True

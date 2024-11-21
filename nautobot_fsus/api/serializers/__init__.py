@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """API serializers for Nautobot FSUs app models."""
+
 from nautobot_fsus.api.serializers.fsu_templates import (
     CPUTemplateSerializer,
     DiskTemplateSerializer,

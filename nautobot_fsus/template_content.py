@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Template extensions for built-in Nautobot models."""
+
 from typing import Any, Type
 from uuid import UUID
 
@@ -48,15 +49,17 @@ class FSUsTabContentTemplate(TemplateExtension):
                 kwargs={"pk": self.obj_pk},
             )
 
-            buttons.extend([
-                "<div class=\"btn-group\">",
-                "    <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" "
-                "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">",
-                "        <span class=\"mdi mdi-plus-thick\" aria-hidden=\"true\"></span> "
-                "Add FSUs <span class=\"caret\"></span>",
-                "    </button>",
-                "    <ul class=\"dropdown-menu\">",
-            ])
+            buttons.extend(
+                [
+                    '<div class="btn-group">',
+                    '    <button type="button" class="btn btn-primary dropdown-toggle" '
+                    'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+                    '        <span class="mdi mdi-plus-thick" aria-hidden="true"></span> '
+                    'Add FSUs <span class="caret"></span>',
+                    "    </button>",
+                    '    <ul class="dropdown-menu">',
+                ]
+            )
 
             if user.has_perm("nautobot_fsus.add_cpu"):
                 buttons.append(
@@ -211,15 +214,17 @@ class DeviceTypeFSUsContent(TemplateExtension):
         buttons: list[str] = []
 
         if user is not None and user.has_perm("dcim.change_devicetype"):
-            buttons.extend([
-                "<div class=\"btn-group\">",
-                "    <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" "
-                "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">",
-                "        <span class=\"mdi mdi-plus-thick\" aria-hidden=\"true\"></span> "
-                "Add FSUs <span class=\"caret\"></span>",
-                "    </button>",
-                "    <ul class=\"dropdown-menu\">",
-            ])
+            buttons.extend(
+                [
+                    '<div class="btn-group">',
+                    '    <button type="button" class="btn btn-primary dropdown-toggle" '
+                    'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+                    '        <span class="mdi mdi-plus-thick" aria-hidden="true"></span> '
+                    'Add FSUs <span class="caret"></span>',
+                    "    </button>",
+                    '    <ul class="dropdown-menu">',
+                ]
+            )
 
             if user.has_perm("nautobot_fsus.add_cputemplate"):
                 buttons.append(
@@ -305,6 +310,7 @@ class DeviceTypeFSUsContent(TemplateExtension):
 
     def full_width_page(self) -> str:
         """Add tables for FSU templates."""
+
         def _fsu_table(
             table: Type[FSUTemplateModelTable],
             fsu: Type[FSUTemplateModel],

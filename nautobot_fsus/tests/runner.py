@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Test runner wrapper for Nautobot FSUs app."""
+
 from django.conf import settings
 from django.core.management import call_command
 from django.db import connections
@@ -60,14 +61,12 @@ class NautobotFSUsTestRunner(XMLTestRunner):
             help="Fixture file to use with --cache-test-fixtures.",
         )
         parser.add_argument(
-            "--report-file",
-            default="rspec.xml",
-            help="Filename for the saved XML test report."
+            "--report-file", default="rspec.xml", help="Filename for the saved XML test report."
         )
         parser.add_argument(
             "--flush",
             action="store_true",
-            help="Flush any existing data in the database before generating new test data."
+            help="Flush any existing data in the database before generating new test data.",
         )
 
     def setup_test_environment(self, **kwargs):

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Table mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
+
 from typing import Any
 
 from django.urls import reverse
@@ -101,8 +102,15 @@ class KludgeLinkedCountColumn(LinkedCountColumn):
     to work around it.
     """
 
-    def __init__(self, viewname: str, *args: Any, view_kwargs: dict[str, Any] | None = None,
-                 url_params: dict[str, str] | None = None, default: int = 0, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        viewname: str,
+        *args: Any,
+        view_kwargs: dict[str, Any] | None = None,
+        url_params: dict[str, str] | None = None,
+        default: int = 0,
+        **kwargs: Any,
+    ) -> None:
         """Initialize the column with view name fix."""
         # drop the "plugins:" from the front of the view name, since it's easier to deal with the
         # column render method than the table lookup to map the view to a model.
@@ -113,7 +121,7 @@ class KludgeLinkedCountColumn(LinkedCountColumn):
             view_kwargs=view_kwargs,
             url_params=url_params,
             default=default,
-            **kwargs
+            **kwargs,
         )
 
     def render(self, record: Any, value: str | None) -> str | None:

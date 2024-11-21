@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Tests for API endpoints defined in the Nautobot FSUs app."""
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from nautobot.dcim.models import Device, Interface, PowerPort
@@ -241,10 +242,12 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
         self.assertEqual(models.GPUBaseboard.objects.get(id=baseboard_id).gpus.count(), 2)
 
         self.add_permissions("nautobot_fsus.change_gpubaseboard")
-        data = [{
-            "id": baseboard_id,
-            "gpus": [str(self.children[1].pk)],
-        }]
+        data = [
+            {
+                "id": baseboard_id,
+                "gpus": [str(self.children[1].pk)],
+            }
+        ]
         data[0]["gpus"].extend([str(x.pk) for x in self.extra_children])
         self.assertEqual(len(data[0]["gpus"]), 3)
         response = self.client.patch(url, data, format="json", **self.header)
@@ -384,10 +387,12 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
         self.assertEqual(models.Mainboard.objects.get(id=mainboard_id).cpus.count(), 2)
 
         self.add_permissions("nautobot_fsus.change_mainboard")
-        data = [{
-            "id": mainboard_id,
-            "cpus": [str(self.children[1].pk)],
-        }]
+        data = [
+            {
+                "id": mainboard_id,
+                "cpus": [str(self.children[1].pk)],
+            }
+        ]
         data[0]["cpus"].extend([str(x.pk) for x in self.extra_children])
         self.assertEqual(len(data[0]["cpus"]), 3)
         response = self.client.patch(url, data, format="json", **self.header)
@@ -439,7 +444,7 @@ class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
         statuses = {
             "device": Status.objects.get(name="Active"),
             "location": Status.objects.get(name="Available"),
-            "interface": Status.objects.get_for_model(Interface).first()
+            "interface": Status.objects.get_for_model(Interface).first(),
         }
 
         cls.children = [
@@ -495,7 +500,7 @@ class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
         self.assertEqual(
             "Number of Interfaces being added to NIC (3) is greater than the number of "
             "available connections (2)",
-            str(error_message)
+            str(error_message),
         )
 
     def test_update_nic_with_too_many_children(self):
@@ -526,7 +531,7 @@ class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
         self.assertEqual(
             "Number of Interfaces being added to NIC (3) is greater than the number of "
             "available connections (2)",
-            str(error_message)
+            str(error_message),
         )
 
 
