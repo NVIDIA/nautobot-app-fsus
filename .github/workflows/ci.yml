@@ -16,7 +16,7 @@ env:
   APP_NAME: "nautobot-fsus"
 
 jobs:
-  bandit:
+  ruff:
     runs-on: "ubuntu-20.04"
     env:
       INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
@@ -26,31 +26,7 @@ jobs:
       - name: "Setup environment"
         uses: "./.github/actions/poetry"
       - name: "Linting: bandit"
-        run: poetry run invoke test.bandit
-
-  pydocstyle:
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Linting: pydocstyle"
-        run: poetry run invoke test.pydocstyle
-
-  flake8:
-    runs-on: "ubuntu-20.04"
-    env:
-      INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
-    steps:
-      - name: "Check out repository"
-        uses: "actions/checkout@v4"
-      - name: "Setup environment"
-        uses: "./.github/actions/poetry"
-      - name: "Linting: flake8"
-        run: poetry run invoke test.flake8
+        run: poetry run invoke test.ruff -a both
 
   mypy:
     runs-on: "ubuntu-20.04"
@@ -78,9 +54,7 @@ jobs:
 
   pylint:
     needs:
-      - "bandit"
-      - "pydocstyle"
-      - "flake8"
+      - "ruff"
       - "mypy"
       - "poetry"
     runs-on: "ubuntu-20.04"
@@ -88,7 +62,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.12"]
-        nautobot-version: ["stable"]
+        nautobot-version: ["2.3.10"]
     env:
       INVOKE_NAUTOBOT_FSUS_PYTHON_VER: "${{ matrix.python-version }}"
       INVOKE_NAUTOBOT_FSUS_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
@@ -135,11 +109,11 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12"]
         db-backend: ["postgresql"]
-        nautobot-version: ["stable"]
+        nautobot-version: ["2.3.10"]
         include:
           - python-version: "3.12"
             db-backend: "mysql"
-            nautobot-version: "stable"
+            nautobot-version: "2.3.10"
     env:
       INVOKE_NAUTOBOT_FSUS_PYTHON_VER: "${{ matrix.python-version }}"
       INVOKE_NAUTOBOT_FSUS_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"

@@ -25,7 +25,7 @@ from nautobot_fsus.tables.mixins import FSUTypeModelTable
 # 2.3.1 are not supported due to the bug.
 # pylint: disable=ungrouped-imports
 version = settings.VERSION.split(".")
-if int(version[-1]) <= 2:
+if int(version[-1]) <= 2:  # noqa: PLR2004
     from nautobot_fsus.tables.mixins import KludgeLinkedCountColumn as LinkedCountColumn
 else:
     from nautobot.apps.tables import LinkedCountColumn  # type: ignore[no-redef]

@@ -25,9 +25,9 @@ from nautobot.apps.forms import (
     NautobotBulkEditForm,
     NautobotFilterForm,
     NautobotModelForm,
-    TagsBulkEditFormMixin,
     StatusModelBulkEditFormMixin,
     StatusModelFilterFormMixin,
+    TagsBulkEditFormMixin,
 )
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 
