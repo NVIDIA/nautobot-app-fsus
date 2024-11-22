@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """FilterSets for FSU type models."""
+
 import django_filters.constants
 from nautobot.extras.filters import NautobotFilterSet
 

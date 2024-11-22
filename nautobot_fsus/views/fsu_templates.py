@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """View definitions for FSUTemplate models."""
+
 from nautobot_fsus import filters, forms, models, tables
 from nautobot_fsus.api import serializers
 from nautobot_fsus.views.mixins import FSUTemplateModelViewSet

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """FilterSets for FSU models."""
+
 import django_filters
 from nautobot.extras.filters import NautobotFilterSet
 from nautobot.extras.filters.mixins import StatusModelFilterSetMixin

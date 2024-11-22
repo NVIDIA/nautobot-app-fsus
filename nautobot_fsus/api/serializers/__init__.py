@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """API serializers for Nautobot FSUs app models."""
+
 # Importing all nested serializers is necessary for the automatic replacement of a serializer
 # with its corresponding nested version
 from nautobot_fsus.api.nested_serializers import (

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Classes to handle user-definable fields and common validations."""
+
 from typing import Any
 
 from nautobot.core.api import WritableNestedSerializer

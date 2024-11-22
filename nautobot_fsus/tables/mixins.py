@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Table mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
+
 import django_tables2 as tables
 from nautobot.extras.tables import StatusTableMixin
 from nautobot.utilities.tables import (

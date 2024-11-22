@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Model serializers for FSU type API endpoints."""
+
 from rest_framework import serializers
 
 from nautobot_fsus.api.mixins import FSUTypeModelSerializer

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Form definitions for FSU models."""
+
 from django import forms
 from nautobot.dcim.models import Interface, PowerPort
 from nautobot.utilities.forms import DynamicModelChoiceField, DynamicModelMultipleChoiceField
@@ -35,6 +36,7 @@ from nautobot_fsus.forms.mixins import (
 
 class CPUBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of CPU instances."""
+
     model = models.CPU
 
     pk = forms.ModelMultipleChoiceField(
@@ -95,7 +97,7 @@ class CPUFilterForm(FSUModelFilterForm):
         queryset=models.CPUType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="CPU Type"
+        label="CPU Type",
     )
 
     parent_mainboard = DynamicModelMultipleChoiceField(
@@ -174,6 +176,7 @@ class CPUImportForm(FSUImportModelForm):
 
 class DiskBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of Disk instances."""
+
     model = models.Disk
 
     pk = forms.ModelMultipleChoiceField(
@@ -234,7 +237,7 @@ class DiskFilterForm(FSUModelFilterForm):
         queryset=models.DiskType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="Disk Type"
+        label="Disk Type",
     )
 
     parent_hba = DynamicModelMultipleChoiceField(
@@ -307,6 +310,7 @@ class DiskImportForm(FSUImportModelForm):
 
 class FanBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of Fan instances."""
+
     model = models.Fan
 
     pk = forms.ModelMultipleChoiceField(
@@ -345,7 +349,7 @@ class FanFilterForm(FSUModelFilterForm):
         queryset=models.FanType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="Fan Type"
+        label="Fan Type",
     )
 
     tag = TagFilterField(model)
@@ -375,6 +379,7 @@ class FanImportForm(FSUImportModelForm):
 
 class GPUBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of GPU instances."""
+
     model = models.GPU
 
     pk = forms.ModelMultipleChoiceField(
@@ -436,7 +441,7 @@ class GPUFilterForm(FSUModelFilterForm):
         queryset=models.GPUType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="GPU Type"
+        label="GPU Type",
     )
 
     parent_gpubaseboard = DynamicModelMultipleChoiceField(
@@ -517,6 +522,7 @@ class GPUImportForm(FSUImportModelForm):
 
 class GPUBaseboardBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of GPUBaseboard instances."""
+
     model = models.GPUBaseboard
 
     pk = forms.ModelMultipleChoiceField(
@@ -558,7 +564,7 @@ class GPUBaseboardFilterForm(FSUModelFilterForm):
         queryset=models.GPUBaseboardType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="GPUBaseboard Type"
+        label="GPUBaseboard Type",
     )
 
     has_child_gpus = forms.NullBooleanField(
@@ -619,6 +625,7 @@ class GPUBaseboardImportForm(FSUImportModelForm):
 
 class HBABulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of HBA instances."""
+
     model = models.HBA
 
     pk = forms.ModelMultipleChoiceField(
@@ -672,7 +679,7 @@ class HBAFilterForm(FSUModelFilterForm):
         queryset=models.HBAType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="HBA Type"
+        label="HBA Type",
     )
 
     has_child_disks = forms.NullBooleanField(
@@ -746,6 +753,7 @@ class HBAImportForm(FSUImportModelForm):
 
 class MainboardBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of Mainboard instances."""
+
     model = models.Mainboard
 
     pk = forms.ModelMultipleChoiceField(
@@ -784,7 +792,7 @@ class MainboardFilterForm(FSUModelFilterForm):
         queryset=models.MainboardType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="Mainboard Type"
+        label="Mainboard Type",
     )
 
     has_child_cpus = forms.NullBooleanField(
@@ -845,6 +853,7 @@ class MainboardImportForm(FSUImportModelForm):
 
 class NICBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of NIC instances."""
+
     model = models.NIC
 
     pk = forms.ModelMultipleChoiceField(
@@ -898,7 +907,7 @@ class NICFilterForm(FSUModelFilterForm):
         queryset=models.NICType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="NIC Type"
+        label="NIC Type",
     )
 
     has_child_interfaces = forms.NullBooleanField(
@@ -976,6 +985,7 @@ class NICImportForm(FSUImportModelForm):
 
 class OtherFSUBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of OtherFSU instances."""
+
     model = models.OtherFSU
 
     pk = forms.ModelMultipleChoiceField(
@@ -1014,7 +1024,7 @@ class OtherFSUFilterForm(FSUModelFilterForm):
         queryset=models.OtherFSUType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="OtherFSU Type"
+        label="OtherFSU Type",
     )
 
     tag = TagFilterField(model)
@@ -1034,7 +1044,9 @@ class OtherFSUForm(FSUModelForm):
 class OtherFSUImportForm(FSUImportModelForm):
     """Form for importing OtherFSU instances."""
 
-    fsu_type = forms.ModelChoiceField(queryset=models.OtherFSUType.objects.all(), to_field_name="name")
+    fsu_type = forms.ModelChoiceField(
+        queryset=models.OtherFSUType.objects.all(), to_field_name="name"
+    )
 
     class Meta(FSUImportModelForm.Meta):
         """OtherFSUImportForm model options."""
@@ -1044,6 +1056,7 @@ class OtherFSUImportForm(FSUImportModelForm):
 
 class PSUBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of PSU instances."""
+
     model = models.PSU
 
     pk = forms.ModelMultipleChoiceField(
@@ -1082,7 +1095,7 @@ class PSUFilterForm(FSUModelFilterForm):
         queryset=models.PSUType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="PSU Type"
+        label="PSU Type",
     )
 
     has_child_power_ports = forms.NullBooleanField(
@@ -1143,6 +1156,7 @@ class PSUImportForm(FSUImportModelForm):
 
 class RAMModuleBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of RAMModule instances."""
+
     model = models.RAMModule
 
     pk = forms.ModelMultipleChoiceField(
@@ -1196,7 +1210,7 @@ class RAMModuleFilterForm(FSUModelFilterForm):
         queryset=models.RAMModuleType.objects.all(),
         query_params={"manufacturer": "$manufacturer"},
         required=False,
-        label="RAMModule Type"
+        label="RAMModule Type",
     )
 
     tag = TagFilterField(model)
@@ -1231,7 +1245,9 @@ class RAMModuleForm(FSUModelForm):
 class RAMModuleImportForm(FSUImportModelForm):
     """Form for importing RAMModule instances."""
 
-    fsu_type = forms.ModelChoiceField(queryset=models.RAMModuleType.objects.all(), to_field_name="name")
+    fsu_type = forms.ModelChoiceField(
+        queryset=models.RAMModuleType.objects.all(), to_field_name="name"
+    )
 
     class Meta(FSUImportModelForm.Meta):
         """RAMModuleImportForm model options."""
