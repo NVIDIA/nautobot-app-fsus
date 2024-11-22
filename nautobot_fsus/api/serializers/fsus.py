@@ -42,15 +42,15 @@ from nautobot_fsus.api.nested_serializers import (
 )
 from nautobot_fsus.models import (
     CPU,
+    GPU,
+    HBA,
+    NIC,
+    PSU,
     Disk,
     Fan,
     GPUBaseboard,
-    GPU,
-    HBA,
     Mainboard,
-    NIC,
     OtherFSU,
-    PSU,
     RAMModule,
 )
 from nautobot_fsus.utilities import validate_parent_device
@@ -210,7 +210,7 @@ class GPUBaseboardSerializer(FSUModelSerializer):
                     gpu.validated_save()
 
         except ValidationError as error:
-            raise serializers.ValidationError({"gpus": error.messages[0]})
+            raise serializers.ValidationError({"gpus": error.messages[0]}) from error
 
         return instance
 
@@ -285,7 +285,7 @@ class GPUBaseboardSerializer(FSUModelSerializer):
                 validated_instance: GPUBaseboard = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"gpus": error.messages[0]})
+            raise serializers.ValidationError({"gpus": error.messages[0]}) from error
 
         return validated_instance
 
@@ -392,7 +392,7 @@ class HBASerializer(FSUModelSerializer):
                     disk.validated_save()
 
         except ValidationError as error:
-            raise serializers.ValidationError({"disks": error.messages[0]})
+            raise serializers.ValidationError({"disks": error.messages[0]}) from error
 
         return instance
 
@@ -456,7 +456,7 @@ class HBASerializer(FSUModelSerializer):
                 validated_instance: HBA = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"disks": error.messages[0]})
+            raise serializers.ValidationError({"disks": error.messages[0]}) from error
 
         return validated_instance
 
@@ -545,7 +545,7 @@ class MainboardSerializer(FSUModelSerializer):
                     cpu.validated_save()
 
         except ValidationError as error:
-            raise serializers.ValidationError({"cpus": error.messages[0]})
+            raise serializers.ValidationError({"cpus": error.messages[0]}) from error
 
         return instance
 
@@ -620,7 +620,7 @@ class MainboardSerializer(FSUModelSerializer):
                 validated_instance: Mainboard = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"cpus": error.messages[0]})
+            raise serializers.ValidationError({"cpus": error.messages[0]}) from error
 
         return validated_instance
 
@@ -694,7 +694,7 @@ class NICSerializer(FSUModelSerializer):
                 instance.interfaces.set(interfaces)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"interfaces": error.messages[0]})
+            raise serializers.ValidationError({"interfaces": error.messages[0]}) from error
 
         return instance
 
@@ -758,7 +758,7 @@ class NICSerializer(FSUModelSerializer):
                 validated_instance: NIC = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"interfaces": error.messages[0]})
+            raise serializers.ValidationError({"interfaces": error.messages[0]}) from error
 
         return validated_instance
 
@@ -834,7 +834,7 @@ class PSUSerializer(FSUModelSerializer):
                 instance.power_ports.set(power_ports)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"power_ports": error.messages[0]})
+            raise serializers.ValidationError({"power_ports": error.messages[0]}) from error
 
         return instance
 
@@ -888,7 +888,7 @@ class PSUSerializer(FSUModelSerializer):
                 validated_instance: PSU = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"power_ports": error.messages[0]})
+            raise serializers.ValidationError({"power_ports": error.messages[0]}) from error
 
         return validated_instance
 

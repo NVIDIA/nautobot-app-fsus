@@ -24,8 +24,8 @@ from nautobot.utilities.forms.fields import (
 
 from nautobot_fsus import models
 from nautobot_fsus.forms.mixins import (
-    FSUTemplateCSVForm,
     FSUTemplateCreateForm,
+    FSUTemplateCSVForm,
     FSUTemplateModelForm,
     FSUTemplatePCIModelCreateForm,
 )

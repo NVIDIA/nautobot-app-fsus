@@ -17,9 +17,9 @@
 import django_filters
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 from nautobot.utilities.filters import (
-    NaturalKeyOrPKMultipleChoiceFilter,
     MultiValueCharFilter,
     MultiValueUUIDFilter,
+    NaturalKeyOrPKMultipleChoiceFilter,
     RelatedMembershipBooleanFilter,
     SearchFilter,
     TagFilter,

@@ -24,10 +24,10 @@ from nautobot.utilities.forms.widgets import StaticSelect2
 from nautobot_fsus import models
 from nautobot_fsus.forms.mixins import (
     BaseFSUCSVForm,
+    FSUImportModelForm,
     FSUModelBulkEditForm,
     FSUModelFilterForm,
     FSUModelForm,
-    FSUImportModelForm,
 )
 
 # pylint: disable=too-many-lines

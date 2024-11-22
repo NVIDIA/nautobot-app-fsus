@@ -26,7 +26,6 @@ from nautobot.utilities.fields import NaturalOrderingField
 from nautobot.utilities.ordering import naturalize
 from taggit.managers import TaggableManager
 
-
 _NAME: tuple[str, NaturalOrderingField] = (
     '_name',
     NaturalOrderingField(

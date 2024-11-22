@@ -20,9 +20,9 @@ from typing import Any, Type
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
-from django.http.response import HttpResponseRedirect
 from django.http.request import HttpRequest
-from django.template.loader import select_template, TemplateDoesNotExist
+from django.http.response import HttpResponseRedirect
+from django.template.loader import TemplateDoesNotExist, select_template
 from nautobot.core.views.generic import BulkRenameView
 from nautobot.core.views.viewsets import NautobotUIViewSet
 from nautobot.dcim.models import DeviceType
@@ -134,11 +134,11 @@ class FSUTemplateModelViewSet(NautobotUIViewSet):
             else:
                 for field, errors in fsu_form.errors.as_data().items():
                     if field == "name":
-                        field = "name_pattern"
+                        field = "name_pattern"  # noqa: PLW2901
                     elif field == "pci_slot_id":
-                        field = "pci_slot_id_pattern"
+                        field = "pci_slot_id_pattern"  # noqa: PLW2901
                     elif field == "slot_id":
-                        field = "slot_id_pattern"
+                        field = "slot_id_pattern"  # noqa: PLW2901
                     for error in errors:
                         err_string = ", ".join(error)
                         form.add_error(field, f"{name}: {err_string}")

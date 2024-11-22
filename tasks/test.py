@@ -23,10 +23,12 @@ from tasks import helpers
         "enable": "Pass the value to the pylint --enable flag, can be given multiple times.",
         "path": "Set an alternate path for pylint to check, default is nautobot_fsus",
         "verbose": "Enable verbose output for the pylint command.",
+        "exit-zero": "Pass exit-zero options to pylint.",
     },
 )
 def pylint(context: Context, path: str = "nautobot_fsus", verbose: bool = False,
-           enable: list[str] | None = None, disable: list[str] | None = None) -> None:
+           enable: list[str] | None = None, disable: list[str] | None = None,
+           exit_zero: bool = False) -> None:
     """Run pylint code analysis."""
     command = ["pylint", "--init-hook", "\"import nautobot; nautobot.setup()\"",
                "--rcfile", "pyproject.toml"]
@@ -37,10 +39,53 @@ def pylint(context: Context, path: str = "nautobot_fsus", verbose: bool = False,
         command.extend([f"--disable={value}" for value in disable])
     if enable is not None:
         command.extend([f"--enable={value}" for value in enable])
+    if exit_zero is True:
+        command.append("--exit-zero")
 
     command.append(path)
 
     helpers.run_command(context, " ".join(command))
+
+
+@task(
+    help={
+        "action": "One of `lint`, `format`, or `both`, default is `lint`.",
+        "fix": "Automatically fix code when running the selected action. May not be able "
+               "to fix everything.",
+        "output-format": "See https://docs.astral.sh/ruff/settings/#output-format, "
+                         "default is `concise`.",
+        "diff": "Show a diff between the current file and what the ruff formatted file would "
+                "look like. If both --diff and --fix are present, --fix will be ignored.",
+        "path": "Specific file or directory to check/format.",
+    }
+)
+def ruff(context: Context, action: str = "lint", fix: bool = False, output_format: str = "concise",
+         diff: bool = False, path: str = "nautobot_fsus/") -> None:
+    """Run the ruff linter/formatter."""
+    commands = []
+    if action in ["lint", "both"]:
+        command = ["ruff", "check"]
+        if fix:
+            command.append("--fix")
+        command.extend(["--output-format", output_format, path])
+        commands.append(("ruff linter", " ".join(command)))
+    if action in ["format", "both"]:
+        command = ["ruff", "format"]
+        if diff:
+            command.append("--diff")
+        elif not fix:
+            command.append("--check")
+        command.append(path)
+        commands.append(("ruff formatter", " ".join(command)))
+
+    if not commands:
+        raise SystemExit(f"Invalid action: {action}")
+
+    for i, command in enumerate(commands):
+        if i > 0:
+            print()
+        print(f"Running {command[0]}")
+        helpers.run_command(context, command[1], warn=True)
 
 
 @task(
@@ -200,29 +245,34 @@ def coverage(context: Context, covered: bool = False) -> None:
                 "given and --seed is not, a default seed will be used.",
         "flush": "Flush database before running tests.",
         "verbose": "Enable verbose output for lint and test commands.",
+        "ruff-lint": "Use ruff instead of flake8, pydocstyle, and bandit.",
     }
 )
 def everything(context: Context, keepdb: bool = False, seed: str | None = None,
-               flush: bool = False, verbose: bool = False) -> None:
+               flush: bool = False, verbose: bool = False, ruff_lint: bool = False) -> None:
     """Run all the linters and pytest with coverage."""
     print("Running pylint...")
     pylint(context, verbose=verbose)
 
-    print("-" * 70)
-    print("\nRunning flake8...")
-    flake8(context, verbose=verbose)
+    if ruff_lint:
+        print("-" * 70)
+        print("\nRunning ruff...")
+        ruff(context, action="both")
+    else:
+        print("-" * 70)
+        print("\nRunning flake8...")
+        flake8(context, verbose=verbose)
+        print(f"\n{('-' * 70)}\n")
+        print("Running pydocstyle...")
+        pydocstyle(context, verbose=verbose)
 
-    print(f"\n{('-' * 70)}\n")
-    print("Running pydocstyle...")
-    pydocstyle(context, verbose=verbose)
+        print(f"\n{('-' * 70)}\n")
+        print("Running bandit...")
+        bandit(context)
 
     print(f"\n{('-' * 70)}\n")
     print("Running mypy...")
     mypy(context, verbose=verbose)
-
-    print(f"\n{('-' * 70)}\n")
-    print("Running bandit...")
-    bandit(context)
 
     print(f"\n{('-' * 70)}\n")
     print("Running tests...")

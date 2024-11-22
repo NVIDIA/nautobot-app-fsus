@@ -47,12 +47,8 @@ def build(context: Context, force_rm: bool = False, cache: bool = True) -> None:
     helpers.docker_compose(context, " ".join(command))
 
 
-@task(
-    help={
-        "local": "Force the command to run locally instead of in the service container."
-    }
-)
-def mkdocs(context: Context, local: bool = False) -> None:
+@task
+def mkdocs(context: Context) -> None:
     """Runs `mkdocs` to create the static documentation for the plugin."""
     command = "mkdocs build --no-directory-urls --strict"
     helpers.run_command(context, command)
@@ -78,7 +74,7 @@ def generate_packages(context: Context) -> None:
 )
 def lock(context: Context, check: bool = False, constrain_nautobot_ver: bool = False,
          constrain_python_ver: bool = False) -> None:
-    """Generate the poetry.lock file."""
+    """Generate or check the poetry.lock file."""
     command = ["poetry"]
     if constrain_nautobot_ver:
         docker_nautobot_version = helpers.get_docker_nautobot_version(context)
@@ -406,7 +402,7 @@ def showmigrations(context: Context, plan: bool = False, verbose: bool = False) 
 
 
 @task
-def migrate(context) -> None:
+def migrate(context: Context) -> None:
     """Perform the Django migrate operation."""
     helpers.run_command(context, "nautobot-server migrate")
 

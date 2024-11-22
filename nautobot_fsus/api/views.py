@@ -16,8 +16,8 @@
 """API endpoint views for the Nautobot FSUs app."""
 from nautobot.extras.api.views import NautobotModelViewSet, StatusViewSetMixin
 
-from nautobot_fsus.api import serializers
 from nautobot_fsus import filters, models
+from nautobot_fsus.api import serializers
 
 
 class CPUAPIView(NautobotModelViewSet, StatusViewSetMixin):
