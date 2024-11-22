@@ -17,8 +17,8 @@
 from typing import Type
 
 from nautobot.dcim.models import Device, DeviceType, Manufacturer
-from nautobot.extras.models import Status
 from nautobot.extras.forms import NautobotBulkEditForm, NautobotFilterForm
+from nautobot.extras.models import Status
 from nautobot.utilities.testing import TestCase
 
 from nautobot_fsus.forms.mixins import (

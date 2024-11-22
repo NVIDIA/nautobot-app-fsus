@@ -8,6 +8,7 @@ license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/NVIDIA/nautobot-app-fsus"
 repository = "https://github.com/NVIDIA/nautobot-app-fsus"
+documentation = "https://nvidia.github.io/nautobot-app-fsus/index.html"
 keywords = ["nautobot", "nautobot-plugin"]
 include = [
     "nautobot_fsus/static/nautobot_fsus/**/*",
@@ -44,6 +45,7 @@ pylint = "^2.17.4"
 pylint-django = "^2.5.3"
 pylint-nautobot = "^0.2.1"
 python-dotenv = "^1.0.1"
+ruff = "^0.7.1"
 toml = "^0.10.2"
 types-factory-boy = "0.4.1"
 types-graphene = "^0.22"
@@ -107,6 +109,59 @@ disable = [
 
 [tool.pylint-nautobot]
 supported_nautobot_versions = ["1"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "D",  # pydocstyle
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "I",  # isort
+    "PL", # pylint
+    "S",  # bandit
+    "W",  # pycodestyle warning
+]
+ignore = [
+    # D105 enforces docstrings for magic methods, e.g. __str__(). It seems unnecessary.
+    "D105",
+
+    # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
+    "D203", # 1 blank line required before class docstring
+
+    # D212 is enabled by default in google convention, and complains if we have a docstring like:
+    # """
+    # My docstring is on the line after the opening quotes instead of on the same line as them.
+    # """
+    # We've discussed and concluded that we consider this to be a valid style choice.
+    "D212", # Multi-line docstring summary should start at the first line
+]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+
+[tool.ruff.lint.pycodestyle]
+# Combine line-length and max-line-length to emulate flake8-bugbear's B950 rule.
+# The formatter uses line-length, but rule E501 won't complain until a line hits 111.
+max-line-length = 110
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"nautobot_fsus/**/__init__.py" = [
+    "D",
+]
+"nautobot_fsus/migrations/*" = [
+    "D",
+]
+"nautobot_fsus/tests/*" = [
+    "D",
+    "S"
+]
 
 [tool.pydocstyle]
 convention = "google"

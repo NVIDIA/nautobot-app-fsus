@@ -26,7 +26,7 @@ namespace.add_collection(Collection.from_module(test))
 namespace.configure(
     {
         "nautobot_fsus": {
-            "nautobot_ver": "1.6.1",
+            "nautobot_ver": "1.6.28",
             "project_name": "nautobot-fsus",
             "project_source": "nautobot_fsus",
             "python_ver": "3.10",

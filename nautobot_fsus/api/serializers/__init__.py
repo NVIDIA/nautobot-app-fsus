@@ -91,7 +91,6 @@ from nautobot_fsus.api.serializers.fsus import (
     RAMModuleSerializer,
 )
 
-
 __all__ = (
     "CPUSerializer",
     "CPUTemplateSerializer",

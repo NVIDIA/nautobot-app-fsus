@@ -21,9 +21,9 @@ from nautobot.utilities.forms.fields import DynamicModelChoiceField, TagFilterFi
 
 from nautobot_fsus import choices, models
 from nautobot_fsus.forms.mixins import (
-    FSUTypeModelForm,
     FSUTypeCSVForm,
     FSUTypeImportModelForm,
+    FSUTypeModelForm,
 )
 
 

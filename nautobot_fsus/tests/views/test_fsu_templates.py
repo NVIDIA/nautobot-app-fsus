@@ -21,7 +21,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from nautobot.dcim.models import DeviceType, Manufacturer
 from nautobot.users.models import ObjectPermission
-from nautobot.utilities.testing import extract_page_body, post_data, ViewTestCases
+from nautobot.utilities.testing import ViewTestCases, extract_page_body, post_data
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUTemplateModel, FSUTypeModel

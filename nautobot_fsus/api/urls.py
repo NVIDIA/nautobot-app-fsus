@@ -18,7 +18,6 @@ from nautobot.core.api import OrderedDefaultRouter
 
 from nautobot_fsus.api import views
 
-
 router = OrderedDefaultRouter()
 
 router.register("cpus", views.CPUAPIView)

@@ -17,8 +17,8 @@
 from nautobot.core.apps import (
     NavMenuAddButton,
     NavMenuGroup,
-    NavMenuItem,
     NavMenuImportButton,
+    NavMenuItem,
     NavMenuTab,
 )
 

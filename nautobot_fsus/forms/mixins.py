@@ -22,9 +22,9 @@ from nautobot.extras.forms import (
     NautobotBulkEditForm,
     NautobotFilterForm,
     NautobotModelForm,
-    TagsBulkEditFormMixin,
     StatusModelBulkEditFormMixin,
     StatusModelFilterFormMixin,
+    TagsBulkEditFormMixin,
 )
 from nautobot.extras.forms.mixins import StatusModelCSVFormMixin
 from nautobot.utilities.forms import BootstrapMixin, CommentField, CSVModelForm
