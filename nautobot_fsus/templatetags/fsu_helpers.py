@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Template helper methods."""
+
 from django import template
 from django.db.models import Model
 from django_jinja import library

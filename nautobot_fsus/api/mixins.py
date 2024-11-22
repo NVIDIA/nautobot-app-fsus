@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Classes to handle user-definable fields and common validations."""
+
 from typing import Any
 
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -79,7 +80,7 @@ class FSUModelSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
                 if to_validate.get("location") and "device" in validator.fields:
                     continue
             try:
-                if getattr(validator, 'requires_context', False):
+                if getattr(validator, "requires_context", False):
                     validator(to_validate, self)
                 else:
                     validator(to_validate)

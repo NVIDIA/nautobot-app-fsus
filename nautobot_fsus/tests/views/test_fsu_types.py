@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Tests for FSUType model views defined in the Nautobot FSUs app."""
+
 from typing import Type
 
 from nautobot.core.testing import ViewTestCases
@@ -26,7 +27,9 @@ from nautobot_fsus.models.mixins import FSUTypeModel
 class FSUTypeViewTestCases:  # pylint: disable=too-few-public-methods
     """Wrapper class for testing FSUType model views."""
 
-    class FSUTypeModelViewTestCase(ViewTestCases.PrimaryObjectViewTestCase,):
+    class FSUTypeModelViewTestCase(
+        ViewTestCases.PrimaryObjectViewTestCase,
+    ):
         """Common tests for FSUType model views."""
 
         model: Type[FSUTypeModel]
@@ -63,16 +66,20 @@ class CPUTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):
         """Set CPUType-specific options."""
         super().setUpTestData()
 
-        cls.form_data.update({
-            "architecture": "arm",
-            "cpu_speed": 2.5,
-            "cores": 8,
-        })
-        cls.bulk_edit_data.update({
-            "architecture": "x86",
-            "cpu_speed": 1.5,
-            "cores": 16,
-        })
+        cls.form_data.update(
+            {
+                "architecture": "arm",
+                "cpu_speed": 2.5,
+                "cores": 8,
+            }
+        )
+        cls.bulk_edit_data.update(
+            {
+                "architecture": "x86",
+                "cpu_speed": 1.5,
+                "cores": 16,
+            }
+        )
 
         cls.csv_data = (
             "manufacturer,name,part_number,architecture",

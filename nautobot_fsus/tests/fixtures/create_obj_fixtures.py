@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Create test environment object fixtures."""
+
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.utils.crypto import get_random_string
@@ -38,11 +39,13 @@ def create_env(seed: str | None = None):
         for num in range(1, 6):
             device_type = factory.random.randgen.choice(DeviceType.objects.all())
             device_role = factory.random.randgen.choice(Role.objects.all())
-            location = factory.random.randgen.choice(Location.objects.filter(
-                location_type__in=LocationType.objects.filter(
-                    content_types__in=[ContentType.objects.get_for_model(Device)]
+            location = factory.random.randgen.choice(
+                Location.objects.filter(
+                    location_type__in=LocationType.objects.filter(
+                        content_types__in=[ContentType.objects.get_for_model(Device)]
+                    )
                 )
-            ))
+            )
 
             _ = Device.objects.get_or_create(
                 device_type=device_type,
@@ -89,7 +92,7 @@ def create_env(seed: str | None = None):
             added, _ = fsu_type.objects.get_or_create(
                 manufacturer=mfgr,
                 name=f"{fsu_type._meta.verbose_name} {num}",
-                part_number=f"{type_model}_000{num}"
+                part_number=f"{type_model}_000{num}",
             )
             mfgr_used.append(mfgr.pk)
             fsu_types[type_model].append(added)

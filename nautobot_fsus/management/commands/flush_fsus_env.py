@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Management command to clear any existing data in the database."""
+
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -39,7 +40,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Publish command to flush dummy data."""
         if options["interactive"]:
-            db_name = connections[options['database']].settings_dict['NAME']
+            db_name = connections[options["database"]].settings_dict["NAME"]
             confirmation = input(f"""
 You have requested a flush of the database. This will IRREVERSIBLY DESTROY all data in the
 "{db_name}" database, including all user accounts, and return each table to an empty state.
@@ -55,4 +56,4 @@ Type "yes" to continue, or "no" to cancel: """)
                 f"Flushing all existing data from the {options['database']} database..."
             )
         )
-        call_command("flush", "--no-input", "--database", options['database'])
+        call_command("flush", "--no-input", "--database", options["database"])

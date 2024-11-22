@@ -45,10 +45,9 @@ def update_statuses(apps, *args, **kwargs):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('extras', '0099_remove_dangling_note_objects'),
-        ('nautobot_fsus', '0001_initial'),
+        ("extras", "0099_remove_dangling_note_objects"),
+        ("nautobot_fsus", "0001_initial"),
     ]
 
     operations = [
