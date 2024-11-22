@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """View definitions for FSUType models."""
+
 from typing import Any
 
 from django.urls import reverse
@@ -40,8 +41,13 @@ class CPUTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:cpu_list")
-        context["instance_count"] = models.CPU.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.CPU.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -63,8 +69,13 @@ class DiskTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:disk_list")
-        context["instance_count"] = models.Disk.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.Disk.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -86,8 +97,13 @@ class FanTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:fan_list")
-        context["instance_count"] = models.Fan.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.Fan.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -109,8 +125,13 @@ class GPUTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:gpu_list")
-        context["instance_count"] = models.GPU.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.GPU.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -132,8 +153,13 @@ class GPUBaseboardTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:gpubaseboard_list")
-        context["instance_count"] = models.GPUBaseboard.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.GPUBaseboard.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -155,8 +181,13 @@ class HBATypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:hba_list")
-        context["instance_count"] = models.HBA.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.HBA.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -178,8 +209,13 @@ class MainboardTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:mainboard_list")
-        context["instance_count"] = models.Mainboard.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.Mainboard.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -201,8 +237,13 @@ class NICTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:nic_list")
-        context["instance_count"] = models.NIC.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.NIC.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -224,8 +265,13 @@ class OtherFSUTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:otherfsu_list")
-        context["instance_count"] = models.OtherFSU.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.OtherFSU.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -247,8 +293,13 @@ class PSUTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:psu_list")
-        context["instance_count"] = models.PSU.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.PSU.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context
 
@@ -270,7 +321,12 @@ class RAMModuleTypeUIViewSet(FSUTypeModelViewSet):
         """Add extra template date to the context."""
         context: dict[str, Any] = super().get_extra_context(request, instance)
         context["fsu_list"] = reverse("plugins:nautobot_fsus:rammodule_list")
-        context["instance_count"] = models.RAMModule.objects.restrict(  # type: ignore[attr-defined]
-            request.user).filter(fsu_type=instance).count()
+        context["instance_count"] = (
+            models.RAMModule.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
 
         return context

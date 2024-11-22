@@ -14,11 +14,13 @@
 #  limitations under the License.
 
 """Choice sets for FSUs and Consumables models and forms."""
+
 from nautobot.utilities.choices import ChoiceSet
 
 
 class CPUArchitectures(ChoiceSet):
     """Choice set for CPU architectures."""
+
     x86 = "x86"
     arm = "arm"
     other = "o"
@@ -32,6 +34,7 @@ class CPUArchitectures(ChoiceSet):
 
 class DiskTypes(ChoiceSet):
     """Choice set for types of disks used in devices."""
+
     disk_hdd = "HDD"
     disk_ssd = "SSD"
     disk_nvme = "NVME"
@@ -47,6 +50,7 @@ class DiskTypes(ChoiceSet):
 
 class MemoryModuleTypes(ChoiceSet):
     """Module types for memory units."""
+
     # pylint: disable=invalid-name
     lrdimm = "l"
     rdimm = "r"
@@ -73,6 +77,7 @@ class MemoryModuleTypes(ChoiceSet):
 
 class MemoryTechnologies(ChoiceSet):
     """Memory technology."""
+
     # pylint: disable=invalid-name
     ddr = "ddr"
     ddr2 = "ddr2"
@@ -94,6 +99,7 @@ class MemoryTechnologies(ChoiceSet):
 
 class PCIeGenerations(ChoiceSet):
     """Mainboard PCIe generations."""
+
     gen1 = 1
     gen2 = 2
     gen3 = 3
@@ -124,6 +130,7 @@ class PCIeGenerations(ChoiceSet):
 
 class PSUFeedType(ChoiceSet):
     """Power feed types used by a PSU."""
+
     psu_ac = "ac"
     psu_dc = "dc"
     psu_switchable = "switchable"

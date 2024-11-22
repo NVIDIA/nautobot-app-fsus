@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Form mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
+
 from typing import Any, Type
 
 from django import forms
@@ -91,8 +92,8 @@ class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
                     message={
                         "pci_slot_id_pattern": forms.ValidationError(
                             message="The provided name pattern will create %(names)d names, "
-                                    "however, %(pci_slots)d pci_slot_ids will be generated - "
-                                    "these counts must match.",
+                            "however, %(pci_slots)d pci_slot_ids will be generated - "
+                            "these counts must match.",
                             params={"names": name_count, "pci_slot_ids": pci_slot_count},
                         ),
                     },
@@ -105,8 +106,8 @@ class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
                     message={
                         "slot_id_pattern": forms.ValidationError(
                             message="The provided name pattern will create %(names)d names, "
-                                    "however, %(slots)d slot_ids will be generated - "
-                                    "these counts must match.",
+                            "however, %(slots)d slot_ids will be generated - "
+                            "these counts must match.",
                             params={"names": name_count, "slot_ids": slot_count},
                         ),
                     },
@@ -135,6 +136,7 @@ class FSUTypeModelForm(NautobotModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "manufacturer",
@@ -168,6 +170,7 @@ class FSUTypeImportModelForm(BootstrapMixin, forms.ModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "manufacturer",
@@ -187,6 +190,7 @@ class FSUModelForm(NautobotModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "device",
@@ -232,6 +236,7 @@ class FSUModelBulkEditForm(
 
 class FSUModelFilterForm(NautobotFilterForm, StatusModelFilterFormMixin):
     """Form for filtering CPU instances."""
+
     model: Type[FSUModel]
 
     device = DynamicModelChoiceField(
@@ -251,10 +256,9 @@ class FSUModelFilterForm(NautobotFilterForm, StatusModelFilterFormMixin):
 
 class FSUImportModelForm(BootstrapMixin, forms.ModelForm):
     """Abstract form model for importing FSUs."""
+
     device = forms.ModelChoiceField(
-        queryset=Device.objects.all(),
-        to_field_name="name",
-        required=False
+        queryset=Device.objects.all(), to_field_name="name", required=False
     )
     location = forms.ModelChoiceField(
         queryset=Location.objects.all(),
@@ -264,6 +268,7 @@ class FSUImportModelForm(BootstrapMixin, forms.ModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "device",
@@ -283,12 +288,13 @@ class FSUImportModelForm(BootstrapMixin, forms.ModelForm):
 
 class BaseFSUCSVForm(StatusModelCSVFormMixin):
     """Base form for CSV exports of FSUs."""
+
     device = CSVModelChoiceField(
         queryset=Device.objects.all(),
         to_field_name="name",
         required=False,
         blank=True,
-        help_text="Parent device (must be empty if storage location is set)."
+        help_text="Parent device (must be empty if storage location is set).",
     )
 
     location = CSVModelChoiceField(
@@ -296,18 +302,19 @@ class BaseFSUCSVForm(StatusModelCSVFormMixin):
         to_field_name="name",
         required=False,
         blank=True,
-        help_text="Parent storage location (must be empty if device is set)."
+        help_text="Parent storage location (must be empty if device is set).",
     )
 
     manufacturer = CSVModelChoiceField(
         queryset=Manufacturer.objects.all(),
         to_field_name="name",
         required=False,
-        help_text="FSU type manufacturer"
+        help_text="FSU type manufacturer",
     )
 
     class Meta:
         """Metadata attributes."""
+
         abstract = True
         fields = [
             "device",

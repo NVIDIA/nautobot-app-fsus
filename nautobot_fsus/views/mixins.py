@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Base view classes for Nautobot FSU app models."""
+
 from copy import deepcopy
 from typing import Any, Type
 
@@ -35,6 +36,7 @@ from nautobot_fsus.forms.mixins import FSUTemplateCreateForm, FSUTemplateModelFo
 
 class FSUBulkRenameView(BulkRenameView):
     """Bulk rename view that includes the parent name."""
+
     def get_selected_objects_parents_name(self, selected_objects):
         """Return the parent Device or Location name."""
         selected_object = selected_objects.first()
@@ -210,12 +212,15 @@ class FSUTemplateModelViewSet(NautobotUIViewSet):
                             obj = fsu_form.save()
                             new_objects.append(obj)
 
-                        if (self.queryset.filter(pk__in=[obj.pk for obj in new_objects]).count()
-                                != len(new_objects)):
+                        if self.queryset.filter(
+                            pk__in=[obj.pk for obj in new_objects]
+                        ).count() != len(new_objects):
                             raise ObjectDoesNotExist
 
-                    message = (f"Added {len(new_objects)} "
-                               f"{self.queryset.model._meta.verbose_name_plural}")
+                    message = (
+                        f"Added {len(new_objects)} "
+                        f"{self.queryset.model._meta.verbose_name_plural}"
+                    )
                     self.logger.info(message)
                     messages.success(request, message)
 
@@ -225,8 +230,10 @@ class FSUTemplateModelViewSet(NautobotUIViewSet):
                     return HttpResponseRedirect(self.get_return_url(request))
 
                 except ObjectDoesNotExist:
-                    message = (f"{self.queryset.model._meta.verbose_name} creation failed due to "
-                               f"object-level permissions violation.")
+                    message = (
+                        f"{self.queryset.model._meta.verbose_name} creation failed due to "
+                        f"object-level permissions violation."
+                    )
                     self.logger.info(message)
                     form.add_error(None, message)
 

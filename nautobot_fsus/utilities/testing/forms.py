@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Test cases for forms."""
+
 from typing import Type
 
 from nautobot.dcim.models import Device, DeviceType, Manufacturer
@@ -85,6 +86,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
 
     class FSUTemplateFormTestCase(TestCase):
         """Tests for FSU template forms."""
+
         model: Type[FSUTemplateModel]
         type_model: Type[FSUTypeModel]
         form_model: Type[FSUTemplateModelForm]
@@ -143,6 +145,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
 
     class FSUTypeFormTestCase(TestCase):
         """Common tests for FSU Type forms."""
+
         type_model: Type[FSUTypeModel]
         form_model: Type[FSUTypeModelForm]
         bulk_form_model: Type[NautobotBulkEditForm]
@@ -151,7 +154,7 @@ class FSUFormTestCases:  # pylint: disable=too-few-public-methods
         @classmethod
         def setUpTestData(cls):
             """Create initial data for the tests."""
-            cls.instance_model = cls.type_model._meta.object_name.replace('Type', '')
+            cls.instance_model = cls.type_model._meta.object_name.replace("Type", "")
 
         def test_new_fsu_type(self):
             """Test adding a new FSU type."""

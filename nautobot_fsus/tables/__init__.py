@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Table definitions for the Nautobot FSUs app."""
+
 from nautobot_fsus.tables.fsu_templates import (
     CPUTemplateTable,
     DiskTemplateTable,

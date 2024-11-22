@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Nested model serializers for API responses."""
+
 from rest_framework.relations import HyperlinkedIdentityField
 
 from nautobot_fsus import models
@@ -312,7 +313,9 @@ class NestedOtherFSUSerializer(NestedFSUSerializer):
 class NestedOtherFSUTemplateSerializer(NestedFSUSerializer):
     """Nested Other FSU Template serializer."""
 
-    url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:otherfsutemplate-detail")
+    url = HyperlinkedIdentityField(
+        view_name="plugins-api:nautobot_fsus-api:otherfsutemplate-detail"
+    )
 
     class Meta(NestedFSUSerializer.Meta):
         """NestedOtherFSUTemplateSerializer model options."""

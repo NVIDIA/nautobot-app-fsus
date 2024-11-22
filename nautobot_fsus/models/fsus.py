@@ -19,6 +19,7 @@ Models for Field Serviceable Units (FSUs).
 An FSU is a physical instance of its parent FSU type, and can be either installed in a Device,
 or available for use in a Location.
 """
+
 from copy import copy
 
 from django.core.exceptions import ValidationError
@@ -75,6 +76,7 @@ class CPU(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "CPU"
         verbose_name_plural = "CPUs"
 
@@ -166,6 +168,7 @@ class Disk(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Disk"
         verbose_name_plural = "Disks"
 
@@ -220,6 +223,7 @@ class Fan(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Fan"
         verbose_name_plural = "Fans"
 
@@ -270,6 +274,7 @@ class GPU(PCIFSUModel):
 
     class Meta(PCIFSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU"
         verbose_name_plural = "GPUs"
 
@@ -339,6 +344,7 @@ class GPUBaseboard(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Baseboard"
         verbose_name_plural = "GPU Baseboards"
 
@@ -364,6 +370,7 @@ class HBA(PCIFSUModel):
 
     class Meta(PCIFSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "HBA"
         verbose_name_plural = "HBAs"
 
@@ -389,6 +396,7 @@ class Mainboard(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Mainboard"
         verbose_name_plural = "Mainboards"
 
@@ -421,6 +429,7 @@ class NIC(PCIFSUModel):
 
     class Meta(PCIFSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "NIC"
         verbose_name_plural = "NICs"
 
@@ -446,6 +455,7 @@ class OtherFSU(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "OtherFSU"
         verbose_name_plural = "OtherFSUs"
 
@@ -486,6 +496,7 @@ class PSU(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "PSU"
         verbose_name_plural = "PSUs"
 
@@ -551,6 +562,7 @@ class RAMModule(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "RAM Module"
         verbose_name_plural = "RAM Modules"
 

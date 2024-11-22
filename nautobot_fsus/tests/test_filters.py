@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Tests for filters defined in the Nautobot FSUs app."""
+
 from nautobot.dcim.models import Device, Manufacturer
 from nautobot.extras.models import Status
 
@@ -23,6 +24,7 @@ from nautobot_fsus.utilities.testing import FSUFilterTestCases
 
 class CPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for CPU filters."""
+
     model = models.CPU
     type_model = models.CPUType
     queryset = models.CPU.objects.all()
@@ -73,6 +75,7 @@ class CPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class DiskTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for Disk filters."""
+
     model = models.Disk
     type_model = models.DiskType
     queryset = models.Disk.objects.all()
@@ -123,6 +126,7 @@ class DiskTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class FanTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for Fan Filters."""
+
     model = models.Fan
     type_model = models.FanType
     queryset = models.Fan.objects.all()
@@ -131,6 +135,7 @@ class FanTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class GPUBaseboardTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for Baseboard filters."""
+
     model = models.GPUBaseboard
     type_model = models.GPUBaseboardType
     queryset = models.GPUBaseboard.objects.all()
@@ -139,6 +144,7 @@ class GPUBaseboardTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for GPU filters."""
+
     model = models.GPU
     type_model = models.GPUType
     queryset = models.GPU.objects.all()
@@ -189,6 +195,7 @@ class GPUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class HBATestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for HBA filters."""
+
     model = models.HBA
     type_model = models.HBAType
     queryset = models.HBA.objects.all()
@@ -197,6 +204,7 @@ class HBATestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class MainboardTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for Mainboard filters."""
+
     model = models.Mainboard
     type_model = models.MainboardType
     queryset = models.Mainboard.objects.all()
@@ -205,6 +213,7 @@ class MainboardTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class NICTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for NIC filters."""
+
     model = models.NIC
     type_model = models.NICType
     queryset = models.NIC.objects.all()
@@ -213,6 +222,7 @@ class NICTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class OtherFSUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for OtherFSU filters."""
+
     model = models.OtherFSU
     type_model = models.OtherFSUType
     queryset = models.OtherFSU.objects.all()
@@ -221,6 +231,7 @@ class OtherFSUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class PSUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for PSU filters."""
+
     model = models.PSU
     type_model = models.PSUType
     queryset = models.PSU.objects.all()
@@ -229,6 +240,7 @@ class PSUTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class RAMModuleTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     """Tests for RAM Module filters."""
+
     model = models.RAMModule
     type_model = models.RAMModuleType
     queryset = models.RAMModule.objects.all()
@@ -237,6 +249,7 @@ class RAMModuleTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
 
 class CPUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for CPU template filters."""
+
     model = models.CPUTemplate
     type_model = models.CPUType
     queryset = models.CPUTemplate.objects.all()
@@ -245,6 +258,7 @@ class CPUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class DiskTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for Disk template filters."""
+
     model = models.DiskTemplate
     type_model = models.DiskType
     queryset = models.DiskTemplate.objects.all()
@@ -253,6 +267,7 @@ class DiskTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class FanTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for Fan template filters."""
+
     model = models.FanTemplate
     type_model = models.FanType
     queryset = models.FanTemplate.objects.all()
@@ -261,6 +276,7 @@ class FanTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class GPUBaseboardTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for Baseboard template filters."""
+
     model = models.GPUBaseboardTemplate
     type_model = models.GPUBaseboardType
     queryset = models.GPUBaseboardTemplate.objects.all()
@@ -269,6 +285,7 @@ class GPUBaseboardTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase)
 
 class GPUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for GPU template filters."""
+
     model = models.GPUTemplate
     type_model = models.GPUType
     queryset = models.GPUTemplate.objects.all()
@@ -290,6 +307,7 @@ class GPUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class HBATemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for HBA template filters."""
+
     model = models.HBATemplate
     type_model = models.HBAType
     queryset = models.HBATemplate.objects.all()
@@ -311,6 +329,7 @@ class HBATemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class MainboardTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for Mainboard template filters."""
+
     model = models.MainboardTemplate
     type_model = models.MainboardType
     queryset = models.MainboardTemplate.objects.all()
@@ -319,6 +338,7 @@ class MainboardTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class NICTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for NIC template filters."""
+
     model = models.NICTemplate
     type_model = models.NICType
     queryset = models.NICTemplate.objects.all()
@@ -340,6 +360,7 @@ class NICTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class OtherFSUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for OtherFSU template filters."""
+
     model = models.OtherFSUTemplate
     type_model = models.OtherFSUType
     queryset = models.OtherFSUTemplate.objects.all()
@@ -348,6 +369,7 @@ class OtherFSUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class PSUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for PSU template filters."""
+
     model = models.PSUTemplate
     type_model = models.PSUType
     queryset = models.PSUTemplate.objects.all()
@@ -369,6 +391,7 @@ class PSUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class RAMModuleTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for RAM Module template filters."""
+
     model = models.RAMModuleTemplate
     type_model = models.RAMModuleType
     queryset = models.RAMModuleTemplate.objects.all()
@@ -390,6 +413,7 @@ class RAMModuleTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
 
 class CPUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for CPU type filters."""
+
     model = models.CPU
     type_model = models.CPUType
     queryset = models.CPUType.objects.all()
@@ -490,6 +514,7 @@ class CPUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class DiskTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for DiskType filters."""
+
     model = models.Disk
     type_model = models.DiskType
     queryset = models.DiskType.objects.all()
@@ -540,6 +565,7 @@ class DiskTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class FanTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for FanType filters."""
+
     model = models.Fan
     type_model = models.FanType
     queryset = models.FanType.objects.all()
@@ -548,6 +574,7 @@ class FanTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class GPUBaseboardTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for BaseboardType filters."""
+
     model = models.GPUBaseboard
     type_model = models.GPUBaseboardType
     queryset = models.GPUBaseboardType.objects.all()
@@ -572,6 +599,7 @@ class GPUBaseboardTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class GPUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for GPUType filters."""
+
     model = models.GPU
     type_model = models.GPUType
     queryset = models.GPUType.objects.all()
@@ -580,6 +608,7 @@ class GPUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class HBATypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for HBAType filters."""
+
     model = models.HBA
     type_model = models.HBAType
     queryset = models.HBAType.objects.all()
@@ -588,6 +617,7 @@ class HBATypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class MainboardTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for MainboardType filters."""
+
     model = models.Mainboard
     type_model = models.MainboardType
     queryset = models.MainboardType.objects.all()
@@ -638,6 +668,7 @@ class MainboardTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class NICTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for NICType filters."""
+
     model = models.NIC
     type_model = models.NICType
     queryset = models.NICType.objects.all()
@@ -662,6 +693,7 @@ class NICTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class OtherFSUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for OtherFSUType filters."""
+
     model = models.OtherFSU
     type_model = models.OtherFSUType
     queryset = models.OtherFSUType.objects.all()
@@ -670,6 +702,7 @@ class OtherFSUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class PSUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for PSUType filters."""
+
     model = models.PSU
     type_model = models.PSUType
     queryset = models.PSUType.objects.all()
@@ -762,6 +795,7 @@ class PSUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
 
 class RAMModuleTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     """Tests for RAMModuleType filters."""
+
     model = models.RAMModule
     type_model = models.RAMModuleType
     queryset = models.RAMModuleType.objects.all()

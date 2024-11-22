@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Create test environment object fixtures."""
+
 from django.utils.crypto import get_random_string
 import factory.random
 from nautobot.dcim.models import Device, DeviceRole, DeviceType, Location, Manufacturer
@@ -78,7 +79,7 @@ def create_env(seed: str | None = None):
             added, _ = fsu_type.objects.get_or_create(
                 manufacturer=mfgr,
                 name=f"{fsu_type._meta.verbose_name} {num}",
-                part_number=f"{type_model}_000{num}"
+                part_number=f"{type_model}_000{num}",
             )
             mfgr_used.append(mfgr.pk)
             fsu_types[type_model].append(added)

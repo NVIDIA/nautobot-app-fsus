@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Add FSUs to the navigation menu."""
+
 from nautobot.core.apps import (
     NavMenuAddButton,
     NavMenuGroup,
@@ -364,7 +365,7 @@ menu_items = (
                             ),
                         ],
                     ),
-                ]
+                ],
             ),
         ],
     ),

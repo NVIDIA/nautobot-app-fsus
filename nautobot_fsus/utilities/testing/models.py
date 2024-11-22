@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Test cases for Nautobot FSUs app models."""
+
 from time import sleep
 from typing import Any, Type
 
@@ -97,7 +98,9 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             self.assertIsInstance(csv, tuple)
             self.assertEqual(len(csv), len(instance.csv_headers))
             for index, value in enumerate(instance.csv_headers):
-                match = str(getattr(instance, value)) if getattr(instance, value) is not None else ""
+                match = (
+                    str(getattr(instance, value)) if getattr(instance, value) is not None else ""
+                )
                 self.assertEqual(str(csv[index]), match)
 
         def test_move_to_device(self):
@@ -183,8 +186,11 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
 
         def test_parent_fsu(self):
             """Test assigning a parent FSU to a child instance."""
-            if (not hasattr(self, "parent_model") or not hasattr(self, "parent_model_type")
-                    or self.parent_field is None):
+            if (
+                not hasattr(self, "parent_model")
+                or not hasattr(self, "parent_model_type")
+                or self.parent_field is None
+            ):
                 self.skipTest("Parent FSU model/type/field not set.")
 
             parent_type = self.parent_model_type(
@@ -213,8 +219,11 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
 
         def test_parent_bad_device(self):
             """Test assigning a parent FSU on a different device to a child instance."""
-            if (not hasattr(self, "parent_model") or not hasattr(self, "parent_model_type")
-                    or self.parent_field is None):
+            if (
+                not hasattr(self, "parent_model")
+                or not hasattr(self, "parent_model_type")
+                or self.parent_field is None
+            ):
                 self.skipTest("Parent FSU model/type/field not set.")
 
             parent_type = self.parent_model_type(
@@ -260,13 +269,16 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
                     error.messages[0],
                     f"{instance._meta.verbose_name} {instance.name} has a different parent "
                     f"device ({instance.device.name}) than that of its parent FSU "
-                    f"({parent_instance.device.name})"
+                    f"({parent_instance.device.name})",
                 )
 
         def test_child_fsu(self):
             """Test assigning a child FSU to a parent instance."""
-            if (not hasattr(self, "child_model") or not hasattr(self, "child_model_type")
-                    or self.child_field is None):
+            if (
+                not hasattr(self, "child_model")
+                or not hasattr(self, "child_model_type")
+                or self.child_field is None
+            ):
                 self.skipTest("Child FSU model/type/field not set.")
 
             child_type = self.child_model_type(
@@ -294,8 +306,7 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             getattr(instance, self.child_field).set([child_instance])
 
             self.assertEqual(
-                getattr(child_instance, f"parent_{self.model._meta.model_name}"),
-                instance
+                getattr(child_instance, f"parent_{self.model._meta.model_name}"), instance
             )
 
     class FSUTemplateTestCase(TestCase):
@@ -333,8 +344,7 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             self.assertEqual(object_change.changed_object_type.model_class(), template._meta.model)
             self.assertEqual(object_change.changed_object_id, template.id)
             self.assertEqual(
-                object_change.related_object_type.model_class(),
-                template.device_type._meta.model
+                object_change.related_object_type.model_class(), template.device_type._meta.model
             )
             self.assertEqual(object_change.related_object_id, template.device_type.id)
 
@@ -347,12 +357,11 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             )
 
             self.assertEqual(
-                getattr(self.device_type, f"{self.template_model._meta.model_name}s").count(),
-                1
+                getattr(self.device_type, f"{self.template_model._meta.model_name}s").count(), 1
             )
             self.assertEqual(
                 getattr(self.device_type, f"{self.template_model._meta.model_name}s").first().name,
-                template.name
+                template.name,
             )
 
         def test_instantiate_target_fsu(self):
@@ -416,13 +425,13 @@ class NautobotFSUModelTestCases:  # pylint: disable=too-few-public-methods
             _ = self.type_model.objects.create(
                 manufacturer=self.manufacturer,
                 name=f"Test {self.type_model._meta.verbose_name} 1",
-                part_number="0001"
+                part_number="0001",
             )
 
             instance = self.type_model(
                 manufacturer=self.manufacturer,
                 name=f"Test {self.type_model._meta.verbose_name} 2",
-                part_number="0001"
+                part_number="0001",
             )
 
             with self.assertRaises(ValidationError):

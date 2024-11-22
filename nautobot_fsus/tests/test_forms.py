@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Tests for forms defined in the Nautobot FSUs app."""
+
 from nautobot.dcim.models import Manufacturer
 
 from nautobot_fsus import forms, models

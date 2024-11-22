@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Bootstrap dummy data for local testing."""
+
 import os
 
 from django.contrib.auth import get_user_model
@@ -43,8 +44,8 @@ class Command(BaseCommand):
             "--cache-fixtures",
             action="store_true",
             help="Save the generated test data to a json fixture file to re-use if the fixture "
-                 "file is not found, load the previously generated test data from the fixture "
-                 "file if it exists (implies the --flush option).",
+            "file is not found, load the previously generated test data from the fixture "
+            "file if it exists (implies the --flush option).",
         )
         parser.add_argument(
             "--fixture-file",
@@ -54,7 +55,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--flush",
             action="store_true",
-            help="Flush any existing data in the database before generating new test data."
+            help="Flush any existing data in the database before generating new test data.",
         )
         parser.add_argument(
             "--no-input",
@@ -75,8 +76,7 @@ class Command(BaseCommand):
         password = os.environ.get("NAUTOBOT_SUPERUSER_PASSWORD", "admin")
         email = os.environ.get("NAUTOBOT_SUPERUSER_EMAIL", "admin@example.com")
         token = os.environ.get(
-            "NAUTOBOT_SUPERUSER_TOKEN",
-            "0123456789abcdef0123456789abcdef01234567"
+            "NAUTOBOT_SUPERUSER_TOKEN", "0123456789abcdef0123456789abcdef01234567"
         )
 
         admin_user = get_user_model().objects.filter(username=username)
@@ -103,7 +103,7 @@ class Command(BaseCommand):
             options["flush"] = True
             options["interactive"] = False
 
-        db_name = connections[options['database']].settings_dict['NAME']
+        db_name = connections[options["database"]].settings_dict["NAME"]
         if options["flush"]:
             if options["interactive"]:
                 confirmation = input(f"""
@@ -121,7 +121,7 @@ Type "yes" to continue, or "no" to cancel: """)
                     f"Flushing all existing data from the {options['database']} database..."
                 )
             )
-            call_command("flush", "--no-input", "--database", options['database'])
+            call_command("flush", "--no-input", "--database", options["database"])
 
         if options["cache_fixtures"] and os.path.exists(options["fixture_file"]):
             call_command("loaddata", options["fixture_file"])
@@ -133,7 +133,7 @@ Type "yes" to continue, or "no" to cancel: """)
             try:
                 generate_test_data.Command()._generate_factory_data(  # pylint: disable=W0212
                     seed,
-                    options['database'],
+                    options["database"],
                 )
             except ValidationError:
                 self.stdout.write(
@@ -171,13 +171,9 @@ Type "yes" to continue, or "no" to cancel: """)
                     output=options["fixture_file"],
                 )
                 self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Dumped fixture data to {options['fixture_file']}."
-                    )
+                    self.style.SUCCESS(f"Dumped fixture data to {options['fixture_file']}.")
                 )
 
             self.stdout.write(
-                self.style.SUCCESS(
-                    f"Database {options['database']} successfully populated."
-                )
+                self.style.SUCCESS(f"Database {options['database']} successfully populated.")
             )

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Helpful utility methods."""
+
 from django.core.exceptions import ValidationError
 from nautobot.dcim.models import Device
 from nautobot.dcim.models.device_components import ComponentModel
@@ -22,8 +23,7 @@ from nautobot_fsus.models.mixins import FSUModel
 
 
 def validate_parent_device(
-    fsus: list[FSUModel | ComponentModel],
-    parent_device: Device | None
+    fsus: list[FSUModel | ComponentModel], parent_device: Device | None
 ) -> None:
     """
     Ensure that child FSUs set for a parent instance are assigned to the same Device.
@@ -34,9 +34,7 @@ def validate_parent_device(
     """
     # Gotta have a parent device
     if parent_device is None:
-        raise ValidationError(
-            "Parent FSU must be assigned to a device in order to add child FSUs"
-        )
+        raise ValidationError("Parent FSU must be assigned to a device in order to add child FSUs")
 
     # All child FSUs must be assigned to the same parent Device as the instance.
     for fsu in fsus:

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Test cases and helpers for testing the Nautobot FSUs app."""
+
 from typing import Type
 
 from nautobot.dcim.models import Device, DeviceRole, DeviceType, Location, Manufacturer
@@ -27,10 +28,12 @@ from nautobot_fsus.models.mixins import FSUModel, FSUTemplateModel, FSUTypeModel
 
 class FSUFilterTestCases:
     """Wrapper class for FSU filter test cases."""
+
     # pylint: disable=too-few-public-methods,not-callable
 
     class FSUModelFilterTestCase(FilterTestCases.FilterTestCase):
         """Common test case for FSU filters."""
+
         model: Type[FSUModel]
         type_model: Type[FSUTypeModel]
         queryset: RestrictedQuerySet
@@ -61,7 +64,7 @@ class FSUFilterTestCases:
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.last(),
                     name=f"Another { cls.model._meta.verbose_name }",
-                )
+                ),
             ]
 
             cls.fsus = [
@@ -152,6 +155,7 @@ class FSUFilterTestCases:
 
     class FSUTemplateFilterTestCase(FilterTestCases.FilterTestCase):
         """Common tests for FSU template filters."""
+
         model: Type[FSUTemplateModel]
         type_model: Type[FSUTypeModel]
         queryset: RestrictedQuerySet
@@ -174,7 +178,7 @@ class FSUFilterTestCases:
                 cls.type_model.objects.create(
                     manufacturer=Manufacturer.objects.last(),
                     name=f"Another { cls.model._meta.verbose_name }",
-                )
+                ),
             ]
 
             cls.templates = [
@@ -237,6 +241,7 @@ class FSUFilterTestCases:
 
     class FSUTypeFilterTestCase(FilterTestCases.FilterTestCase):
         """Common tests for FSU type filters."""
+
         model: Type[FSUModel]
         type_model: Type[FSUTypeModel]
         queryset: RestrictedQuerySet

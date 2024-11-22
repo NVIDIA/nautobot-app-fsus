@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Tests for FSU Type models defined by the Nautobot FSUS app."""
+
 from nautobot_fsus import models
 from nautobot_fsus.utilities.testing import NautobotFSUModelTestCases
 
