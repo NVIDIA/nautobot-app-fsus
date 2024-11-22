@@ -26,7 +26,6 @@ from nautobot.extras.models.mixins import DynamicGroupMixin, NotesMixin
 from nautobot.extras.models.statuses import StatusField
 from taggit.managers import TaggableManager
 
-
 _NAME: tuple[str, NaturalOrderingField] = (
     '_name',
     NaturalOrderingField(

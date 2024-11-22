@@ -26,10 +26,10 @@ from nautobot.dcim.models import Interface, PowerPort
 
 from nautobot_fsus import models
 from nautobot_fsus.forms.mixins import (
+    FSUImportModelForm,
     FSUModelBulkEditForm,
     FSUModelFilterForm,
     FSUModelForm,
-    FSUImportModelForm,
 )
 
 # pylint: disable=too-many-lines

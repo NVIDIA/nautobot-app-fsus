@@ -19,7 +19,7 @@ from typing import Type
 from django.contrib.contenttypes.models import ContentType
 from django.test.utils import override_settings
 from django.urls import reverse
-from nautobot.core.testing import extract_page_body, post_data, ViewTestCases
+from nautobot.core.testing import ViewTestCases, extract_page_body, post_data
 from nautobot.dcim.models import DeviceType, Manufacturer
 from nautobot.users.models import ObjectPermission
 
