@@ -26,15 +26,18 @@ from nautobot.extras.utils import extras_features
 from nautobot_fsus import choices
 from nautobot_fsus.models.mixins import FSUTypeModel
 
-
-@extras_features(
+EXTRAS_FEATURES = (
     "custom_fields",
     "custom_links",
     "custom_validators",
     "export_templates",
+    "graphql",
     "relationships",
     "webhooks",
 )
+
+
+@extras_features(*EXTRAS_FEATURES)
 class CPUType(FSUTypeModel):
     """Represents a CPU component type."""
 
@@ -95,14 +98,7 @@ class CPUType(FSUTypeModel):
         )
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class DiskType(FSUTypeModel):
     """Represents a Disk component type."""
 
@@ -148,14 +144,7 @@ class DiskType(FSUTypeModel):
         )
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class FanType(FSUTypeModel):
     """Represents a Fan component type."""
 
@@ -166,14 +155,7 @@ class FanType(FSUTypeModel):
         verbose_name_plural = "Fan Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPUBaseboardType(FSUTypeModel):
     """Represents a GPU Baseboard type."""
 
@@ -210,14 +192,7 @@ class GPUBaseboardType(FSUTypeModel):
         )
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPUType(FSUTypeModel):
     """Represents a GPU component type."""
 
@@ -228,14 +203,7 @@ class GPUType(FSUTypeModel):
         verbose_name_plural = "GPU Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class HBAType(FSUTypeModel):
     """Represents an HBA component type."""
 
@@ -246,14 +214,7 @@ class HBAType(FSUTypeModel):
         verbose_name_plural = "HBA Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class MainboardType(FSUTypeModel):
     """Represents a Mainboard component type."""
 
@@ -290,14 +251,7 @@ class MainboardType(FSUTypeModel):
         )
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class NICType(FSUTypeModel):
     """Represents a NIC component type."""
 
@@ -333,14 +287,7 @@ class NICType(FSUTypeModel):
         )
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class OtherFSUType(FSUTypeModel):
     """Represents a generic FSU component type."""
 
@@ -351,14 +298,7 @@ class OtherFSUType(FSUTypeModel):
         verbose_name_plural = "Other FSU Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class PSUType(FSUTypeModel):
     """Represents a Power Supply Unit type."""
 
@@ -414,14 +354,7 @@ class PSUType(FSUTypeModel):
         )
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class RAMModuleType(FSUTypeModel):
     """Represents a memory component type."""
 
