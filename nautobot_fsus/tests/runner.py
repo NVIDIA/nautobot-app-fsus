@@ -14,8 +14,8 @@
 #  limitations under the License.
 
 """Test runner wrapper for Nautobot FSUs app."""
-from django.core.management import call_command
 from django.conf import settings
+from django.core.management import call_command
 from xmlrunner.extra.djangotestrunner import XMLTestRunner
 
 

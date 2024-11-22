@@ -25,7 +25,7 @@ from nautobot_fsus.tables.fsu_templates import (
     NICTemplateTable,
     OtherFSUTemplateTable,
     PSUTemplateTable,
-    RAMModuleTemplateTable
+    RAMModuleTemplateTable,
 )
 from nautobot_fsus.tables.fsu_types import (
     CPUTypeTable,
@@ -64,7 +64,6 @@ from nautobot_fsus.tables.fsus import (
     RAMModuleImportTable,
     RAMModuleTable,
 )
-
 
 __all__ = (
     "CPUImportTable",
