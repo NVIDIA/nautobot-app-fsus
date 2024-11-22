@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Form definitions for FSU template models."""
+
 from django import forms
 from nautobot.apps.forms import (
     DynamicModelChoiceField,

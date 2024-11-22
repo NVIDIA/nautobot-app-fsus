@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Add FSUs to the navigation menu."""
+
 from django.conf import settings
 from nautobot.apps.ui import (
     NavMenuAddButton,
@@ -189,7 +190,7 @@ menu_items = (
                         permissions=["nautobot_fsus.view_rammoduletype"],
                         buttons=item_buttons("rammoduletype"),
                     ),
-                ]
+                ],
             ),
         ],
     ),

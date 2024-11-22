@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Object models for Nautobot FSUS."""
+
 from nautobot_fsus.models.fsu_templates import (
     CPUTemplate,
     DiskTemplate,

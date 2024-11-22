@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Model serializers for FSU type API endpoints."""
+
 from nautobot.apps.api import ChoiceField
 from rest_framework import serializers
 

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Table definitions for FSU models."""
+
 import django_tables2 as tables
 from django_tables2.utils import Accessor
 from nautobot.apps.tables import BaseTable, ButtonsColumn, TagColumn

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Table definitions for FSUType models."""
+
 from nautobot.apps.tables import ButtonsColumn, LinkedCountColumn, TagColumn
 
 from nautobot_fsus import models

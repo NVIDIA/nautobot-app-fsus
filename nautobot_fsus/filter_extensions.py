@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Extensions to built-in Nautobot filters."""
+
 from django import forms
 from nautobot.apps.filters import (
     FilterExtension,
