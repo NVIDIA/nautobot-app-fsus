@@ -30,16 +30,19 @@ from nautobot.extras.utils import extras_features
 from nautobot_fsus.models.mixins import FSUModel, PCIFSUModel
 from nautobot_fsus.utilities import validate_parent_device
 
-
-@extras_features(
+EXTRAS_FEATURES = (
     "custom_fields",
     "custom_links",
     "custom_validators",
     "export_templates",
+    "graphql",
     "relationships",
     "statuses",
     "webhooks",
 )
+
+
+@extras_features(*EXTRAS_FEATURES)
 class CPU(FSUModel):
     """Represents an individual CPU component in a device or storage location."""
 
@@ -89,15 +92,7 @@ class CPU(FSUModel):
                 raise ValidationError(errors)
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class Disk(FSUModel):
     """Represents an individual Disk component in a device or storage location."""
 
@@ -134,15 +129,7 @@ class Disk(FSUModel):
                 raise ValidationError({"parent_hba": error.error_list}) from error
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class Fan(FSUModel):
     """Represents an individual Fan component in a device or storage location."""
 
@@ -160,15 +147,7 @@ class Fan(FSUModel):
         verbose_name_plural = "Fans"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPU(PCIFSUModel):
     """Represents an individual GPU component in a device or storage location."""
 
@@ -219,15 +198,7 @@ class GPU(PCIFSUModel):
                 raise ValidationError(errors)
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPUBaseboard(FSUModel):
     """Represents an individual GPU Baseboard component in a device or storage location."""
 
@@ -245,15 +216,7 @@ class GPUBaseboard(FSUModel):
         verbose_name_plural = "GPU Baseboards"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class HBA(PCIFSUModel):
     """Represents an individual HBA component in a device or storage location."""
 
@@ -271,15 +234,7 @@ class HBA(PCIFSUModel):
         verbose_name_plural = "HBAs"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class Mainboard(FSUModel):
     """Represents an individual Mainboard component in a device or storage location."""
 
@@ -297,15 +252,7 @@ class Mainboard(FSUModel):
         verbose_name_plural = "Mainboards"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class NIC(PCIFSUModel):
     """Represents an individual NIC component in a device or storage location."""
 
@@ -330,15 +277,7 @@ class NIC(PCIFSUModel):
         verbose_name_plural = "NICs"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class OtherFSU(FSUModel):
     """Represents an individual generic FSU component in a device or storage location."""
 
@@ -356,6 +295,7 @@ class OtherFSU(FSUModel):
         verbose_name_plural = "OtherFSUs"
 
 
+@extras_features(*EXTRAS_FEATURES)
 class PSU(FSUModel):
     """Represents an individual PSU component in a device or storage location."""
 
@@ -381,15 +321,7 @@ class PSU(FSUModel):
         verbose_name_plural = "PSUs"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class RAMModule(FSUModel):
     """Represents an individual RAM module component in a device or storage location."""
 
