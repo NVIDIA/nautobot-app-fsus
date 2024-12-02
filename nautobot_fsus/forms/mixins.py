@@ -207,6 +207,17 @@ class FSUModelForm(NautobotModelForm):
             "comments",
         ]
 
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize the form and add query params as needed."""
+        super().__init__(*args, **kwargs)
+
+        if self.instance.device is not None:
+            self.fields["location"].widget.add_query_param("base_site", self.instance.device.site.id)
+            self.fields["status"].widget.add_query_param("name__n", "Available")
+        elif self.instance.location is not None:
+            self.fields["device"].widget.add_query_param("site", self.instance.location.base_site.id)
+            self.fields["status"].widget.add_query_param("name__n", "Active")
+
 
 class FSUModelBulkEditForm(
     NautobotBulkEditForm,
