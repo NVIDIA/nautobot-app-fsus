@@ -89,6 +89,9 @@ class FSUModelViewSet(NautobotUIViewSet):
         if self.action == "retrieve":
             return "nautobot_fsus/fsu.html"
 
+        if self.action in ["create", "update"]:
+            return "nautobot_fsus/fsu_create.html"
+
         try:
             template_name = f"nautobot_fsus/fsu_{self.action}.html"
             select_template([template_name])
