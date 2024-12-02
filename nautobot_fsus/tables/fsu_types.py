@@ -15,21 +15,10 @@
 
 """Table definitions for FSUType models."""
 
-from django.conf import settings
-from nautobot.apps.tables import ButtonsColumn, TagColumn
+from nautobot.apps.tables import ButtonsColumn, LinkedCountColumn, TagColumn
 
 from nautobot_fsus import models
 from nautobot_fsus.tables.mixins import FSUTypeModelTable
-
-# Only import and use the workaround when running on affected versions. This is temporary,
-# next version will remove the workaround altogether and note that Nautobot versions 2.3.0 and
-# 2.3.1 are not supported due to the bug.
-# pylint: disable=ungrouped-imports
-version = settings.VERSION.split(".")
-if int(version[-1]) <= 2:  # noqa: PLR2004
-    from nautobot_fsus.tables.mixins import KludgeLinkedCountColumn as LinkedCountColumn
-else:
-    from nautobot.apps.tables import LinkedCountColumn  # type: ignore[no-redef]
 
 
 class CPUTypeTable(FSUTypeModelTable):

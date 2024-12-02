@@ -38,7 +38,7 @@ class NautobotFSUsConfig(NautobotAppConfig):
     base_url: str = "fsus"
     docs_view_name: str = "plugins:nautobot_fsus:docs"
     required_settings: list[str] = []
-    min_version: str = "2.3.0"
+    min_version: str = "2.3.3"
     max_version: str = "2.9999"
     caching_config: dict[str, str | dict[str, str]] = {}
 
