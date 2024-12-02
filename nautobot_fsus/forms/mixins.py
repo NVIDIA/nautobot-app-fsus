@@ -15,7 +15,7 @@
 
 """Form mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
 
-from typing import Type
+from typing import Any, Type
 
 from django import forms
 from nautobot.apps.forms import (
@@ -179,6 +179,35 @@ class FSUModelForm(NautobotModelForm):
             "description",
             "comments",
         ]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize the form and add query params as needed."""
+        super().__init__(*args, **kwargs)
+
+        if self.instance.device is not None:
+            location_tree = list(self.instance.device.location.ancestors(include_self=True))
+
+            # If there is more than one location in the tree, assume the top-level ancestor
+            # is a Region, and filter one level down from it.
+            self.fields["location"].widget.add_query_param(
+                "subtree",
+                location_tree[1].name if len(location_tree) > 1 else location_tree[0].name,
+            )
+
+            # If parent is a device, the FSU can't have a status of Available.
+            self.fields["status"].widget.add_query_param("name__n", "Available")
+        elif self.instance.location is not None:
+            location_tree = list(self.instance.location.ancestors(include_self=True))
+
+            # If there is more than one location in the tree, assume the top-level ancestor
+            # is a Region, and filter one level down from it.
+            self.fields["device"].widget.add_query_param(
+                "location",
+                location_tree[1].name if len(location_tree) > 1 else location_tree[0].name,
+            )
+
+            # If parent is a location, the FSU can't have a status of Active.
+            self.fields["status"].widget.add_query_param("name__n", "Active")
 
 
 class FSUModelBulkEditForm(
