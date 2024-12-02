@@ -6,9 +6,9 @@
     {% if object.device %}
                 <li><a href="{% url list_url  %}?device={{ object.device.name }}">{{ object.device }}</a></li>
     {% else %}
-                <li><a href="{% url list_url  %}?storage_location={{ object.storage_location.name }}">{{ object.storage_location }}</a></li>
+                <li><a href="{% url list_url  %}?location={{ object.location.name }}">{{ object.location }}</a></li>
     {% endif %}
-                <li><a href="{% url list_url  %}?type={{ object.type.model_name }}">{{ object.type }}</a></li>
+                <li><a href="{% url list_url  %}?fsu_type_id={{ object.fsu_type.id }}">{{ object.fsu_type }}</a></li>
 {% endblock extra_breadcrumbs %}
 
 {% block masthead %}

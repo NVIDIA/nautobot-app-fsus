@@ -1,0 +1,23 @@
+{% extends "generic/object_create.html" %}
+{% load helpers %}
+{% load form_helpers %}
+
+{% block javascript %}
+{{ block.super }}
+
+<script type="text/javascript">
+    /*
+    An FSU can have only one parent, either a Device or a Location. If the parent type is changed,
+    clear the opposite parent field and update the Status choices accordingly.
+    */
+    $('#id_device').on('select2:select', function() {
+        $('#id_location').val(null).trigger('change').trigger('select2:unselect');
+        $('#id_status').val(null).trigger('change').trigger('select2:unselect').attr('data-query-param-name__n', '["Available"]');
+    });
+
+    $('#id_location').on('select2:select', function() {
+        $('#id_device').val(null).trigger('change').trigger('select2:unselect');
+        $('#id_status').val(null).trigger('change').trigger('select2:unselect').attr('data-query-param-name__n', '["Active"]');
+    });
+</script>
+{% endblock javascript %}
