@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nautobot-fsus"
-version = "3.0.2"
+version = "3.0.3a0"
 description = "Field Serviceable Units for Nautobot"
 authors = ["Mark Troyer <mtroyer@nvidia.com>"]
 maintainers = ["Mark Troyer <mtroyer@nvidia.com>"]
