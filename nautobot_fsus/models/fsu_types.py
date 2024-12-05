@@ -18,6 +18,7 @@ Models for Field Serviceable Unit types.
 
 An FSU type is an individual product, defined by manufacturer, model name, and part number.
 """
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from nautobot.extras.utils import extras_features
@@ -25,15 +26,18 @@ from nautobot.extras.utils import extras_features
 from nautobot_fsus import choices
 from nautobot_fsus.models.mixins import FSUTypeModel
 
-
-@extras_features(
+EXTRAS_FEATURES = (
     "custom_fields",
     "custom_links",
     "custom_validators",
     "export_templates",
+    "graphql",
     "relationships",
     "webhooks",
 )
+
+
+@extras_features(*EXTRAS_FEATURES)
 class CPUType(FSUTypeModel):
     """Represents a CPU component type."""
 
@@ -63,18 +67,12 @@ class CPUType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "CPU Type"
         verbose_name_plural = "CPU Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class DiskType(FSUTypeModel):
     """Represents a Disk component type."""
 
@@ -93,92 +91,62 @@ class DiskType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Disk Type"
         verbose_name_plural = "Disk Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class FanType(FSUTypeModel):
     """Represents a Fan component type."""
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Fan Type"
         verbose_name_plural = "Fan Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPUBaseboardType(FSUTypeModel):
     """Represents a GPU Baseboard type."""
 
     slot_count = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        help_text="The number of physical GPU slots provided by this GPU Baseboard."
+        help_text="The number of physical GPU slots provided by this GPU Baseboard.",
     )
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Baseboard Type"
         verbose_name_plural = "GPU Baseboard Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPUType(FSUTypeModel):
     """Represents a GPU component type."""
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Type"
         verbose_name_plural = "GPU Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class HBAType(FSUTypeModel):
     """Represents an HBA component type."""
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "HBA Type"
         verbose_name_plural = "HBA Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class MainboardType(FSUTypeModel):
     """Represents a Mainboard component type."""
 
@@ -190,18 +158,12 @@ class MainboardType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Mainboard Type"
         verbose_name_plural = "Mainboard Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class NICType(FSUTypeModel):
     """Represents a NIC component type."""
 
@@ -213,37 +175,26 @@ class NICType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "NIC Type"
         verbose_name_plural = "NIC Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class OtherFSUType(FSUTypeModel):
     """Represents a generic FSU component type."""
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Other FSU Type"
         verbose_name_plural = "Other FSU Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class PSUType(FSUTypeModel):
     """Represents a Power Supply Unit type."""
+
     feed_type = models.CharField(
         max_length=16,
         choices=choices.PSUFeedType,
@@ -258,27 +209,19 @@ class PSUType(FSUTypeModel):
     )
 
     required_voltage = models.CharField(
-        max_length=32,
-        blank=True,
-        help_text="Example: `-40V - -72` (DC), `100-240V` (AC)"
+        max_length=32, blank=True, help_text="Example: `-40V - -72` (DC), `100-240V` (AC)"
     )
 
     hot_swappable = models.BooleanField(default=False)
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "PSU Type"
         verbose_name_plural = "PSU Types"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class RAMModuleType(FSUTypeModel):
     """Represents a memory component type."""
 
@@ -316,5 +259,6 @@ class RAMModuleType(FSUTypeModel):
 
     class Meta(FSUTypeModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "RAM Module Type"
         verbose_name_plural = "RAM Module Types"

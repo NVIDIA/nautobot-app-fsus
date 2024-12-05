@@ -14,20 +14,21 @@
 #  limitations under the License.
 
 """Form definitions for FSU type models."""
+
 from django import forms
-from nautobot.dcim.models import Manufacturer
 from nautobot.apps.forms import (
     DynamicModelChoiceField,
     NautobotBulkEditForm,
     NautobotFilterForm,
-    TagsBulkEditFormMixin,
     TagFilterField,
+    TagsBulkEditFormMixin,
 )
+from nautobot.dcim.models import Manufacturer
 
 from nautobot_fsus import choices, models
 from nautobot_fsus.forms.mixins import (
-    FSUTypeModelForm,
     FSUTypeImportModelForm,
+    FSUTypeModelForm,
 )
 
 

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Base view classes for Nautobot FSU app models."""
+
 from copy import deepcopy
 from typing import Any, Type
 
@@ -21,9 +22,9 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.forms import Form
-from django.http.response import HttpResponseRedirect
 from django.http.request import HttpRequest
-from django.template.loader import select_template, TemplateDoesNotExist
+from django.http.response import HttpResponseRedirect
+from django.template.loader import TemplateDoesNotExist, select_template
 from nautobot.apps.tables import BaseTable
 from nautobot.apps.utils import resolve_permission
 from nautobot.apps.views import BulkRenameView, NautobotUIViewSet
@@ -35,6 +36,7 @@ from nautobot_fsus.forms.mixins import FSUTemplateCreateForm, FSUTemplateModelFo
 
 class FSUBulkRenameView(BulkRenameView):
     """Bulk rename view that includes the parent name."""
+
     def get_selected_objects_parents_name(self, selected_objects):
         """Return the parent Device or Location name."""
         selected_object = selected_objects.first()
@@ -76,6 +78,9 @@ class FSUModelViewSet(NautobotUIViewSet):
         """Determine the appropriate template name for a request."""
         if self.action == "retrieve":
             return "nautobot_fsus/fsu.html"
+
+        if self.action in ["create", "update"]:
+            return "nautobot_fsus/fsu_create.html"
 
         try:
             template_name = f"nautobot_fsus/fsu_{self.action}.html"
@@ -124,11 +129,11 @@ class FSUTemplateModelViewSet(NautobotUIViewSet):
             else:
                 for field, errors in fsu_form.errors.as_data().items():
                     if field == "name":
-                        field = "name_pattern"
+                        field = "name_pattern"  # noqa: PLW2901
                     elif field == "pci_slot_id":
-                        field = "pci_slot_id_pattern"
+                        field = "pci_slot_id_pattern"  # noqa: PLW2901
                     elif field == "slot_id":
-                        field = "slot_id_pattern"
+                        field = "slot_id_pattern"  # noqa: PLW2901
                     for error in errors:
                         err_string = ", ".join(error)
                         form.add_error(field, f"{name}: {err_string}")
@@ -200,12 +205,15 @@ class FSUTemplateModelViewSet(NautobotUIViewSet):
                             obj = fsu_form.save()
                             new_objects.append(obj)
 
-                        if (self.queryset.filter(pk__in=[obj.pk for obj in new_objects]).count()
-                                != len(new_objects)):
+                        if self.queryset.filter(
+                            pk__in=[obj.pk for obj in new_objects]
+                        ).count() != len(new_objects):
                             raise ObjectDoesNotExist
 
-                    message = (f"Added {len(new_objects)} "
-                               f"{self.queryset.model._meta.verbose_name_plural}")
+                    message = (
+                        f"Added {len(new_objects)} "
+                        f"{self.queryset.model._meta.verbose_name_plural}"
+                    )
                     self.logger.info(message)
                     messages.success(request, message)
 
@@ -215,8 +223,10 @@ class FSUTemplateModelViewSet(NautobotUIViewSet):
                     return HttpResponseRedirect(self.get_return_url(request))
 
                 except ObjectDoesNotExist:
-                    message = (f"{self.queryset.model._meta.verbose_name} creation failed due to "
-                               f"object-level permissions violation.")
+                    message = (
+                        f"{self.queryset.model._meta.verbose_name} creation failed due to "
+                        f"object-level permissions violation."
+                    )
                     self.logger.info(message)
                     form.add_error(None, message)
 

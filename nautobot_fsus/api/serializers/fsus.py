@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Model serializers for FSU API endpoints."""
+
 from copy import copy
 from typing import Any
 
@@ -26,15 +27,15 @@ from rest_framework.relations import HyperlinkedIdentityField
 from nautobot_fsus.api.mixins import FSUModelSerializer
 from nautobot_fsus.models import (
     CPU,
+    GPU,
+    HBA,
+    NIC,
+    PSU,
     Disk,
     Fan,
     GPUBaseboard,
-    GPU,
-    HBA,
     Mainboard,
-    NIC,
     OtherFSU,
-    PSU,
     RAMModule,
 )
 from nautobot_fsus.utilities import validate_parent_device
@@ -115,8 +116,10 @@ class GPUBaseboardSerializer(FSUModelSerializer):
 
                     # Validate available slots
                     baseboard_type = validated_data["fsu_type"]
-                    if (baseboard_type.slot_count is not None
-                            and len(gpus) > baseboard_type.slot_count):
+                    if (
+                        baseboard_type.slot_count is not None
+                        and len(gpus) > baseboard_type.slot_count
+                    ):
                         raise ValidationError(
                             f"Number of GPUs being added to Baseboard ({len(gpus)}) is "
                             f"greater than the number of available slots "
@@ -140,7 +143,7 @@ class GPUBaseboardSerializer(FSUModelSerializer):
                     gpu.validated_save()
 
         except ValidationError as error:
-            raise serializers.ValidationError({"gpus": error.messages[0]})
+            raise serializers.ValidationError({"gpus": error.messages[0]}) from error
 
         return instance
 
@@ -182,8 +185,10 @@ class GPUBaseboardSerializer(FSUModelSerializer):
 
                     # Validate available slots
                     baseboard_type = instance.fsu_type
-                    if (baseboard_type.slot_count is not None
-                            and len(gpus) > baseboard_type.slot_count):
+                    if (
+                        baseboard_type.slot_count is not None
+                        and len(gpus) > baseboard_type.slot_count
+                    ):
                         raise ValidationError(
                             f"Number of GPUs being added to Baseboard ({len(gpus)}) is greater "
                             f"than the number of available slots ({baseboard_type.slot_count})"
@@ -215,7 +220,7 @@ class GPUBaseboardSerializer(FSUModelSerializer):
                 validated_instance: GPUBaseboard = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"gpus": error.messages[0]})
+            raise serializers.ValidationError({"gpus": error.messages[0]}) from error
 
         return validated_instance
 
@@ -287,7 +292,7 @@ class HBASerializer(FSUModelSerializer):
                     disk.validated_save()
 
         except ValidationError as error:
-            raise serializers.ValidationError({"disks": error.messages[0]})
+            raise serializers.ValidationError({"disks": error.messages[0]}) from error
 
         return instance
 
@@ -351,7 +356,7 @@ class HBASerializer(FSUModelSerializer):
                 validated_instance: HBA = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"disks": error.messages[0]})
+            raise serializers.ValidationError({"disks": error.messages[0]}) from error
 
         return validated_instance
 
@@ -398,8 +403,10 @@ class MainboardSerializer(FSUModelSerializer):
 
                     # Validate available sockets
                     mainboard_type = validated_data["fsu_type"]
-                    if (mainboard_type.cpu_socket_count is not None
-                            and len(cpus) > mainboard_type.cpu_socket_count):
+                    if (
+                        mainboard_type.cpu_socket_count is not None
+                        and len(cpus) > mainboard_type.cpu_socket_count
+                    ):
                         raise ValidationError(
                             f"Number of CPUs being added to Mainboard ({len(cpus)}) is "
                             f"greater than the number of available sockets "
@@ -423,7 +430,7 @@ class MainboardSerializer(FSUModelSerializer):
                     cpu.validated_save()
 
         except ValidationError as error:
-            raise serializers.ValidationError({"cpus": error.messages[0]})
+            raise serializers.ValidationError({"cpus": error.messages[0]}) from error
 
         return instance
 
@@ -465,8 +472,10 @@ class MainboardSerializer(FSUModelSerializer):
 
                     # Validate available sockets
                     mainboard_type = instance.fsu_type
-                    if (mainboard_type.cpu_socket_count is not None
-                            and len(cpus) > mainboard_type.cpu_socket_count):
+                    if (
+                        mainboard_type.cpu_socket_count is not None
+                        and len(cpus) > mainboard_type.cpu_socket_count
+                    ):
                         raise ValidationError(
                             f"Number of CPUs being added to Mainboard ({len(cpus)}) is "
                             f"greater than the number of available sockets "
@@ -498,7 +507,7 @@ class MainboardSerializer(FSUModelSerializer):
                 validated_instance: Mainboard = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"cpus": error.messages[0]})
+            raise serializers.ValidationError({"cpus": error.messages[0]}) from error
 
         return validated_instance
 
@@ -532,8 +541,10 @@ class NICSerializer(FSUModelSerializer):
 
                     # Validate available connections
                     nic_type = validated_data["fsu_type"]
-                    if (nic_type.interface_count is not None
-                            and len(interfaces) > nic_type.interface_count):
+                    if (
+                        nic_type.interface_count is not None
+                        and len(interfaces) > nic_type.interface_count
+                    ):
                         raise ValidationError(
                             f"Number of Interfaces being added to NIC ({len(interfaces)}) is "
                             f"greater than the number of available connections "
@@ -555,7 +566,7 @@ class NICSerializer(FSUModelSerializer):
                 instance.interfaces.set(interfaces)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"interfaces": error.messages[0]})
+            raise serializers.ValidationError({"interfaces": error.messages[0]}) from error
 
         return instance
 
@@ -595,8 +606,10 @@ class NICSerializer(FSUModelSerializer):
 
                     # Validate available slots
                     nic_type = instance.fsu_type
-                    if (nic_type.interface_count is not None
-                            and len(interfaces) > nic_type.interface_count):
+                    if (
+                        nic_type.interface_count is not None
+                        and len(interfaces) > nic_type.interface_count
+                    ):
                         raise ValidationError(
                             f"Number of Interfaces being added to NIC ({len(interfaces)}) is "
                             f"greater than the number of available connections "
@@ -606,8 +619,10 @@ class NICSerializer(FSUModelSerializer):
                     # New child Interface must not have a parent NIC assigned
                     current_interfaces = set(list(instance.interfaces.all()))
                     for interface in interfaces:
-                        if (interface not in current_interfaces
-                                and interface.parent_nic.first() is not None):
+                        if (
+                            interface not in current_interfaces
+                            and interface.parent_nic.first() is not None
+                        ):
                             raise ValidationError(
                                 f"interface {interface.name} is already assigned to "
                                 f"{interface.parent_nic.first().name}"
@@ -619,7 +634,7 @@ class NICSerializer(FSUModelSerializer):
                 validated_instance: NIC = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"interfaces": error.messages[0]})
+            raise serializers.ValidationError({"interfaces": error.messages[0]}) from error
 
         return validated_instance
 
@@ -677,7 +692,7 @@ class PSUSerializer(FSUModelSerializer):
                 instance.power_ports.set(power_ports)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"power_ports": error.messages[0]})
+            raise serializers.ValidationError({"power_ports": error.messages[0]}) from error
 
         return instance
 
@@ -718,8 +733,10 @@ class PSUSerializer(FSUModelSerializer):
                     # New child PowerPorts must not have a parent PSU assigned
                     current_power_ports = set(list(instance.power_ports.all()))
                     for power_port in power_ports:
-                        if (power_port not in current_power_ports
-                                and power_port.parent_psu.first() is not None):
+                        if (
+                            power_port not in current_power_ports
+                            and power_port.parent_psu.first() is not None
+                        ):
                             raise ValidationError(
                                 f"Power Port {power_port.name} is already assigned to "
                                 f"{power_port.parent_psu.first().name}"
@@ -731,7 +748,7 @@ class PSUSerializer(FSUModelSerializer):
                 validated_instance: PSU = super().update(instance, validated_data)
 
         except ValidationError as error:
-            raise serializers.ValidationError({"power_ports": error.messages[0]})
+            raise serializers.ValidationError({"power_ports": error.messages[0]}) from error
 
         return validated_instance
 

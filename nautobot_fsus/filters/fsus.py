@@ -14,10 +14,11 @@
 #  limitations under the License.
 
 """FilterSets for FSU models."""
+
 import django_filters
 from nautobot.apps.filters import (
-    NautobotFilterSet,
     NaturalKeyOrPKMultipleChoiceFilter,
+    NautobotFilterSet,
     RelatedMembershipBooleanFilter,
     StatusModelFilterSetMixin,
 )

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Tests for FSU Template models defined by the Nautobot FSUS app."""
+
 from nautobot.dcim.models import Device
 
 from nautobot_fsus import models

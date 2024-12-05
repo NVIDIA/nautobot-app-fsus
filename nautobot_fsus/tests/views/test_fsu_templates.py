@@ -14,12 +14,13 @@
 #  limitations under the License.
 
 """Tests for FSUTemplate model views defined in the Nautobot FSUs app."""
+
 from typing import Type
 
 from django.contrib.contenttypes.models import ContentType
 from django.test.utils import override_settings
 from django.urls import reverse
-from nautobot.core.testing import extract_page_body, post_data, ViewTestCases
+from nautobot.core.testing import ViewTestCases, extract_page_body, post_data
 from nautobot.dcim.models import DeviceType, Manufacturer
 from nautobot.users.models import ObjectPermission
 
@@ -54,7 +55,7 @@ class FSUTemplateViewTestCases:  # pylint: disable=too-few-public-methods
                 ),
                 Manufacturer.objects.create(
                     name="FSU Manufacturer",
-                )
+                ),
             ]
 
             device_types = [
@@ -148,7 +149,9 @@ class FSUTemplateViewTestCases:  # pylint: disable=too-few-public-methods
                 self.form_data["name_pattern"] = "test-X"
                 self.form_data["pci_slot_id_pattern"] = f"Test {'X' * 128}"
 
-                response = self.client.post(path=self._get_url("add"), data=post_data(self.form_data))
+                response = self.client.post(
+                    path=self._get_url("add"), data=post_data(self.form_data)
+                )
                 response_body = extract_page_body(response.content.decode(response.charset))
                 self.assertIn("FORM-ERROR pci_slot_id_pattern", response_body)
 
@@ -156,8 +159,9 @@ class FSUTemplateViewTestCases:  # pylint: disable=too-few-public-methods
                 self.form_data["name_pattern"] = "test-X"
                 self.form_data["slot_id_pattern"] = f"Test {'X' * 32}"
 
-                response = self.client.post(path=self._get_url("add"),
-                                            data=post_data(self.form_data))
+                response = self.client.post(
+                    path=self._get_url("add"), data=post_data(self.form_data)
+                )
                 response_body = extract_page_body(response.content.decode(response.charset))
                 self.assertIn("FORM-ERROR slot_id_pattern", response_body)
 

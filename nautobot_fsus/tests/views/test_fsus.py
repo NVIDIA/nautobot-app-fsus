@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Tests for FSU model views defined in the Nautobot FSUs app."""
+
 from typing import Type
 
 from nautobot.core.testing import ViewTestCases

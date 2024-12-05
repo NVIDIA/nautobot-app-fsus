@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Filters and FilterSets for Nautobot FSUs app models"""
+
 from nautobot_fsus.filters.fsu_templates import (
     CPUTemplateFilterSet,
     DiskTemplateFilterSet,

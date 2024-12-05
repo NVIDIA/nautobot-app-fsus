@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Template versions of Field Serviceable Units, to be associated with DeviceTypes."""
+
 from django.db import models
 from django.db.models import ForeignKey
 from nautobot.dcim.models import Device
@@ -21,15 +22,15 @@ from nautobot.extras.utils import extras_features
 
 from nautobot_fsus.models.fsus import (
     CPU,
+    GPU,
+    HBA,
+    NIC,
+    PSU,
     Disk,
     Fan,
-    GPU,
     GPUBaseboard,
-    HBA,
     Mainboard,
-    NIC,
     OtherFSU,
-    PSU,
     RAMModule,
 )
 from nautobot_fsus.models.mixins import FSUTemplateModel
@@ -48,6 +49,7 @@ class CPUTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "CPU Template"
         verbose_name_plural = "CPU Templates"
 
@@ -69,6 +71,7 @@ class DiskTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Disk Template"
         verbose_name_plural = "Disk Templates"
 
@@ -90,6 +93,7 @@ class FanTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Fan Template"
         verbose_name_plural = "Fan Templates"
 
@@ -111,6 +115,7 @@ class GPUBaseboardTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Baseboard Template"
         verbose_name_plural = "GPU Baseboard Templates"
 
@@ -134,6 +139,7 @@ class GPUTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Template"
         verbose_name_plural = "GPU Templates"
 
@@ -157,6 +163,7 @@ class HBATemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "HBA Template"
         verbose_name_plural = "HBA Templates"
 
@@ -178,6 +185,7 @@ class MainboardTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Mainboard Template"
         verbose_name_plural = "Mainboard Templates"
 
@@ -201,6 +209,7 @@ class NICTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "NIC Template"
         verbose_name_plural = "NIC Templates"
 
@@ -222,6 +231,7 @@ class OtherFSUTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "OtherFSU Template"
         verbose_name_plural = "OtherFSU Templates"
 
@@ -245,6 +255,7 @@ class PSUTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "PSU Template"
         verbose_name_plural = "PSU Templates"
 
@@ -268,6 +279,7 @@ class RAMModuleTemplate(FSUTemplateModel):
 
     class Meta(FSUTemplateModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "RAM Module Template"
         verbose_name_plural = "RAM Module Templates"
 

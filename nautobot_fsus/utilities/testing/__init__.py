@@ -14,10 +14,10 @@
 #  limitations under the License.
 
 """Utilities for testing the Nautobot FSUs app."""
-from nautobot_fsus.utilities.testing.api import FSUAPITestCases
-from nautobot_fsus.utilities.testing.forms import FSUFormTestCases
-from nautobot_fsus.utilities.testing.filters import FSUFilterTestCases
-from nautobot_fsus.utilities.testing.models import NautobotFSUModelTestCases
 
+from nautobot_fsus.utilities.testing.api import FSUAPITestCases
+from nautobot_fsus.utilities.testing.filters import FSUFilterTestCases
+from nautobot_fsus.utilities.testing.forms import FSUFormTestCases
+from nautobot_fsus.utilities.testing.models import NautobotFSUModelTestCases
 
 __all__ = ("FSUAPITestCases", "FSUFormTestCases", "FSUFilterTestCases", "NautobotFSUModelTestCases")

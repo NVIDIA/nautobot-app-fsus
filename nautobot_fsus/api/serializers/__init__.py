@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """API serializers for Nautobot FSUs app models."""
+
 from nautobot_fsus.api.serializers.fsu_templates import (
     CPUTemplateSerializer,
     DiskTemplateSerializer,
@@ -53,7 +54,6 @@ from nautobot_fsus.api.serializers.fsus import (
     PSUSerializer,
     RAMModuleSerializer,
 )
-
 
 __all__ = (
     "CPUSerializer",

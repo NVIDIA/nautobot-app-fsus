@@ -19,6 +19,7 @@ Models for Field Serviceable Units (FSUs).
 An FSU is a physical instance of its parent FSU type, and can be either installed in a Device,
 or available for use in a Location.
 """
+
 from copy import copy
 
 from django.core.exceptions import ValidationError
@@ -29,16 +30,19 @@ from nautobot.extras.utils import extras_features
 from nautobot_fsus.models.mixins import FSUModel, PCIFSUModel
 from nautobot_fsus.utilities import validate_parent_device
 
-
-@extras_features(
+EXTRAS_FEATURES = (
     "custom_fields",
     "custom_links",
     "custom_validators",
     "export_templates",
+    "graphql",
     "relationships",
     "statuses",
     "webhooks",
 )
+
+
+@extras_features(*EXTRAS_FEATURES)
 class CPU(FSUModel):
     """Represents an individual CPU component in a device or storage location."""
 
@@ -59,6 +63,7 @@ class CPU(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "CPU"
         verbose_name_plural = "CPUs"
 
@@ -87,15 +92,7 @@ class CPU(FSUModel):
                 raise ValidationError(errors)
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class Disk(FSUModel):
     """Represents an individual Disk component in a device or storage location."""
 
@@ -116,6 +113,7 @@ class Disk(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Disk"
         verbose_name_plural = "Disks"
 
@@ -131,15 +129,7 @@ class Disk(FSUModel):
                 raise ValidationError({"parent_hba": error.error_list}) from error
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class Fan(FSUModel):
     """Represents an individual Fan component in a device or storage location."""
 
@@ -152,19 +142,12 @@ class Fan(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Fan"
         verbose_name_plural = "Fans"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPU(PCIFSUModel):
     """Represents an individual GPU component in a device or storage location."""
 
@@ -185,6 +168,7 @@ class GPU(PCIFSUModel):
 
     class Meta(PCIFSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU"
         verbose_name_plural = "GPUs"
 
@@ -214,15 +198,7 @@ class GPU(PCIFSUModel):
                 raise ValidationError(errors)
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class GPUBaseboard(FSUModel):
     """Represents an individual GPU Baseboard component in a device or storage location."""
 
@@ -235,19 +211,12 @@ class GPUBaseboard(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "GPU Baseboard"
         verbose_name_plural = "GPU Baseboards"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class HBA(PCIFSUModel):
     """Represents an individual HBA component in a device or storage location."""
 
@@ -260,19 +229,12 @@ class HBA(PCIFSUModel):
 
     class Meta(PCIFSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "HBA"
         verbose_name_plural = "HBAs"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class Mainboard(FSUModel):
     """Represents an individual Mainboard component in a device or storage location."""
 
@@ -285,19 +247,12 @@ class Mainboard(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "Mainboard"
         verbose_name_plural = "Mainboards"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class NIC(PCIFSUModel):
     """Represents an individual NIC component in a device or storage location."""
 
@@ -317,19 +272,12 @@ class NIC(PCIFSUModel):
 
     class Meta(PCIFSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "NIC"
         verbose_name_plural = "NICs"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class OtherFSU(FSUModel):
     """Represents an individual generic FSU component in a device or storage location."""
 
@@ -342,10 +290,12 @@ class OtherFSU(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "OtherFSU"
         verbose_name_plural = "OtherFSUs"
 
 
+@extras_features(*EXTRAS_FEATURES)
 class PSU(FSUModel):
     """Represents an individual PSU component in a device or storage location."""
 
@@ -366,19 +316,12 @@ class PSU(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "PSU"
         verbose_name_plural = "PSUs"
 
 
-@extras_features(
-    "custom_fields",
-    "custom_links",
-    "custom_validators",
-    "export_templates",
-    "relationships",
-    "statuses",
-    "webhooks",
-)
+@extras_features(*EXTRAS_FEATURES)
 class RAMModule(FSUModel):
     """Represents an individual RAM module component in a device or storage location."""
 
@@ -397,5 +340,6 @@ class RAMModule(FSUModel):
 
     class Meta(FSUModel.Meta):
         """Metaclass attributes."""
+
         verbose_name = "RAM Module"
         verbose_name_plural = "RAM Modules"

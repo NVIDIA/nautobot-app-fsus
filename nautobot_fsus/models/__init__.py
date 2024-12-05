@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Object models for Nautobot FSUS."""
+
 from nautobot_fsus.models.fsu_templates import (
     CPUTemplate,
     DiskTemplate,
@@ -42,18 +43,17 @@ from nautobot_fsus.models.fsu_types import (
 )
 from nautobot_fsus.models.fsus import (
     CPU,
+    GPU,
+    HBA,
+    NIC,
+    PSU,
     Disk,
     Fan,
-    GPU,
     GPUBaseboard,
-    HBA,
     Mainboard,
-    NIC,
     OtherFSU,
-    PSU,
     RAMModule,
 )
-
 
 __all__ = (
     "CPU",

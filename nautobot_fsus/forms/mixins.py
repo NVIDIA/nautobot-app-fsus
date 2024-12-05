@@ -14,7 +14,8 @@
 #  limitations under the License.
 
 """Form mixins and base classes to handle user-definable fields for FSU and FSUTypes models."""
-from typing import Type
+
+from typing import Any, Type
 
 from django import forms
 from nautobot.apps.forms import (
@@ -25,9 +26,9 @@ from nautobot.apps.forms import (
     NautobotBulkEditForm,
     NautobotFilterForm,
     NautobotModelForm,
-    TagsBulkEditFormMixin,
     StatusModelBulkEditFormMixin,
     StatusModelFilterFormMixin,
+    TagsBulkEditFormMixin,
 )
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 
@@ -76,8 +77,8 @@ class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
                     message={
                         "pci_slot_id_pattern": forms.ValidationError(
                             message="The provided name pattern will create %(names)d names, "
-                                    "however, %(pci_slots)d pci_slot_ids will be generated - "
-                                    "these counts must match.",
+                            "however, %(pci_slots)d pci_slot_ids will be generated - "
+                            "these counts must match.",
                             params={"names": name_count, "pci_slot_ids": pci_slot_count},
                         ),
                     },
@@ -90,8 +91,8 @@ class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
                     message={
                         "slot_id_pattern": forms.ValidationError(
                             message="The provided name pattern will create %(names)d names, "
-                                    "however, %(slots)d slot_ids will be generated - "
-                                    "these counts must match.",
+                            "however, %(slots)d slot_ids will be generated - "
+                            "these counts must match.",
                             params={"names": name_count, "slot_ids": slot_count},
                         ),
                     },
@@ -120,6 +121,7 @@ class FSUTypeModelForm(NautobotModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "manufacturer",
@@ -141,6 +143,7 @@ class FSUTypeImportModelForm(BootstrapMixin, forms.ModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "manufacturer",
@@ -160,6 +163,7 @@ class FSUModelForm(NautobotModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "device",
@@ -175,6 +179,35 @@ class FSUModelForm(NautobotModelForm):
             "description",
             "comments",
         ]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize the form and add query params as needed."""
+        super().__init__(*args, **kwargs)
+
+        if self.instance.device is not None:
+            location_tree = list(self.instance.device.location.ancestors(include_self=True))
+
+            # If there is more than one location in the tree, assume the top-level ancestor
+            # is a Region, and filter one level down from it.
+            self.fields["location"].widget.add_query_param(
+                "subtree",
+                location_tree[1].name if len(location_tree) > 1 else location_tree[0].name,
+            )
+
+            # If parent is a device, the FSU can't have a status of Available.
+            self.fields["status"].widget.add_query_param("name__n", "Available")
+        elif self.instance.location is not None:
+            location_tree = list(self.instance.location.ancestors(include_self=True))
+
+            # If there is more than one location in the tree, assume the top-level ancestor
+            # is a Region, and filter one level down from it.
+            self.fields["device"].widget.add_query_param(
+                "location",
+                location_tree[1].name if len(location_tree) > 1 else location_tree[0].name,
+            )
+
+            # If parent is a location, the FSU can't have a status of Active.
+            self.fields["status"].widget.add_query_param("name__n", "Active")
 
 
 class FSUModelBulkEditForm(
@@ -205,6 +238,7 @@ class FSUModelBulkEditForm(
 
 class FSUModelFilterForm(NautobotFilterForm, StatusModelFilterFormMixin):
     """Form for filtering CPU instances."""
+
     model: Type[FSUModel]
 
     device = DynamicModelChoiceField(
@@ -224,10 +258,9 @@ class FSUModelFilterForm(NautobotFilterForm, StatusModelFilterFormMixin):
 
 class FSUImportModelForm(BootstrapMixin, forms.ModelForm):
     """Abstract form model for importing FSUs."""
+
     device = forms.ModelChoiceField(
-        queryset=Device.objects.all(),
-        to_field_name="name",
-        required=False
+        queryset=Device.objects.all(), to_field_name="name", required=False
     )
     location = forms.ModelChoiceField(
         queryset=Location.objects.all(),
@@ -237,6 +270,7 @@ class FSUImportModelForm(BootstrapMixin, forms.ModelForm):
 
     class Meta:
         """Metaclass attributes."""
+
         abstract = True
         fields = [
             "device",

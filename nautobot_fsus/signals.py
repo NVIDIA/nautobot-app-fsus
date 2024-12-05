@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Signal handlers for Nautobot FSUs app."""
+
 import logging
 from typing import Any
 
@@ -25,15 +26,15 @@ from nautobot.extras.models import Status
 
 from nautobot_fsus.models import (
     CPU,
+    GPU,
+    HBA,
+    NIC,
+    PSU,
     Disk,
     Fan,
-    GPU,
     GPUBaseboard,
-    HBA,
     Mainboard,
-    NIC,
     OtherFSU,
-    PSU,
     RAMModule,
 )
 

@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """View definitions for FSU models."""
+
 from typing import Any
 
 from django.db.models import Prefetch
@@ -125,11 +126,12 @@ class GPUBaseboardUIViewSet(FSUModelViewSet):
 
         if self.action == "retrieve":
             gpus = models.GPU.objects.restrict(  # type: ignore[attr-defined]
-                request.user, "view").filter(
-                parent_gpubaseboard=instance)
+                request.user, "view"
+            ).filter(parent_gpubaseboard=instance)
             gpus_table = tables.GPUTable(data=gpus, user=request.user, orderable=False)
-            if (request.user.has_perm("nautobot_fsus.change_gpu")
-                    or request.user.has_perm("nautobot_fsus.delete_gpu")):
+            if request.user.has_perm("nautobot_fsus.change_gpu") or request.user.has_perm(
+                "nautobot_fsus.delete_gpu"
+            ):
                 gpus_table.columns.show("pk")
 
             context["gpus_table"] = gpus_table
@@ -162,10 +164,12 @@ class HBAUIViewSet(FSUModelViewSet):
 
         if self.action == "retrieve":
             disks = models.Disk.objects.restrict(  # type: ignore[attr-defined]
-                request.user, "view").filter(parent_hba=instance)
+                request.user, "view"
+            ).filter(parent_hba=instance)
             disks_table = tables.DiskTable(data=disks, user=request.user, orderable=False)
-            if (request.user.has_perm("nautobot_fsus.change_disk")
-                    or request.user.has_perm("nautobot_fsus.delete_disk")):
+            if request.user.has_perm("nautobot_fsus.change_disk") or request.user.has_perm(
+                "nautobot_fsus.delete_disk"
+            ):
                 disks_table.columns.show("pk")
 
             context["disks_table"] = disks_table
@@ -198,11 +202,12 @@ class MainboardUIViewSet(FSUModelViewSet):
 
         if self.action == "retrieve":
             cpus = models.CPU.objects.restrict(  # type: ignore[attr-defined]
-                request.user, "view").filter(
-                parent_mainboard=instance)
+                request.user, "view"
+            ).filter(parent_mainboard=instance)
             cpus_table = tables.CPUTable(data=cpus, user=request.user, orderable=False)
-            if (request.user.has_perm("nautobot_fsus.change_cpu")
-                    or request.user.has_perm("nautobot_fsus.delete_cpu")):
+            if request.user.has_perm("nautobot_fsus.change_cpu") or request.user.has_perm(
+                "nautobot_fsus.delete_cpu"
+            ):
                 cpus_table.columns.show("pk")
 
             context["cpus_table"] = cpus_table
@@ -234,21 +239,27 @@ class NICUIViewSet(FSUModelViewSet):
         context: dict[str, Any] = super().get_extra_context(request, instance)
 
         if self.action == "retrieve":
-            interfaces = Interface.objects.restrict(request.user, "view").filter(
-                parent_nic=instance
-            ).prefetch_related(
-                Prefetch("ip_addresses", queryset=IPAddress.objects.restrict(request.user)),
-                Prefetch("member_interfaces", queryset=Interface.objects.restrict(request.user)),
-                "_path__destination",
-                "tags",
-            ).select_related("lag", "cable")
+            interfaces = (
+                Interface.objects.restrict(request.user, "view")
+                .filter(parent_nic=instance)
+                .prefetch_related(
+                    Prefetch("ip_addresses", queryset=IPAddress.objects.restrict(request.user)),
+                    Prefetch(
+                        "member_interfaces", queryset=Interface.objects.restrict(request.user)
+                    ),
+                    "_path__destination",
+                    "tags",
+                )
+                .select_related("lag", "cable")
+            )
             interfaces_table = DeviceModuleInterfaceTable(
                 data=interfaces,
                 user=request.user,
                 orderable=False,
             )
-            if (request.user.has_perm("dcim.change_interface")
-                    or request.user.has_perm("dcim.delete_interface")):
+            if request.user.has_perm("dcim.change_interface") or request.user.has_perm(
+                "dcim.delete_interface"
+            ):
                 interfaces_table.columns.show("pk")
 
             context["interfaces_table"] = interfaces_table
@@ -300,15 +311,20 @@ class PSUUIViewSet(FSUModelViewSet):
         context: dict[str, Any] = super().get_extra_context(request, instance)
 
         if self.action == "retrieve":
-            power_ports = PowerPort.objects.restrict(request.user, "view").filter(
-                parent_psu=instance).select_related("cable").prefetch_related("_path__destination")
+            power_ports = (
+                PowerPort.objects.restrict(request.user, "view")
+                .filter(parent_psu=instance)
+                .select_related("cable")
+                .prefetch_related("_path__destination")
+            )
             power_ports_table = DeviceModulePowerPortTable(
                 data=power_ports,
                 user=request.user,
                 orderable=False,
             )
-            if (request.user.has_perm("dcim.change_power_port")
-                    or request.user.has_perm("dcim.delete_power_port")):
+            if request.user.has_perm("dcim.change_power_port") or request.user.has_perm(
+                "dcim.delete_power_port"
+            ):
                 power_ports_table.columns.show("pk")
 
             context["power_ports_table"] = power_ports_table

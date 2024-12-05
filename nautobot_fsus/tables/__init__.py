@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 """Table definitions for the Nautobot FSUs app."""
+
 from nautobot_fsus.tables.fsu_templates import (
     CPUTemplateTable,
     DiskTemplateTable,
@@ -25,7 +26,7 @@ from nautobot_fsus.tables.fsu_templates import (
     NICTemplateTable,
     OtherFSUTemplateTable,
     PSUTemplateTable,
-    RAMModuleTemplateTable
+    RAMModuleTemplateTable,
 )
 from nautobot_fsus.tables.fsu_types import (
     CPUTypeTable,
@@ -64,7 +65,6 @@ from nautobot_fsus.tables.fsus import (
     RAMModuleImportTable,
     RAMModuleTable,
 )
-
 
 __all__ = (
     "CPUImportTable",
