@@ -17,9 +17,13 @@
 
 from typing import Type
 
+from django.contrib.contenttypes.models import ContentType
+from django.test.utils import override_settings
+from django.urls import reverse
 from nautobot.core.testing import ViewTestCases
 from nautobot.dcim.models import Device, Location, Manufacturer
 from nautobot.extras.models import Status
+from nautobot.users.models import ObjectPermission
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUModel, FSUTypeModel
@@ -102,6 +106,51 @@ class FSUViewTestCases:  # pylint: disable=too-few-public-methods
                 f"{devices[1].pk},,test_{model_name}_B,{fsu_types[1].id},{status_active.pk}",
                 f",{location.pk},test_{model_name}_C,{fsu_types[1].id},{status_available.pk}",
             )
+
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=[])
+        def test_parent_fsu_tabs_respect_object_permissions(self):
+            """FSU tabs omit objects the authenticated user cannot view."""
+            self.add_permissions("dcim.view_device", "dcim.view_location")
+
+            tab_cases = (
+                (Device.objects.first(), "device_fsus_tab", "Active"),
+                (Location.objects.first(), "location_fsus_tab", "Available"),
+            )
+            for parent, url_name, status_name in tab_cases:
+                with self.subTest(tab=url_name):
+                    parent_field = parent._meta.model_name
+                    permitted_fsu = self.model.objects.create(
+                        fsu_type=self.type_model.objects.first(),
+                        name=f"permitted_{parent_field}_{self.model._meta.model_name}",
+                        status=Status.objects.get(name=status_name),
+                        **{parent_field: parent},
+                    )
+                    denied_fsu = self.model.objects.create(
+                        fsu_type=self.type_model.objects.first(),
+                        name=f"denied_{parent_field}_{self.model._meta.model_name}",
+                        status=Status.objects.get(name=status_name),
+                        **{parent_field: parent},
+                    )
+
+                    object_permission = ObjectPermission.objects.create(
+                        name=f"View permitted {parent_field} {self.model._meta.model_name}",
+                        constraints={"pk": permitted_fsu.pk},
+                        actions=["view"],
+                    )
+                    object_permission.users.add(self.user)
+                    object_permission.object_types.add(
+                        ContentType.objects.get_for_model(self.model)
+                    )
+
+                    response = self.client.get(
+                        reverse(
+                            f"plugins:nautobot_fsus:{url_name}",
+                            kwargs={"pk": parent.pk},
+                        )
+                    )
+
+                    self.assertBodyContains(response, permitted_fsu.name)
+                    self.assertBodyContains(response, denied_fsu.name, count=0)
 
 
 class CPUViewTestCase(FSUViewTestCases.FSUModelViewTestCase):

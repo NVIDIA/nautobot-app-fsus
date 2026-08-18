@@ -86,7 +86,9 @@ class DeviceFSUViewTab(generic.ObjectView):
 
         def _fsu_table(table: Type[FSUModelTable], fsu: Type[FSUModel]) -> FSUModelTable:
             """Helper method to set up the table for an FSU."""
-            fsu_table: FSUModelTable = table(fsu.objects.filter(device__pk=instance.pk))
+            fsu_table: FSUModelTable = table(
+                fsu.objects.restrict(request.user, "view").filter(device__pk=instance.pk)
+            )
             fsu_table.columns["actions"].column.extra_context["return_url_extra"] = (
                 f"?{request.GET.urlencode()}"
             )
@@ -156,7 +158,9 @@ class LocationFSUViewTab(generic.ObjectView):
 
         def _fsu_table(table: Type[FSUModelTable], fsu: Type[FSUModel]) -> FSUModelTable:
             """Helper method to set up the table for an FSU."""
-            fsu_table: FSUModelTable = table(fsu.objects.filter(location__pk=instance.pk))
+            fsu_table: FSUModelTable = table(
+                fsu.objects.restrict(request.user, "view").filter(location__pk=instance.pk)
+            )
             fsu_table.columns["actions"].column.extra_context["return_url_extra"] = (
                 f"?{request.GET.urlencode()}"
             )
