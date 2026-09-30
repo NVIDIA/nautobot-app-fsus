@@ -393,3 +393,43 @@ class RAMModuleTypeTable(FSUTypeModelTable):
             "instance_count",
             "actions",
         ]
+
+
+class LPUModuleTypeTable(FSUTypeModelTable):
+    """Table for displaying LPUModuleType instances."""
+
+    tags = TagColumn(url_name="plugins:nautobot_fsus:lpumoduletype_list")
+
+    instance_count = LinkedCountColumn(
+        viewname="plugins:nautobot_fsus:lpumodule_list",
+        url_params={"fsu_type_id": "pk"},
+        verbose_name="Instances",
+    )
+
+    actions = ButtonsColumn(models.LPUModuleType, buttons=("edit", "delete"))
+
+    class Meta(FSUTypeModelTable.Meta):  # pylint: disable=too-few-public-methods
+        """LPUModuleTypeTable model options."""
+
+        model = models.LPUModuleType
+        fields = [
+            "pk",
+            "name",
+            "manufacturer",
+            "part_number",
+            "lpu_count",
+            "description",
+            "instance_count",
+            "tags",
+            "actions",
+        ]
+        default_columns = [
+            "pk",
+            "name",
+            "manufacturer",
+            "part_number",
+            "lpu_count",
+            "description",
+            "instance_count",
+            "actions",
+        ]

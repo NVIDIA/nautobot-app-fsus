@@ -15,6 +15,7 @@
 
 """Tests for filters defined in the Nautobot FSUs app."""
 
+from nautobot.core.utils.lookup import get_filterset_for_model
 from nautobot.dcim.models import Device, Interface, Manufacturer, PowerPort
 from nautobot.extras.models import Status
 
@@ -286,6 +287,37 @@ class RAMModuleTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
     filterset = filters.RAMModuleFilterSet
 
 
+class LPUModuleTestCase(FSUFilterTestCases.FSUModelFilterTestCase):
+    """Tests for LPU Module filters."""
+
+    model = models.LPUModule
+    type_model = models.LPUModuleType
+    queryset = models.LPUModule.objects.all()
+    filterset = filters.LPUModuleFilterSet
+
+    def test_device_filter_extension(self):
+        """The Device filter uses the LPU Module reverse relationship."""
+        filterset = get_filterset_for_model("dcim.device")
+        filter_name = "nautobot_fsus_has_lpumodules"
+
+        self.assertIn(filter_name, filterset.base_filters)
+        filter_ = filterset.base_filters[filter_name]
+
+        self.assertEqual(filter_.field_name, "lpumodules")
+        self.assertEqual(filter_.label, "Has LPU Modules")
+
+    def test_location_filter_extension(self):
+        """The Location filter uses the available LPU Module relationship."""
+        filterset = get_filterset_for_model("dcim.location")
+        filter_name = "nautobot_fsus_has_available_lpumodules"
+
+        self.assertIn(filter_name, filterset.base_filters)
+        filter_ = filterset.base_filters[filter_name]
+
+        self.assertEqual(filter_.field_name, "lpumodules")
+        self.assertEqual(filter_.label, "Has available LPU Modules")
+
+
 class CPUTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
     """Tests for CPU template filters."""
 
@@ -448,6 +480,15 @@ class RAMModuleTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
         for template in cls.templates:
             template.validated_save()
             template.refresh_from_db()
+
+
+class LPUModuleTemplateTestCase(FSUFilterTestCases.FSUTemplateFilterTestCase):
+    """Tests for LPU Module template filters."""
+
+    model = models.LPUModuleTemplate
+    type_model = models.LPUModuleType
+    queryset = models.LPUModuleTemplate.objects.all()
+    filterset = filters.LPUModuleTemplateFilterSet
 
 
 class CPUTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
@@ -839,3 +880,12 @@ class RAMModuleTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
     type_model = models.RAMModuleType
     queryset = models.RAMModuleType.objects.all()
     filterset = filters.RAMModuleTypeFilterSet
+
+
+class LPUModuleTypeTestCase(FSUFilterTestCases.FSUTypeFilterTestCase):
+    """Tests for LPUModuleType filters."""
+
+    model = models.LPUModule
+    type_model = models.LPUModuleType
+    queryset = models.LPUModuleType.objects.all()
+    filterset = filters.LPUModuleTypeFilterSet

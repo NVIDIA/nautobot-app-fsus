@@ -18,6 +18,9 @@
 {% if hba_table.rows|length > 0 %}
     {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=hba_table title="HBAs" bulk_rename_url="plugins:nautobot_fsus:hba_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:hba_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:hba_bulk_delete" %}
 {% endif %}
+{% if lpumodule_table.rows|length > 0 %}
+    {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=lpumodule_table title="LPU Modules" bulk_rename_url="plugins:nautobot_fsus:lpumodule_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:lpumodule_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:lpumodule_bulk_delete" %}
+{% endif %}
 {% if mainboard_table.rows|length > 0 %}
     {% include "nautobot_fsus/inc/fsu_tab_table.html" with table=mainboard_table title="Mainboards" bulk_rename_url="plugins:nautobot_fsus:mainboard_bulk_rename" bulk_edit_url="plugins:nautobot_fsus:mainboard_bulk_edit" bulk_delete_url="plugins:nautobot_fsus:mainboard_bulk_delete" %}
 {% endif %}

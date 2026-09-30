@@ -90,6 +90,12 @@ menu_items = (
                         buttons=item_buttons("hba"),
                     ),
                     NavMenuItem(
+                        link="plugins:nautobot_fsus:lpumodule_list",
+                        name="LPU Modules",
+                        permissions=["nautobot_fsus.view_lpumodule"],
+                        buttons=item_buttons("lpumodule"),
+                    ),
+                    NavMenuItem(
                         link="plugins:nautobot_fsus:mainboard_list",
                         name="Mainboards",
                         permissions=["nautobot_fsus.view_mainboard"],
@@ -159,6 +165,12 @@ menu_items = (
                         name="HBA Types",
                         permissions=["nautobot_fsus.view_hbatype"],
                         buttons=item_buttons("hbatype"),
+                    ),
+                    NavMenuItem(
+                        link="plugins:nautobot_fsus:lpumoduletype_list",
+                        name="LPU Module Types",
+                        permissions=["nautobot_fsus.view_lpumoduletype"],
+                        buttons=item_buttons("lpumoduletype"),
                     ),
                     NavMenuItem(
                         link="plugins:nautobot_fsus:mainboardtype_list",

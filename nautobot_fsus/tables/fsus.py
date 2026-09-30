@@ -247,6 +247,38 @@ class HBAImportTable(BaseTable):
         fields = ["name", "fsu_type", "parent"]
 
 
+class LPUModuleTable(FSUModelTable):
+    """Table for displaying LPUModule instances."""
+
+    tags = TagColumn(url_name="plugins:nautobot_fsus:lpumodule_list")
+    actions = ButtonsColumn(models.LPUModule, buttons=("edit", "delete"))
+
+    fsu_type = tables.LinkColumn(
+        viewname="plugins:nautobot_fsus:lpumoduletype",
+        args=[Accessor("fsu_type__pk")],
+        verbose_name="Type",
+        text=lambda record: record.fsu_type.display,
+    )
+
+    class Meta(FSUModelTable.Meta):  # pylint: disable=too-few-public-methods
+        """LPUModuleTable model options."""
+
+        model = models.LPUModule
+
+
+class LPUModuleImportTable(BaseTable):
+    """Table for the post-bulk import view."""
+
+    name = tables.Column(linkify=True)
+    parent = tables.TemplateColumn("{{ record.parent }}")
+
+    class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
+        """LPUModuleImportTable model options."""
+
+        model = models.LPUModule
+        fields = ["name", "fsu_type", "parent"]
+
+
 class MainboardTable(FSUModelTable):
     """Table for displaying Mainboard instances."""
 

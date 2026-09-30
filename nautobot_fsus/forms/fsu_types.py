@@ -804,3 +804,73 @@ class RAMModuleTypeImportForm(FSUTypeImportModelForm):
             "comments",
             "tags",
         ]
+
+
+class LPUModuleTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
+    """Form for bulk editing LPUModuleType instances."""
+
+    model = models.LPUModuleType
+
+    pk = forms.ModelMultipleChoiceField(
+        queryset=models.LPUModuleType.objects.all(),
+        widget=forms.MultipleHiddenInput,
+    )
+
+    manufacturer = DynamicModelChoiceField(queryset=Manufacturer.objects.all(), required=False)
+    lpu_count = forms.IntegerField(min_value=1, required=False)
+
+    class Meta:
+        """LPUModuleTypeBulkEditForm model options."""
+
+        nullable_fields: list[str] = ["lpu_count"]
+
+
+class LPUModuleTypeFilterForm(NautobotFilterForm):
+    """Form for filtering LPUModuleType instances."""
+
+    model = models.LPUModuleType
+
+    manufacturer = DynamicModelChoiceField(
+        queryset=Manufacturer.objects.all(),
+        to_field_name="name",
+        required=False,
+    )
+
+    tags = TagFilterField(model)
+    q = forms.CharField(required=False, label="Search")
+
+
+class LPUModuleTypeForm(FSUTypeModelForm):
+    """Form for creating or updating LPUModuleType instances."""
+
+    class Meta(FSUTypeModelForm.Meta):
+        """LPUModuleTypeForm model options."""
+
+        model = models.LPUModuleType
+        fields = [
+            "manufacturer",
+            "name",
+            "part_number",
+            "lpu_count",
+            "description",
+            "comments",
+            "tags",
+        ]
+
+
+class LPUModuleTypeImportForm(FSUTypeImportModelForm):
+    """Form for importing LPUModuleType instances."""
+
+    class Meta(FSUTypeImportModelForm.Meta):
+        """LPUModuleTypeImportForm model options."""
+
+        model = models.LPUModuleType
+        fields = [
+            "manufacturer",
+            "name",
+            "part_number",
+            "lpu_count",
+            "description",
+            "comments",
+            "tags",
+        ]

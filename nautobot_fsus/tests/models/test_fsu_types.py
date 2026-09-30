@@ -87,3 +87,9 @@ class RAMModuleTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
 
     type_model = models.RAMModuleType
     model_fields = {"module_type": "u", "technology": "ddr5", "quantity": 1}
+
+
+class LPUModuleTypeTestCase(NautobotFSUModelTestCases.FSUTypeTestCase):
+    """Tests for the LPUModuleType model."""
+
+    type_model = models.LPUModuleType

@@ -41,6 +41,9 @@ router.register("gpubaseboard-types", views.GPUBaseboardTypeUIViewSet)
 router.register("hbas", views.HBAUIViewSet)
 router.register("hba-templates", views.HBATemplateUIViewSet)
 router.register("hbatypes", views.HBATypeUIViewSet)
+router.register("lpumodules", views.LPUModuleUIViewSet)
+router.register("lpumodule-templates", views.LPUModuleTemplateUIViewSet)
+router.register("lpumoduletypes", views.LPUModuleTypeUIViewSet)
 router.register("mainboards", views.MainboardUIViewSet)
 router.register("mainboard-templates", views.MainboardTemplateUIViewSet)
 router.register("mainboard-types", views.MainboardTypeUIViewSet)
@@ -71,6 +74,11 @@ urlpatterns = [
     ),
     path("hbas/rename/", views.HBABulkRenameView.as_view(), name="hba_bulk_rename"),
     path("locations/<uuid:pk>/fsus/", views.LocationFSUViewTab.as_view(), name="location_fsus_tab"),
+    path(
+        "lpumodules/rename/",
+        views.LPUModuleBulkRenameView.as_view(),
+        name="lpumodule_bulk_rename",
+    ),
     path(
         "mainboards/rename/",
         views.MainboardBulkRenameView.as_view(),

@@ -241,3 +241,10 @@ class RAMModuleTemplateViewTestCase(FSUTemplateViewTestCases.FSUTemplateModelVie
 
     model = models.RAMModuleTemplate
     type_model = models.RAMModuleType
+
+
+class LPUModuleTemplateViewTestCase(FSUTemplateViewTestCases.FSUTemplateModelViewTestCase):
+    """Tests for LPUModuleTemplate model views."""
+
+    model = models.LPUModuleTemplate
+    type_model = models.LPUModuleType

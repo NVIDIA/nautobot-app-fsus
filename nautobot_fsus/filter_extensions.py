@@ -57,6 +57,10 @@ class DeviceFilterExtension(FilterExtension):  # pylint: disable=too-few-public-
             field_name="hbas",
             label="Has HBAs",
         ),
+        "nautobot_fsus_has_lpumodules": RelatedMembershipBooleanFilter(
+            field_name="lpumodules",
+            label="Has LPU Modules",
+        ),
         "nautobot_fsus_has_mainboards": RelatedMembershipBooleanFilter(
             field_name="mainboards",
             label="Has Mainboards",
@@ -136,6 +140,10 @@ class LocationFilterExtension(FilterExtension):  # pylint: disable=too-few-publi
         "nautobot_fsus_has_available_hbas": RelatedMembershipBooleanFilter(
             field_name="hbas",
             label="Has available HBAs",
+        ),
+        "nautobot_fsus_has_available_lpumodules": RelatedMembershipBooleanFilter(
+            field_name="lpumodules",
+            label="Has available LPU Modules",
         ),
         "nautobot_fsus_has_available_mainboards": RelatedMembershipBooleanFilter(
             field_name="mainboards",
