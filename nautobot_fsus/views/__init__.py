@@ -30,6 +30,7 @@ from nautobot_fsus.views.fsu_templates import (
     GPUBaseboardTemplateUIViewSet,
     GPUTemplateUIViewSet,
     HBATemplateUIViewSet,
+    LPUModuleTemplateUIViewSet,
     MainboardTemplateUIViewSet,
     NICTemplateUIViewSet,
     OtherFSUTemplateUIViewSet,
@@ -43,6 +44,7 @@ from nautobot_fsus.views.fsu_types import (
     GPUBaseboardTypeUIViewSet,
     GPUTypeUIViewSet,
     HBATypeUIViewSet,
+    LPUModuleTypeUIViewSet,
     MainboardTypeUIViewSet,
     NICTypeUIViewSet,
     OtherFSUTypeUIViewSet,
@@ -62,6 +64,8 @@ from nautobot_fsus.views.fsus import (
     GPUUIViewSet,
     HBABulkRenameView,
     HBAUIViewSet,
+    LPUModuleBulkRenameView,
+    LPUModuleUIViewSet,
     MainboardBulkRenameView,
     MainboardUIViewSet,
     NICBulkRenameView,
@@ -123,6 +127,10 @@ class DeviceFSUViewTab(generic.ObjectView):
         context["hba_table"] = _fsu_table(tables.HBATable, models.HBA)
         if request.user.has_perm("nautobot_fsus.change_hba"):
             context["hba_table"].columns.show("pk")
+
+        context["lpumodule_table"] = _fsu_table(tables.LPUModuleTable, models.LPUModule)
+        if request.user.has_perm("nautobot_fsus.change_lpumodule"):
+            context["lpumodule_table"].columns.show("pk")
 
         context["mainboard_table"] = _fsu_table(tables.MainboardTable, models.Mainboard)
         if request.user.has_perm("nautobot_fsus.change_mainboard"):
@@ -196,6 +204,10 @@ class LocationFSUViewTab(generic.ObjectView):
         if request.user.has_perm("nautobot_fsus.change_hba"):
             context["hba_table"].columns.show("pk")
 
+        context["lpumodule_table"] = _fsu_table(tables.LPUModuleTable, models.LPUModule)
+        if request.user.has_perm("nautobot_fsus.change_lpumodule"):
+            context["lpumodule_table"].columns.show("pk")
+
         context["mainboard_table"] = _fsu_table(tables.MainboardTable, models.Mainboard)
         if request.user.has_perm("nautobot_fsus.change_mainboard"):
             context["mainboard_table"].columns.show("pk")
@@ -244,6 +256,10 @@ __all__ = (
     "HBATemplateUIViewSet",
     "HBATypeUIViewSet",
     "HBAUIViewSet",
+    "LPUModuleBulkRenameView",
+    "LPUModuleTemplateUIViewSet",
+    "LPUModuleTypeUIViewSet",
+    "LPUModuleUIViewSet",
     "MainboardBulkRenameView",
     "MainboardTemplateUIViewSet",
     "MainboardTypeUIViewSet",

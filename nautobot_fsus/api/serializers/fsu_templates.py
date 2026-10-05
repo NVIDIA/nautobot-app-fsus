@@ -25,6 +25,7 @@ from nautobot_fsus.models import (
     GPUBaseboardTemplate,
     GPUTemplate,
     HBATemplate,
+    LPUModuleTemplate,
     MainboardTemplate,
     NICTemplate,
     OtherFSUTemplate,
@@ -174,3 +175,16 @@ class RAMModuleTemplateSerializer(FSUTemplateModelSerializer):
         """RAMModuleTemplateSerializer model options."""
 
         model = RAMModuleTemplate
+
+
+class LPUModuleTemplateSerializer(FSUTemplateModelSerializer):
+    """API serializer for LPUModuleTemplate model."""
+
+    url = serializers.HyperlinkedIdentityField(
+        view_name="plugins-api:nautobot_fsus-api:lpumoduletemplate-detail"
+    )
+
+    class Meta(FSUTemplateModelSerializer.Meta):
+        """LPUModuleTemplateSerializer model options."""
+
+        model = LPUModuleTemplate

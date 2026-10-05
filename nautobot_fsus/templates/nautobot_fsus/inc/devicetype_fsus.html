@@ -20,6 +20,9 @@
                 <a href="#hbas" role="tab" data-toggle="tab">HBAs {% badge hba_table.rows|length %}</a>
             </li>
             <li role="presentation">
+                <a href="#lpumodules" role="tab" data-toggle="tab">LPU Modules {% badge lpumodule_table.rows|length %}</a>
+            </li>
+            <li role="presentation">
                 <a href="#mainboards" role="tab" data-toggle="tab">Mainboards {% badge mainboard_table.rows|length %}</a>
             </li>
             <li role="presentation">
@@ -53,6 +56,9 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="hbas">
                 {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=hba_table title="HBAs" tab="hbas" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="lpumodules">
+                {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=lpumodule_table title="LPU Modules" tab="lpumodules" %}
             </div>
             <div role="tabpanel" class="tab-pane" id="mainboards">
                 {% include "nautobot_fsus/inc/devicetype_fsu_table.html" with table=mainboard_table title="Mainboards" tab="mainboards" %}

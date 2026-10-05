@@ -29,6 +29,7 @@ from nautobot_fsus.models.fsus import (
     Disk,
     Fan,
     GPUBaseboard,
+    LPUModule,
     Mainboard,
     OtherFSU,
     RAMModule,
@@ -286,3 +287,25 @@ class RAMModuleTemplate(FSUTemplateModel):
     def instantiate(self, device: Device) -> RAMModule:
         """Instantiate a new RAM Module on a Device."""
         return self._instantiate_model(model=RAMModule, device=device, slot_id=self.slot_id)
+
+
+@extras_features("custom_fields", "custom_links", "custom_validators", "relationships")
+class LPUModuleTemplate(FSUTemplateModel):
+    """A template for an LPU Module to be created on a new device."""
+
+    fsu_type: ForeignKey = models.ForeignKey(
+        to="LPUModuleType",
+        on_delete=models.PROTECT,
+        related_name="templates",
+        verbose_name="FSU Type",
+    )
+
+    class Meta(FSUTemplateModel.Meta):
+        """Metaclass attributes."""
+
+        verbose_name = "LPU Module Template"
+        verbose_name_plural = "LPU Module Templates"
+
+    def instantiate(self, device: Device) -> LPUModule:
+        """Instantiate a new LPU Module on a Device."""
+        return self._instantiate_model(model=LPUModule, device=device)

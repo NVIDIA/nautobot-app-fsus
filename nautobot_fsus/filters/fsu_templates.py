@@ -222,6 +222,38 @@ class HBATemplateFilterSet(
         ]
 
 
+class LPUModuleTemplateFilterSet(
+    BaseFilterSet,
+    CustomFieldModelFilterSetMixin,
+    FSUTemplateModelFilterSetMixin,
+):
+    """Filter set for LPUModuleTemplate."""
+
+    fsu_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=models.LPUModuleType.objects.all(),
+        label="LPU Module Type (ID)",
+    )
+
+    fsu_type = django_filters.ModelMultipleChoiceFilter(
+        field_name="fsu_type__name",
+        queryset=models.LPUModuleType.objects.all(),
+        to_field_name="name",
+        label="LPU Module Type (name)",
+    )
+
+    class Meta:
+        """LPUModuleTemplateFilterSet model options."""
+
+        model = models.LPUModuleTemplate
+        fields = [
+            "id",
+            "device_type",
+            "fsu_type",
+            "name",
+            "description",
+        ]
+
+
 class MainboardTemplateFilterSet(
     BaseFilterSet,
     CustomFieldModelFilterSetMixin,

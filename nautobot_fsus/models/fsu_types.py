@@ -262,3 +262,21 @@ class RAMModuleType(FSUTypeModel):
 
         verbose_name = "RAM Module Type"
         verbose_name_plural = "RAM Module Types"
+
+
+@extras_features(*EXTRAS_FEATURES)
+class LPUModuleType(FSUTypeModel):
+    """Represents an LPU module type."""
+
+    lpu_count = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1)],
+        help_text="The number of physical LPUs on this LPU Module",
+    )
+
+    class Meta(FSUTypeModel.Meta):
+        """Metaclass attributes."""
+
+        verbose_name = "LPU Module Type"
+        verbose_name_plural = "LPU Module Types"

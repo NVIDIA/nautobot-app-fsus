@@ -189,3 +189,9 @@ class RAMModuleTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):
             f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 8,0008,u,ddr5,1",
             f"{Manufacturer.objects.last().pk},{cls.model._meta.verbose_name} 9,0009,ue,ddr5,2",
         )
+
+
+class LPUModuleTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):
+    """Tests for LPUModuleType model views."""
+
+    model = models.LPUModuleType

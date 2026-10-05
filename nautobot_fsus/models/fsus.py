@@ -343,3 +343,21 @@ class RAMModule(FSUModel):
 
         verbose_name = "RAM Module"
         verbose_name_plural = "RAM Modules"
+
+
+@extras_features(*EXTRAS_FEATURES)
+class LPUModule(FSUModel):
+    """Represents an individual LPU module component in a device or storage location."""
+
+    fsu_type: ForeignKey = models.ForeignKey(
+        to="LPUModuleType",
+        on_delete=models.PROTECT,
+        related_name="instances",
+        verbose_name="LPU Module Type",
+    )
+
+    class Meta(FSUModel.Meta):
+        """Metaclass attributes."""
+
+        verbose_name = "LPU Module"
+        verbose_name_plural = "LPU Modules"

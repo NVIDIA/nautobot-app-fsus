@@ -149,6 +149,24 @@ class HBATemplateTable(FSUTemplateModelTable):
         ]
 
 
+class LPUModuleTemplateTable(FSUTemplateModelTable):
+    """Table for displaying LPUModuleTemplate instances."""
+
+    fsu_type = tables.LinkColumn(
+        viewname="plugins:nautobot_fsus:lpumoduletype",
+        args=[Accessor("fsu_type__pk")],
+        verbose_name="Type",
+        text=lambda record: record.fsu_type.display,
+    )
+
+    actions = ButtonsColumn(models.LPUModuleTemplate, buttons=("edit", "delete"))
+
+    class Meta(FSUTemplateModelTable.Meta):  # pylint: disable=too-few-public-methods
+        """LPUModuleTemplateTable model options."""
+
+        model = models.LPUModuleTemplate
+
+
 class MainboardTemplateTable(FSUTemplateModelTable):
     """Table for displaying MainboardTemplate instances."""
 

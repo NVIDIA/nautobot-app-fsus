@@ -575,6 +575,61 @@ class HBAImportForm(FSUImportModelForm):
         ]
 
 
+class LPUModuleBulkEditForm(FSUModelBulkEditForm):
+    """Form for bulk editing of LPUModule instances."""
+
+    model = models.LPUModule
+
+    pk = forms.ModelMultipleChoiceField(
+        queryset=models.LPUModule.objects.all(),
+        widget=forms.MultipleHiddenInput(),
+    )
+
+    fsu_type = DynamicModelChoiceField(queryset=models.LPUModuleType.objects.all(), required=False)
+
+    class Meta(FSUModelBulkEditForm.Meta):
+        """LPUModuleBulkEditForm model options."""
+
+
+class LPUModuleFilterForm(FSUModelFilterForm):
+    """Form for filtering LPUModule instances."""
+
+    model = models.LPUModule
+
+    fsu_type_id = DynamicModelChoiceField(
+        queryset=models.LPUModuleType.objects.all(),
+        query_params={"manufacturer": "$manufacturer"},
+        required=False,
+        label="LPU Module Type",
+    )
+
+    tag = TagFilterField(model)
+
+
+class LPUModuleForm(FSUModelForm):
+    """Form for creating or updating LPUModule instances."""
+
+    fsu_type = DynamicModelChoiceField(queryset=models.LPUModuleType.objects.all())
+
+    class Meta(FSUModelForm.Meta):
+        """LPUModuleForm model options."""
+
+        model = models.LPUModule
+
+
+class LPUModuleImportForm(FSUImportModelForm):
+    """Form for importing LPUModule instances."""
+
+    fsu_type = forms.ModelChoiceField(
+        queryset=models.LPUModuleType.objects.all(), to_field_name="name"
+    )
+
+    class Meta(FSUImportModelForm.Meta):
+        """LPUModuleImportForm model options."""
+
+        model = models.LPUModule
+
+
 class MainboardBulkEditForm(FSUModelBulkEditForm):
     """Form for bulk editing of Mainboard instances."""
 

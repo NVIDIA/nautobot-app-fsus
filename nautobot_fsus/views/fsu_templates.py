@@ -98,6 +98,19 @@ class HBATemplateUIViewSet(FSUTemplateModelViewSet):
     table_class = tables.HBATemplateTable
 
 
+class LPUModuleTemplateUIViewSet(FSUTemplateModelViewSet):
+    """View set for LPUModuleTemplate model."""
+
+    bulk_update_form_class = forms.LPUModuleTemplateBulkEditForm
+    create_form_class = forms.LPUModuleTemplateCreateForm
+    filterset_class = filters.LPUModuleTemplateFilterSet
+    form_class = forms.LPUModuleTemplateForm
+    lookup_field = "pk"
+    queryset = models.LPUModuleTemplate.objects.all()
+    serializer_class = serializers.LPUModuleTemplateSerializer
+    table_class = tables.LPUModuleTemplateTable
+
+
 class MainboardTemplateUIViewSet(FSUTemplateModelViewSet):
     """View set for MainboardTemplate model."""
 

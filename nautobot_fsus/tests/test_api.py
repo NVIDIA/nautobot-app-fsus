@@ -704,3 +704,24 @@ class RAMModuleTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
             i["capacity"] = 64
             i["module_type"] = "l"
             i["technology"] = "ddr5"
+
+
+class LPUModuleTypeAPITestCase(FSUAPITestCases.FSUTypeAPIViewTestCase):
+    """Test the API views for the LPU module type."""
+
+    model = models.LPUModuleType
+
+
+class LPUModuleAPITestCase(FSUAPITestCases.FSUAPIViewTestCase):
+    """Test the API views for the LPUModule model."""
+
+    model = models.LPUModule
+    type_model = models.LPUModuleType
+
+
+class LPUModuleTemplateAPITestCase(FSUAPITestCases.FSUTemplateAPIViewTestCase):
+    """Test the API views for the LPUModuleTemplate model."""
+
+    model = models.LPUModuleTemplate
+    type_model = models.LPUModuleType
+    target_model_name = "LPUModule"
