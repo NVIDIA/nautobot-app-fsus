@@ -34,6 +34,7 @@ from nautobot_fsus.models import (
     Disk,
     Fan,
     GPUBaseboard,
+    LPUModule,
     Mainboard,
     OtherFSU,
     RAMModule,
@@ -762,3 +763,14 @@ class RAMModuleSerializer(FSUModelSerializer):
         """RAMModuleSerializer model options."""
 
         model = RAMModule
+
+
+class LPUModuleSerializer(FSUModelSerializer):
+    """API serializer for LPU Module model."""
+
+    url = HyperlinkedIdentityField(view_name="plugins-api:nautobot_fsus-api:lpumodule-detail")
+
+    class Meta(FSUModelSerializer.Meta):
+        """LPUModuleSerializer model options."""
+
+        model = LPUModule

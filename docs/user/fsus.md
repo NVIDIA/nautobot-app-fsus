@@ -1,6 +1,6 @@
 Field Serviceable Units are tracked assets that are not independent Devices, but may be installed in a [Device](/static/docs/models/dcim/device.html) or a spare in a storage [Location](/static/docs/models/dcim/location.html).
 
-There are ten FSU types available - CPU, Disk, Fan, GPU, GPU Baseboard, HBA, Mainboard, NIC, PSU, and RAM Module.
+There are eleven FSU types available - CPU, Disk, Fan, GPU, GPU Baseboard, HBA, LPU Module, Mainboard, NIC, PSU, and RAM Module.
 
 !!! info
     The types listed above are supported directly as distinct FSUs, for other FSUs to be tracked there is an OtherFSU type.
@@ -23,6 +23,7 @@ Some FSU types have additional product-specific fields:
 - CPU type has fields for architecture, clock speed, number of cores, and the PCIe generation.
 - Disk type has fields for the type of disk, e.g. NVME, and the size.
 - GPU Baseboard type has a field for the number of GPU slots provided.
+- LPU Module type has a field for the number of physical LPUs on the module board.
 - Mainboard type has a field for the number of CPU sockets provided.
 - NIC type has a field for the number of interfaces provided.
 - PSU type has fields for the feed type (AC, DC, or Switchable), the power provided in Watts, the required voltage (e.g. `-40V - -72` for DC or `100-240V` for AC), and whether the unit is hot-swappable.
@@ -68,37 +69,39 @@ You can then select either **Yes** or **No** to filter for devices/locations tha
 The filter can also be used by attaching a query parameter to the request URL for the device or location lists.
 The parameters for filtering by FSUs on devices are:
 
-- `device_has_cpus`
-- `device_has_disks`
-- `device_has_fans`
-- `device_has_gpus`
-- `device_has_gpubaseboards`
-- `device_has_hbas`
-- `device_has_mainboards`
-- `device_has_nics`
-- `device_has_otherfsus`
-- `device_has_psus`
-- `device_has_rammodules`
+- `nautobot_fsus_has_cpus`
+- `nautobot_fsus_has_disks`
+- `nautobot_fsus_has_fans`
+- `nautobot_fsus_has_gpus`
+- `nautobot_fsus_has_gpu_baseboards`
+- `nautobot_fsus_has_hbas`
+- `nautobot_fsus_has_lpumodules`
+- `nautobot_fsus_has_mainboards`
+- `nautobot_fsus_has_nics`
+- `nautobot_fsus_has_otherfsus`
+- `nautobot_fsus_has_psus`
+- `nautobot_fsus_has_rammodules`
 
 For locations they are:
 
-- `location_has_available_cpus`
-- `location_has_available_disks`
-- `location_has_available_fans`
-- `location_has_available_gpus`
-- `location_has_available_gpubaseboards`
-- `location_has_available_hbas`
-- `location_has_available_mainboards`
-- `location_has_available_nics`
-- `location_has_available_otherfsus`
-- `location_has_available_psus`
-- `location_has_available_rammodules`
+- `nautobot_fsus_has_available_cpus`
+- `nautobot_fsus_has_available_disks`
+- `nautobot_fsus_has_available_fans`
+- `nautobot_fsus_has_available_gpus`
+- `nautobot_fsus_has_available_gpu_baseboards`
+- `nautobot_fsus_has_available_hbas`
+- `nautobot_fsus_has_available_lpumodules`
+- `nautobot_fsus_has_available_mainboards`
+- `nautobot_fsus_has_available_nics`
+- `nautobot_fsus_has_available_otherfsus`
+- `nautobot_fsus_has_available_psus`
+- `nautobot_fsus_has_available_rammodules`
 
 Set the parameter value to either `True` or `False`.
 
 ```
-http://nautobot.server/dcim/devices/?device_has_gpus=True
-http://nautobot.server/dcim/locations/?location_has_available_gpus=True
+http://nautobot.server/dcim/devices/?nautobot_fsus_has_gpus=True
+http://nautobot.server/dcim/locations/?nautobot_fsus_has_available_gpus=True
 ```
 
 ### Interfaces

@@ -27,6 +27,7 @@ from nautobot_fsus.models import (
     GPUBaseboardType,
     GPUType,
     HBAType,
+    LPUModuleType,
     MainboardType,
     NICType,
     OtherFSUType,
@@ -185,3 +186,16 @@ class RAMModuleTypeSerializer(FSUTypeModelSerializer):
         """RAMModuleTypeSerializer model options."""
 
         model = RAMModuleType
+
+
+class LPUModuleTypeSerializer(FSUTypeModelSerializer):
+    """API serializer for LPUModuleType model."""
+
+    url = serializers.HyperlinkedIdentityField(
+        view_name="plugins-api:nautobot_fsus-api:lpumoduletype-detail"
+    )
+
+    class Meta(FSUTypeModelSerializer.Meta):
+        """LPUModuleTypeSerializer model options."""
+
+        model = LPUModuleType

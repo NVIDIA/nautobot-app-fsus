@@ -113,6 +113,11 @@
             <td>Quantity</td>
             <td>{{ object.quantity | placeholder }}</td>
         </tr>
+    {% elif verbose_name == "LPU Module Type" %}
+        <tr>
+            <td>LPU Count</td>
+            <td>{{ object.lpu_count | placeholder }}</td>
+        </tr>
     {% endif %}
         <tr>
             <td>Description</td>

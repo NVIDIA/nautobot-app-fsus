@@ -245,3 +245,10 @@ class RAMModuleTestCase(NautobotFSUModelTestCases.FSUTestCase):
 
     model = models.RAMModule
     type_model = models.RAMModuleType
+
+
+class LPUModuleTestCase(NautobotFSUModelTestCases.FSUTestCase):
+    """Tests for the LPUModule model."""
+
+    model = models.LPUModule
+    type_model = models.LPUModuleType

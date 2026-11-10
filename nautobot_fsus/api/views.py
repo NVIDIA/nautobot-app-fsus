@@ -165,6 +165,30 @@ class HBATypeAPIView(NautobotModelViewSet):
     filterset_class = filters.HBATypeFilterSet
 
 
+class LPUModuleAPIView(NautobotModelViewSet):
+    """API view set for LPU Modules."""
+
+    queryset = models.LPUModule.objects.all()
+    serializer_class = serializers.LPUModuleSerializer
+    filterset_class = filters.LPUModuleFilterSet
+
+
+class LPUModuleTemplateAPIView(NautobotModelViewSet):
+    """API view set for LPU Module Templates."""
+
+    queryset = models.LPUModuleTemplate.objects.select_related("device_type__manufacturer")
+    serializer_class = serializers.LPUModuleTemplateSerializer
+    filterset_class = filters.LPUModuleTemplateFilterSet
+
+
+class LPUModuleTypeAPIView(NautobotModelViewSet):
+    """API view set for LPU Module Types."""
+
+    queryset = models.LPUModuleType.objects.all()
+    serializer_class = serializers.LPUModuleTypeSerializer
+    filterset_class = filters.LPUModuleTypeFilterSet
+
+
 class MainboardAPIView(NautobotModelViewSet):
     """API view set for Mainboards."""
 

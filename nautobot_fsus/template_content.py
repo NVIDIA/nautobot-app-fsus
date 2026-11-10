@@ -15,7 +15,7 @@
 
 """Template extensions for built-in Nautobot models."""
 
-from typing import Any, Type
+from typing import Any, ClassVar, Type
 from uuid import UUID
 
 from django.urls import reverse
@@ -36,6 +36,21 @@ class FSUsTabContentTemplate(TemplateExtension):
     obj_pk: UUID
     fsu_count: int
     parent_type: str
+
+    fsu_models: ClassVar[list[tuple[str, str]]] = [
+        ("cpu", "CPUs"),
+        ("disk", "Disks"),
+        ("fan", "Fans"),
+        ("gpu", "GPUs"),
+        ("gpubaseboard", "GPU Baseboards"),
+        ("hba", "HBAs"),
+        ("lpumodule", "LPU Modules"),
+        ("mainboard", "Mainboards"),
+        ("nic", "NICs"),
+        ("otherfsu", "Other FSUs"),
+        ("psu", "PSUs"),
+        ("rammodule", "RAM Modules"),
+    ]
 
     def buttons(self) -> str:
         """Add button with menu for adding FSUs."""
@@ -61,83 +76,14 @@ class FSUsTabContentTemplate(TemplateExtension):
                 ]
             )
 
-            if user.has_perm("nautobot_fsus.add_cpu"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:cpu_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"CPUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_disk"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:disk_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"Disks</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_fan"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:fan_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"Fans</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_gpu"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:gpu_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"GPUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_gpubaseboard"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:gpubaseboard_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"GPU Baseboards</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_hba"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:hba_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"HBAs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_mainboard"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:mainboard_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"Mainboards</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_nic"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:nic_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"NICs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_otherfsu"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:otherfsu_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"Other FSUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_psu"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:psu_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"PSUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_rammodule"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:rammodule_add')}"
-                    f"?{self.parent_type}={self.obj_pk}"
-                    f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
-                    f"RAM Modules</a></li>"
-                )
+            for model_key, label in self.fsu_models:
+                if user.has_perm(f"nautobot_fsus.add_{model_key}"):
+                    buttons.append(
+                        f"        <li><a href=\"{reverse(f'plugins:nautobot_fsus:{model_key}_add')}"
+                        f"?{self.parent_type}={self.obj_pk}"
+                        f"&return_url={return_url}%3Ftab=nautobot_fsus:1\">"
+                        f"{label}</a></li>"
+                    )
 
             buttons.extend(["    </ul>", "</div>"])
 
@@ -183,6 +129,7 @@ class DeviceFSUsTabContent(FSUsTabContentTemplate):
             "gpus": models.GPU.objects.filter(device__pk=self.obj_pk).count(),
             "gpubaseboards": models.GPUBaseboard.objects.filter(device__pk=self.obj_pk).count(),
             "hbas": models.HBA.objects.filter(device__pk=self.obj_pk).count(),
+            "lpumodules": models.LPUModule.objects.filter(device__pk=self.obj_pk).count(),
             "mainboards": models.Mainboard.objects.filter(device__pk=self.obj_pk).count(),
             "nics": models.NIC.objects.filter(device__pk=self.obj_pk).count(),
             "otherfsus": models.OtherFSU.objects.filter(device__pk=self.obj_pk).count(),
@@ -207,6 +154,21 @@ class DeviceTypeFSUsContent(TemplateExtension):
         self.fsu_count = 0
         self.parent_type = "devicetype"
 
+    fsu_template_models: ClassVar[list[tuple[str, str, str]]] = [
+        ("cpu", "cpus", "CPUs"),
+        ("disk", "disks", "Disks"),
+        ("fan", "fans", "Fans"),
+        ("gpu", "gpus", "GPUs"),
+        ("gpubaseboard", "gpubaseboards", "GPU Baseboards"),
+        ("hba", "hbas", "HBAs"),
+        ("lpumodule", "lpumodules", "LPU Modules"),
+        ("mainboard", "mainboards", "Mainboards"),
+        ("nic", "nics", "NICs"),
+        ("otherfsu", "otherfsus", "Other FSUs"),
+        ("psu", "psus", "PSUs"),
+        ("rammodule", "rammodules", "RAM Modules"),
+    ]
+
     def buttons(self) -> str:
         """Add button with menu for adding FSUs."""
         user: User | None = getattr(self.context["request"], "user", None)
@@ -226,83 +188,16 @@ class DeviceTypeFSUsContent(TemplateExtension):
                 ]
             )
 
-            if user.has_perm("nautobot_fsus.add_cputemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:cputemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_cpus\">"
-                    f"CPUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_disktemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:disktemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_disks\">"
-                    f"Disks</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_fantemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:fantemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_fans\">"
-                    f"Fans</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_gputemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:gputemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_gpus\">"
-                    f"GPUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_gpubaseboardtemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:gpubaseboardtemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_gpubaseboards\">"
-                    f"GPU Baseboards</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_hbatemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:hbatemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_hbas\">"
-                    f"HBAs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_mainboardtemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:mainboardtemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_mainboards\">"
-                    f"Mainboards</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_nictemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:nictemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_nics\">"
-                    f"NICs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_otherfsutemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:otherfsutemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_otherfsus\">"
-                    f"Other FSUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_psutemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:psutemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_psus\">"
-                    f"PSUs</a></li>"
-                )
-            if user.has_perm("nautobot_fsus.add_rammoduletemplate"):
-                buttons.append(
-                    f"        <li><a href=\"{reverse('plugins:nautobot_fsus:rammoduletemplate_add')}"
-                    f"?device_type={self.obj_pk}"
-                    f"&return_url={self.context['object'].get_absolute_url()}%23tab_rammodules\">"
-                    f"RAM Modules</a></li>"
-                )
+            for model_key, tab, label in self.fsu_template_models:
+                if user.has_perm(f"nautobot_fsus.add_{model_key}template"):
+                    buttons.append(
+                        f"        <li><a href=\""
+                        f"{reverse(f'plugins:nautobot_fsus:{model_key}template_add')}"
+                        f"?device_type={self.obj_pk}"
+                        f"&return_url={self.context['object'].get_absolute_url()}"
+                        f"%23tab_{tab}\">"
+                        f"{label}</a></li>"
+                    )
 
             buttons.extend(["    </ul>", "</div>"])
 
@@ -350,6 +245,13 @@ class DeviceTypeFSUsContent(TemplateExtension):
         self.context["hba_table"] = _fsu_table(tables.HBATemplateTable, models.HBATemplate)
         if user is not None and user.has_perm("nautobot_fsus.change_hbatemplate"):
             self.context["hba_table"].columns.show("pk")
+
+        self.context["lpumodule_table"] = _fsu_table(
+            tables.LPUModuleTemplateTable,
+            models.LPUModuleTemplate,
+        )
+        if user is not None and user.has_perm("nautobot_fsus.change_lpumoduletemplate"):
+            self.context["lpumodule_table"].columns.show("pk")
 
         self.context["mainboard_table"] = _fsu_table(
             tables.MainboardTemplateTable,
@@ -417,6 +319,7 @@ class LocationFSUTabContent(FSUsTabContentTemplate):
             "gpus": models.GPU.objects.filter(location__pk=self.obj_pk).count(),
             "gpubaseboards": models.GPUBaseboard.objects.filter(location__pk=self.obj_pk).count(),
             "hbas": models.HBA.objects.filter(location__pk=self.obj_pk).count(),
+            "lpumodules": models.LPUModule.objects.filter(location__pk=self.obj_pk).count(),
             "mainboards": models.Mainboard.objects.filter(location__pk=self.obj_pk).count(),
             "nics": models.NIC.objects.filter(location__pk=self.obj_pk).count(),
             "otherfsus": models.OtherFSU.objects.filter(location__pk=self.obj_pk).count(),

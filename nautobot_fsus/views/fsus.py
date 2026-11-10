@@ -183,6 +183,26 @@ class HBABulkRenameView(FSUBulkRenameView):
     queryset = models.HBA.objects.all()
 
 
+class LPUModuleUIViewSet(FSUModelViewSet):
+    """View set for LPUModule model."""
+
+    bulk_update_form_class = forms.LPUModuleBulkEditForm
+    filterset_class = filters.LPUModuleFilterSet
+    filterset_form_class = forms.LPUModuleFilterForm
+    form_class = forms.LPUModuleForm
+    lookup_field = "pk"
+    queryset = models.LPUModule.objects.all()
+    serializer_class = serializers.LPUModuleSerializer
+    table_class = tables.LPUModuleTable
+    bulk_table_class = tables.LPUModuleImportTable
+
+
+class LPUModuleBulkRenameView(FSUBulkRenameView):
+    """View for bulk renaming LPUModule instances."""
+
+    queryset = models.LPUModule.objects.all()
+
+
 class MainboardUIViewSet(FSUModelViewSet):
     """View set for Mainboard model."""
 

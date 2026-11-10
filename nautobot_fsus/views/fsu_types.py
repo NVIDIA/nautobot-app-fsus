@@ -319,3 +319,30 @@ class RAMModuleTypeUIViewSet(FSUTypeModelViewSet):
         )
 
         return context
+
+
+class LPUModuleTypeUIViewSet(FSUTypeModelViewSet):
+    """View set for LPUModuleType model."""
+
+    bulk_update_form_class = forms.LPUModuleTypeBulkEditForm
+    filterset_class = filters.LPUModuleTypeFilterSet
+    filterset_form_class = forms.LPUModuleTypeFilterForm
+    form_class = forms.LPUModuleTypeForm
+    lookup_field = "pk"
+    queryset = models.LPUModuleType.objects.all()
+    serializer_class = serializers.LPUModuleTypeSerializer
+    table_class = tables.LPUModuleTypeTable
+
+    def get_extra_context(self, request, instance=None) -> dict[str, Any]:
+        """Add extra template date to the context."""
+        context: dict[str, Any] = super().get_extra_context(request, instance)
+        context["fsu_list"] = reverse("plugins:nautobot_fsus:lpumodule_list")
+        context["instance_count"] = (
+            models.LPUModule.objects.restrict(  # type: ignore[attr-defined]
+                request.user
+            )
+            .filter(fsu_type=instance)
+            .count()
+        )
+
+        return context

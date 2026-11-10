@@ -424,3 +424,32 @@ class RAMModuleTypeTestCase(FSUFormTestCases.FSUTypeFormTestCase):
         )
         self.assertTrue(form.is_valid())
         self.assertTrue(form.save())
+
+
+class LPUModuleTestCase(FSUFormTestCases.FSUModelFormTestCase):
+    """Tests for LPUModule forms."""
+
+    model = models.LPUModule
+    type_model = models.LPUModuleType
+    form_model = forms.LPUModuleForm
+    bulk_form_model = forms.LPUModuleBulkEditForm
+    filter_form_model = forms.LPUModuleFilterForm
+
+
+class LPUModuleTemplateTestCase(FSUFormTestCases.FSUTemplateFormTestCase):
+    """Tests for LPUModule templates."""
+
+    model = models.LPUModuleTemplate
+    type_model = models.LPUModuleType
+    form_model = forms.LPUModuleTemplateForm
+    bulk_form_model = forms.LPUModuleTemplateBulkEditForm
+    create_form_model = forms.LPUModuleTemplateCreateForm
+
+
+class LPUModuleTypeTestCase(FSUFormTestCases.FSUTypeFormTestCase):
+    """Tests for LPUModule type."""
+
+    type_model = models.LPUModuleType
+    form_model = forms.LPUModuleTypeForm
+    bulk_form_model = forms.LPUModuleTypeBulkEditForm
+    filter_form_model = forms.LPUModuleTypeFilterForm

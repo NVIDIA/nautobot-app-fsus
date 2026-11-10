@@ -33,6 +33,7 @@ from nautobot_fsus.models import (
     Disk,
     Fan,
     GPUBaseboard,
+    LPUModule,
     Mainboard,
     OtherFSU,
     RAMModule,
@@ -45,7 +46,20 @@ def post_migrate_create_defaults(*args, **kwargs):  # pylint: disable=unused-arg
     """Callback function for post_migrate() -- create default Statuses."""
     statuses = ["Active", "Available", "Maintenance", "Offline"]
 
-    fsu_models = [CPU, Disk, Fan, GPU, GPUBaseboard, HBA, Mainboard, NIC, OtherFSU, PSU, RAMModule]
+    fsu_models = [
+        CPU,
+        Disk,
+        Fan,
+        GPU,
+        GPUBaseboard,
+        HBA,
+        LPUModule,
+        Mainboard,
+        NIC,
+        OtherFSU,
+        PSU,
+        RAMModule,
+    ]
 
     print("  Adding FSU models to Statuses")
     logger.info("Adding FSU models to Statuses")
@@ -91,6 +105,7 @@ def create_fsus_for_new_devices(
         (GPU, instance.device_type.gputemplates.all()),
         (GPUBaseboard, instance.device_type.gpubaseboardtemplates.all()),
         (HBA, instance.device_type.hbatemplates.all()),
+        (LPUModule, instance.device_type.lpumoduletemplates.all()),
         (Mainboard, instance.device_type.mainboardtemplates.all()),
         (NIC, instance.device_type.nictemplates.all()),
         (OtherFSU, instance.device_type.otherfsutemplates.all()),

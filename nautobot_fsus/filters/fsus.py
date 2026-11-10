@@ -237,6 +237,33 @@ class HBAFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterS
         ]
 
 
+class LPUModuleFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
+    """Filter set for LPU Modules."""
+
+    fsu_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=models.LPUModuleType.objects.all(),
+        label="LPU Module Type (ID)",
+    )
+
+    class Meta:
+        """LPUModuleFilterSet model options."""
+
+        model = models.LPUModule
+        fields = [
+            "id",
+            "name",
+            "serial_number",
+            "firmware_version",
+            "driver_version",
+            "driver_name",
+            "asset_tag",
+            "status",
+            "description",
+            "comments",
+            "tags",
+        ]
+
+
 class MainboardFilterSet(NautobotFilterSet, FSUModelFilterSetMixin, StatusModelFilterSetMixin):
     """Filter set for Mainboards."""
 

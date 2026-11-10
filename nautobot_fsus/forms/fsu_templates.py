@@ -290,6 +290,52 @@ class HBATemplateForm(FSUTemplateModelForm):
         fields = ["fsu_type", "device_type", "name", "pci_slot_id", "description"]
 
 
+class LPUModuleTemplateBulkEditForm(NautobotBulkEditForm):
+    """Form for bulk editing LPUModuleTemplate instances."""
+
+    pk = forms.ModelMultipleChoiceField(
+        queryset=models.LPUModuleTemplate.objects.all(),
+        widget=forms.MultipleHiddenInput,
+    )
+
+    fsu_type = DynamicModelChoiceField(
+        queryset=models.LPUModuleType.objects.all(),
+        required=False,
+        label="FSU Type",
+    )
+
+    class Meta:
+        """LPUModuleTemplateBulkEditForm model options."""
+
+        nullable_fields = ["description"]
+
+
+class LPUModuleTemplateCreateForm(FSUTemplateCreateForm):
+    """Form for creating one or more LPUModuleTemplate instances."""
+
+    fsu_type = DynamicModelChoiceField(
+        queryset=models.LPUModuleType.objects.all(), label="FSU Type"
+    )
+
+    class Meta(FSUTemplateCreateForm.Meta):
+        """LPUModuleTemplateCreateForm model options."""
+
+        model = models.LPUModuleTemplate
+
+
+class LPUModuleTemplateForm(FSUTemplateModelForm):
+    """Form for updating a LPUModuleTemplate instance."""
+
+    fsu_type = DynamicModelChoiceField(
+        queryset=models.LPUModuleType.objects.all(), label="FSU Type"
+    )
+
+    class Meta(FSUTemplateModelForm.Meta):
+        """LPUModuleTemplateForm model options."""
+
+        model = models.LPUModuleTemplate
+
+
 class MainboardTemplateBulkEditForm(NautobotBulkEditForm):
     """Form for bulk editing MainboardTemplate instances."""
 

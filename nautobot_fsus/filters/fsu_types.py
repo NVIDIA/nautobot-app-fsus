@@ -297,3 +297,30 @@ class RAMModuleTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
             "instances",
             "tags",
         ]
+
+
+class LPUModuleTypeFilterSet(NautobotFilterSet, FSUTypeModelFilterSetMixin):
+    """Filter set for LPU Module types."""
+
+    lpu_count__isnull = django_filters.BooleanFilter(
+        field_name="lpu_count",
+        lookup_expr="isnull",
+        distinct=False,
+        exclude=False,
+    )
+
+    class Meta:
+        """LPUModuleTypeFilterSet model options."""
+
+        model = models.LPUModuleType
+        fields = [
+            "id",
+            "manufacturer",
+            "name",
+            "part_number",
+            "lpu_count",
+            "description",
+            "comments",
+            "instances",
+            "tags",
+        ]
