@@ -19,7 +19,7 @@ on:
 jobs:
   build-packages:
     name: "Build new release packages"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     env:
       INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
     steps:
@@ -54,7 +54,7 @@ jobs:
     needs:
       - "build-packages"
     name: "Pull the app package artifacts and publish them to PyPi"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     environment:
       name: "pypi"
       url: "https://pypi.org/p/nautobot-fsus"

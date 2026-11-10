@@ -17,7 +17,7 @@ env:
 
 jobs:
   ruff:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     env:
       INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
     steps:
@@ -29,7 +29,7 @@ jobs:
         run: poetry run invoke test.ruff -a both
 
   mypy:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     env:
       INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
     steps:
@@ -41,7 +41,7 @@ jobs:
         run: poetry run invoke test.mypy
 
   poetry:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     env:
       INVOKE_NAUTOBOT_FSUS_LOCAL: "True"
     steps:
@@ -57,7 +57,7 @@ jobs:
       - "ruff"
       - "mypy"
       - "poetry"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     strategy:
       fail-fast: true
       matrix:
@@ -103,7 +103,7 @@ jobs:
   unittests:
     needs:
       - "pylint"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-24.04"
     strategy:
       fail-fast: true
       matrix:
