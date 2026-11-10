@@ -48,11 +48,15 @@ class FSUTemplateModelForm(NautobotModelForm):
         widgets = {"device_type": forms.HiddenInput()}
 
 
-class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
+class FSUTemplateCreateForm(BootstrapMixin, forms.ModelForm):
     """Base form for creating FSU templates."""
 
     name_pattern = ExpandableNameField(label="Name")
-    device_type = DynamicModelChoiceField(queryset=DeviceType.objects.all(), label="Device Type")
+    device_type = DynamicModelChoiceField(
+        queryset=DeviceType.objects.all(),
+        label="Device Type",
+        widget=forms.HiddenInput(),
+    )
     description = forms.CharField(required=False)
 
     field_order = ["device_type", "fsu_type", "name_pattern", "description"]
@@ -62,7 +66,6 @@ class FSUTemplateCreateForm(BootstrapMixin, forms.Form):
 
         abstract = True
         fields = ["fsu_type", "device_type", "name_pattern", "description"]
-        widgets = {"device_type": forms.HiddenInput()}
 
     def clean(self):
         """Validate the form data."""

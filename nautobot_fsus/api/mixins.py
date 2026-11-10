@@ -37,7 +37,7 @@ class FSUModelSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
             "location": {"required": False, "allow_null": True},
         }
 
-    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
+    def validate(self, data: dict[str, Any]) -> dict[str, Any]:  # pylint: disable=arguments-renamed
         """Validate the incoming POST/PUT/PATCH data."""
         # FSUs can be assigned to a Device or Location, but not both.
         if data.get("device") is not None and data.get("location") is not None:
