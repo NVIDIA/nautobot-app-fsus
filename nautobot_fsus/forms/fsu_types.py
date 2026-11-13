@@ -744,7 +744,7 @@ class RAMModuleTypeBulkEditForm(NautobotBulkEditForm, TagsBulkEditFormMixin):
     class Meta:
         """RAMModuleTypeBulkEditForm model options."""
 
-        nullable_fields: list[str] = ["speed", "capacity", "quantity"]
+        nullable_fields: list[str] = ["speed", "capacity"]
 
 
 class RAMModuleTypeFilterForm(NautobotFilterForm):

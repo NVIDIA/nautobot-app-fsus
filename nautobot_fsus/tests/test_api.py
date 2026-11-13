@@ -16,8 +16,9 @@
 """Tests for API endpoints defined in the Nautobot FSUs app."""
 
 from django.contrib.auth import get_user_model
+from django.test import override_settings
 from django.urls import reverse
-from nautobot.dcim.models import Device, Interface, PowerPort
+from nautobot.dcim.models import Interface, PowerPort
 from nautobot.extras.models import Status
 from rest_framework import status
 
@@ -179,7 +180,7 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
         cls.extra_children = [
             cls.child_model.objects.create(
                 fsu_type=cls.child_fsu_type,
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name=f"test_{cls.child_model._meta.model_name}_2",
                 serial_number="a0003",
                 firmware_version="1.0",
@@ -190,7 +191,7 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
             ),
             cls.child_model.objects.create(
                 fsu_type=cls.child_fsu_type,
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name=f"test_{cls.child_model._meta.model_name}_3",
                 serial_number="a0004",
                 firmware_version="1.0",
@@ -201,9 +202,10 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
             ),
         ]
 
+    @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
     def test_add_baseboard_with_too_many_children(self):
         """Test adding a GPUBaseboard with more GPUs than available slots."""
-        self.children[0].device = Device.objects.last()
+        self.children[0].device = self.devices[1]
         self.children[0].validated_save()
         data = self.create_data[0]
         data["gpus"] = [str(x.pk) for x in self.children]
@@ -227,9 +229,10 @@ class GPUBaseboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
             str(response.data["gpus"]),
         )
 
+    @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
     def test_update_baseboard_with_too_many_children(self):
         """Test updating a GPUBaseboard with more GPUs than available slots."""
-        self.children[0].device = Device.objects.last()
+        self.children[0].device = self.devices[1]
         self.children[0].validated_save()
         data = self.create_data[0]
         data["gpus"] = [str(x.pk) for x in self.children]
@@ -324,7 +327,7 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
         cls.extra_children = [
             cls.child_model.objects.create(
                 fsu_type=cls.child_fsu_type,
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name=f"test_{cls.child_model._meta.model_name}_2",
                 serial_number="a0003",
                 firmware_version="1.0",
@@ -335,7 +338,7 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
             ),
             cls.child_model.objects.create(
                 fsu_type=cls.child_fsu_type,
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name=f"test_{cls.child_model._meta.model_name}_3",
                 serial_number="a0004",
                 firmware_version="1.0",
@@ -346,9 +349,10 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
             ),
         ]
 
+    @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
     def test_add_mainboard_with_too_many_children(self):
         """Test adding a Mainboard with more CPUs than available sockets."""
-        self.children[0].device = Device.objects.last()
+        self.children[0].device = self.devices[1]
         self.children[0].validated_save()
         data = self.create_data[0]
         data["cpus"] = [str(x.pk) for x in self.children]
@@ -372,9 +376,10 @@ class MainboardAPITestCase(FSUAPITestCases.ParentFSUAPIViewTestCase):
             str(response.data["cpus"]),
         )
 
+    @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
     def test_update_mainboard_with_too_many_children(self):
         """Test updating a Mainboard with more CPUs than available sockets."""
-        self.children[0].device = Device.objects.last()
+        self.children[0].device = self.devices[1]
         self.children[0].validated_save()
         data = self.create_data[0]
         data["cpus"] = [str(x.pk) for x in self.children]
@@ -449,13 +454,13 @@ class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
 
         cls.children = [
             Interface.objects.create(
-                device=Device.objects.first(),
+                device=cls.devices[0],
                 name="eth0",
                 type="1000base-x-gbic",
                 status=statuses["interface"],
             ),
             Interface.objects.create(
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name="eth1",
                 type="1000base-x-gbic",
                 status=statuses["interface"],
@@ -464,22 +469,23 @@ class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
 
         cls.extra_children = [
             Interface.objects.create(
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name="eth2",
                 type="1000base-x-gbic",
                 status=statuses["interface"],
             ),
             Interface.objects.create(
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name="eth3",
                 type="1000base-x-gbic",
                 status=statuses["interface"],
             ),
         ]
 
+    @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
     def test_add_nic_with_too_many_children(self):
         """Test adding a NIC with more Interfaces than available connections."""
-        self.children[0].device = Device.objects.last()
+        self.children[0].device = self.devices[1]
         self.children[0].validated_save()
         data = self.create_data[0]
         data["interfaces"] = [str(x.pk) for x in self.children]
@@ -503,9 +509,10 @@ class NICAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
             str(error_message),
         )
 
+    @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
     def test_update_nic_with_too_many_children(self):
         """Test updating a NIC with more Interfaces than available connections."""
-        self.children[0].device = Device.objects.last()
+        self.children[0].device = self.devices[1]
         self.children[0].validated_save()
         data = self.create_data[0]
         data["interfaces"] = [str(x.pk) for x in self.children]
@@ -585,11 +592,11 @@ class PSUAPITestCase(FSUAPITestCases.ParentNonFSUChildAPIViewTestCase):
 
         cls.children = [
             PowerPort.objects.create(
-                device=Device.objects.first(),
+                device=cls.devices[0],
                 name="PP0",
             ),
             PowerPort.objects.create(
-                device=Device.objects.last(),
+                device=cls.devices[1],
                 name="PP1",
             ),
         ]

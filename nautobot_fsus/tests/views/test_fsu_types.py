@@ -16,9 +16,14 @@
 """Tests for FSUType model views defined in the Nautobot FSUs app."""
 
 from typing import Type
+from unittest import mock
 
+from django.db.models import ManyToManyField
+from django.test import override_settings
 from nautobot.core.testing import ViewTestCases
+from nautobot.core.utils import lookup
 from nautobot.dcim.models import Manufacturer
+from nautobot.extras.models.jobs import JobResult
 
 from nautobot_fsus import models
 from nautobot_fsus.models.mixins import FSUTypeModel
@@ -54,6 +59,64 @@ class FSUTypeViewTestCases:  # pylint: disable=too-few-public-methods
                 f"{manufacturers[1].pk},{cls.model._meta.verbose_name} 8,0008",
                 f"{manufacturers[1].pk},{cls.model._meta.verbose_name} 9,0009",
             )
+
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
+        def test_bulk_edit_objects_nullable_fields(self):
+            """Assert that "set null" fields on the bulk-edit form are correctly passed through to the job."""
+            bulk_edit_form_class = lookup.get_form_for_model(self.model, form_prefix="BulkEdit")
+            bulk_edit_form = bulk_edit_form_class(self.model)
+            if not getattr(bulk_edit_form, "nullable_fields", ()):
+                self.skipTest(f"no nullable fields on {bulk_edit_form_class}")
+
+            required = [
+                name
+                for name, field in bulk_edit_form.declared_fields.items()
+                if name != "pk" and field.required
+            ]
+            if not required:
+                super().test_bulk_edit_objects_nullable_fields()
+            else:
+                for field_name in bulk_edit_form.nullable_fields:
+                    with self.subTest(field_name=field_name):
+                        if field_name.startswith("cf_"):
+                            # TODO check whether customfield is nullable
+                            continue
+                        if field_name.startswith("cr_"):
+                            # TODO check whether relationship is required
+                            continue
+                        model_field = self.model._meta.get_field(field_name)
+                        if isinstance(model_field, ManyToManyField):
+                            # always nullable
+                            continue
+                        self.assertTrue(model_field.null or model_field.blank)
+
+                qs = self._get_queryset()
+                pk_list = list(qs.values_list("pk", flat=True)[:3])
+                first = qs.get(pk=pk_list[0])
+                data = {
+                    "pk": pk_list,
+                    "_apply": True,  # Form button
+                    "_nullify": list(bulk_edit_form.nullable_fields),
+                }
+                for field in required:
+                    data[field] = getattr(first, field)
+
+                # Assign model-level permission
+                self.add_permissions(
+                    f"{self.model._meta.app_label}.change_{self.model._meta.model_name}"
+                )
+
+                with mock.patch.object(
+                    JobResult, "enqueue_job", wraps=JobResult.enqueue_job
+                ) as mock_enqueue_job:
+                    response = self.client.post(self._get_url("bulk_edit"), data)
+                    mock_enqueue_job.assert_called()
+                    self.validate_redirect_to_job_result(response)
+
+                    self.assertEqual(
+                        mock_enqueue_job.call_args.kwargs["form_data"].get("_nullify"),
+                        data["_nullify"],
+                    )
 
 
 class CPUTypeViewTestCase(FSUTypeViewTestCases.FSUTypeModelViewTestCase):

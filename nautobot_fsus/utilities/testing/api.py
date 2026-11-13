@@ -17,7 +17,9 @@
 
 from typing import Type
 
+from django.test import override_settings
 from django.urls import reverse
+import factory.random
 from nautobot.core.testing.api import APIViewTestCases
 from nautobot.dcim.models import Device, DeviceType, Location, Manufacturer
 from nautobot.dcim.models.device_components import ModularComponentModel
@@ -59,8 +61,8 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 ),
             ]
 
-            devices = [Device.objects.first(), Device.objects.last()]
-            location = Location.objects.first()
+            cls.devices = factory.random.randgen.sample(list(Device.objects.all()), 2)
+            cls.location = factory.random.randgen.choice(Location.objects.all())
             statuses = {
                 "device": Status.objects.get(name="Active"),
                 "location": Status.objects.get(name="Available"),
@@ -69,7 +71,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             cls.fsus = [
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
-                    device=devices[0],
+                    device=cls.devices[0],
                     name=f"test_{model_name}_0",
                     serial_number="a0001",
                     firmware_version="1.0",
@@ -80,7 +82,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[1],
-                    device=devices[0],
+                    device=cls.devices[0],
                     name=f"test_{model_name}_1",
                     serial_number="a0002",
                     firmware_version="1.1",
@@ -91,7 +93,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
-                    location=location,
+                    location=cls.location,
                     name=f"test_{model_name}_2",
                     serial_number="b0003",
                     firmware_version="1.0",
@@ -105,7 +107,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             cls.create_data = [
                 {
                     "fsu_type": cls.fsu_types[0].pk,
-                    "device": devices[1].pk,
+                    "device": cls.devices[1].pk,
                     "location": None,
                     "name": f"test_{model_name}_3",
                     "serial_number": "c0001",
@@ -114,7 +116,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 },
                 {
                     "fsu_type": cls.fsu_types[0].pk,
-                    "device": devices[1].pk,
+                    "device": cls.devices[1].pk,
                     "location": None,
                     "name": f"test_{model_name}_4",
                     "serial_number": "c0002",
@@ -124,7 +126,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 {
                     "fsu_type": cls.fsu_types[1].pk,
                     "device": None,
-                    "location": location.pk,
+                    "location": cls.location.pk,
                     "name": f"test_{model_name}_5",
                     "serial_number": "d0001",
                     "firmware_version": "1.0",
@@ -132,6 +134,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 },
             ]
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_unique_name_per_parent_constraint(self):
             """Test that creating an FSU with a duplicate name fails."""
             fsu = self.model.objects.get(name=self.fsus[0].name)
@@ -140,18 +143,24 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 "fsu_type": fsu.fsu_type.pk,
                 "device": fsu.device.pk,
                 "name": fsu.name,
+                "status": "Active",
             }
 
             self.add_permissions(f"nautobot_fsus.add_{model}")
             url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
             response = self.client.post(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(
+                "The fields name, device must make a unique set.",
+                str(response.data["non_field_errors"][0]),
+            )
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_create_fsu_with_device_and_storage_location(self):
             """Test that creating an FSU with both a device and storage location fails."""
             model = self.model._meta.model_name
             data = self.create_data[2]
-            data["device"] = Device.objects.first().pk
+            data["device"] = factory.random.randgen.choice(Device.objects.all()).pk
 
             self.add_permissions(f"nautobot_fsus.add_{model}")
             url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
@@ -189,7 +198,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             cls.children = [
                 cls.child_model.objects.create(
                     fsu_type=cls.child_fsu_type,
-                    device=Device.objects.first(),
+                    device=cls.devices[0],
                     name=f"test_{cls.child_model._meta.model_name}_0",
                     serial_number="a0001",
                     firmware_version="1.0",
@@ -200,7 +209,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 ),
                 cls.child_model.objects.create(
                     fsu_type=cls.child_fsu_type,
-                    device=Device.objects.last(),
+                    device=cls.devices[1],
                     name=f"test_{cls.child_model._meta.model_name}_1",
                     serial_number="a0002",
                     firmware_version="1.0",
@@ -211,6 +220,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 ),
             ]
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_create_parent_with_child_in_wrong_device(self):
             """Test that creating a parent FSU with a child in a different device fails."""
             model = self.model._meta.model_name
@@ -228,11 +238,12 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 error_message = error_message[0]
             self.assertEqual(
                 f"{self.child_model._meta.verbose_name} {self.children[0].name} has a different "
-                f"parent device ({Device.objects.first().name}) than that of its parent FSU "
-                f"({Device.objects.last().name})",
+                f"parent device ({self.devices[0].name}) than that of its parent FSU "
+                f"({self.devices[1].name})",
                 str(error_message),
             )
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_add_parent_with_children(self):
             """Test creating a parent FSU with children."""
             model = self.model._meta.model_name
@@ -247,6 +258,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertEqual(self._get_queryset().count(), initial_count + 1)
             self.assertEqual(self.children[1].pk, response.data[self.child_field][0])
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_create_parent_in_storage_location(self):
             """Test that creating a parent FSU with children in a storage location fails."""
             model = self.model._meta.model_name
@@ -267,12 +279,13 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 str(error_message),
             )
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_create_parent_with_taken_child(self):
             """Test that creating a parent FSU with a child assigned another parent fails."""
             model = self.model._meta.model_name
             child = self.children[1]
             parent = self.model.objects.first()
-            parent.device = Device.objects.last()
+            parent.device = self.devices[1]
             parent.validated_save()
 
             setattr(child, f"parent_{model}", parent)
@@ -296,6 +309,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 str(error_message),
             )
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_clear_children(self):
             """Test that setting child field to an empty list clears the children."""
             fsu = self.model.objects.exclude(device__isnull=True).first()
@@ -314,6 +328,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertHttpStatus(response, status.HTTP_200_OK)
             self.assertEqual(getattr(fsu, self.child_field).count(), 0)
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_setting_storage_location_clears_children(self):
             """Test that setting the storage location clears the children."""
             fsu = self.model.objects.exclude(device__isnull=True).first()
@@ -338,6 +353,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertHttpStatus(response, status.HTTP_200_OK)
             self.assertEqual(getattr(fsu, self.child_field).count(), 0)
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_update_children(self):
             """Test setting a new list of children updates the instances."""
             fsu = self.model.objects.exclude(device__isnull=True).first()
@@ -346,12 +362,15 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             setattr(self.children[1], f"parent_{model}", fsu)
             self.children[1].save()
 
-            data = [{"id": str(fsu.pk), self.child_field: [str(self.children[0].pk)]}]
             self.add_permissions(f"nautobot_fsus.change_{model}")
             url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 1)
             self.assertEqual(getattr(fsu, self.child_field).first(), self.children[1])
+
+            self.children[0].device = fsu.device
+            self.children[0].save()
+            data = [{"id": str(fsu.pk), self.child_field: [str(self.children[0].pk)]}]
             response = self.client.patch(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_200_OK)
             self.assertEqual(getattr(fsu, self.child_field).count(), 1)
@@ -364,6 +383,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
         child_field: str
         children: list[ModularComponentModel]
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_create_parent_with_child_in_wrong_device(self):
             """Test that creating a parent FSU with a child in a different device fails."""
             model = self.model._meta.model_name
@@ -381,11 +401,12 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 error_message = error_message[0]
             self.assertEqual(
                 f"{self.child_model._meta.verbose_name} {self.children[0].name} has a different "
-                f"parent device ({Device.objects.first().name}) than that of its parent FSU "
-                f"({Device.objects.last().name})",
+                f"parent device ({self.devices[0].name}) than that of its parent FSU "
+                f"({self.devices[1].name})",
                 str(error_message),
             )
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_add_parent_with_children(self):
             """Test creating a parent FSU with children."""
             model = self.model._meta.model_name
@@ -400,6 +421,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertEqual(self._get_queryset().count(), initial_count + 1)
             self.assertEqual(self.children[1].pk, response.data[self.child_field][0])
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_create_parent_in_storage_location(self):
             """Test that creating a parent FSU with children in a storage location fails."""
             model = self.model._meta.model_name
@@ -420,12 +442,13 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 str(error_message),
             )
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_create_parent_with_taken_child(self):
             """Test that creating a parent FSU with a child assigned another parent fails."""
             model = self.model._meta.model_name
             child = self.children[1]
             parent = self.model.objects.first()
-            parent.device = Device.objects.last()
+            parent.device = self.devices[1]
             parent.validated_save()
 
             getattr(child, f"parent_{model}").set([parent])
@@ -448,6 +471,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
                 str(error_message),
             )
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_clear_children(self):
             """Test that setting child field to an empty list clears the children."""
             fsu = self.model.objects.exclude(device__isnull=True).first()
@@ -466,6 +490,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertHttpStatus(response, status.HTTP_200_OK)
             self.assertEqual(getattr(fsu, self.child_field).count(), 0)
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_setting_storage_location_clears_children(self):
             """Test that setting the storage location clears the children."""
             fsu = self.model.objects.exclude(device__isnull=True).first()
@@ -490,6 +515,7 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.assertHttpStatus(response, status.HTTP_200_OK)
             self.assertEqual(getattr(fsu, self.child_field).count(), 0)
 
+        @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
         def test_update_children(self):
             """Test setting a new list of children updates the instances."""
             fsu = self.model.objects.exclude(device__isnull=True).first()
@@ -498,12 +524,15 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             self.children[1].save()
             getattr(self.children[1], f"parent_{model}").set([fsu])
 
-            data = [{"id": str(fsu.pk), self.child_field: [str(self.children[0].pk)]}]
             self.add_permissions(f"nautobot_fsus.change_{model}")
             url = reverse(f"plugins-api:nautobot_fsus-api:{model}-list")
 
             self.assertEqual(getattr(fsu, self.child_field).count(), 1)
             self.assertEqual(getattr(fsu, self.child_field).first(), self.children[1])
+
+            self.children[0].device = fsu.device
+            self.children[0].save()
+            data = [{"id": str(fsu.pk), self.child_field: [str(self.children[0].pk)]}]
             response = self.client.patch(url, data, format="json", **self.header)
             self.assertHttpStatus(response, status.HTTP_200_OK)
             self.assertEqual(getattr(fsu, self.child_field).count(), 1)
@@ -523,9 +552,12 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
         @classmethod
         def setUpTestData(cls):
             """Create objects and data for the tests."""
-            device_type = DeviceType.objects.create(
-                manufacturer=Manufacturer.objects.last(),
-                model="Test Device Type",
+            cls.device_types = [factory.random.randgen.choice(DeviceType.objects.all())]
+            cls.device_types.append(
+                DeviceType.objects.create(
+                    manufacturer=Manufacturer.objects.last(),
+                    model="Test Device Type",
+                )
             )
 
             cls.fsu_types = [
@@ -544,19 +576,19 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             cls.templates = [
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
-                    device_type=DeviceType.objects.first(),
+                    device_type=cls.device_types[0],
                     name=f"test_{cls.target_model_name.lower()}_01",
                     description=f"First test {cls.target_model_name}",
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[1],
-                    device_type=DeviceType.objects.last(),
+                    device_type=cls.device_types[0],
                     name=f"test_{cls.target_model_name.lower()}_02",
                     description=f"Second test {cls.target_model_name}",
                 ),
                 cls.model.objects.create(
                     fsu_type=cls.fsu_types[0],
-                    device_type=DeviceType.objects.first(),
+                    device_type=cls.device_types[0],
                     name=f"test_{cls.target_model_name.lower()}_03",
                     description=f"Third test {cls.target_model_name}",
                 ),
@@ -565,22 +597,22 @@ class FSUAPITestCases:  # pylint: disable=too-few-public-methods
             cls.create_data = [
                 {
                     "fsu_type": cls.fsu_types[0].pk,
-                    "device_type": device_type.pk,
+                    "device_type": cls.device_types[1].pk,
                     "name": f"test_{cls.target_model_name.lower()}_04",
                 },
                 {
                     "fsu_type": cls.fsu_types[0].pk,
-                    "device_type": device_type.pk,
+                    "device_type": cls.device_types[1].pk,
                     "name": f"test_{cls.target_model_name.lower()}_05",
                 },
                 {
                     "fsu_type": cls.fsu_types[1].pk,
-                    "device_type": device_type.pk,
+                    "device_type": cls.device_types[1].pk,
                     "name": f"test_{cls.target_model_name.lower()}_06",
                 },
             ]
 
-            cls.bulk_update_data = {"device_type": device_type.id}
+            cls.bulk_update_data = {"device_type": cls.device_types[0].id}
 
         def test_unique_name_per_parent_constraint(self):
             """Test that creating an FSU Template with a duplicate name fails."""

@@ -189,6 +189,7 @@ warn_unused_configs = true
 module = [
     "django_filters.*",
     "django_jinja.*",
+    "django_redis.*",
     "django_tables2.*",
     "nautobot.*",
     "rest_framework.*",
