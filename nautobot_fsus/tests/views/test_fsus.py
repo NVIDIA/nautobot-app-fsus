@@ -20,6 +20,7 @@ from typing import Type
 from django.contrib.contenttypes.models import ContentType
 from django.test.utils import override_settings
 from django.urls import reverse
+import factory.random
 from nautobot.core.testing import ViewTestCases
 from nautobot.dcim.models import Device, Location, Manufacturer
 from nautobot.extras.models import Status
@@ -40,6 +41,7 @@ class FSUViewTestCases:  # pylint: disable=too-few-public-methods
 
         model: Type[FSUModel]
         type_model: Type[FSUTypeModel]
+        allowed_number_of_tree_queries_per_view_type = {"retrieve": 1}
 
         @classmethod
         def setUpTestData(cls):
@@ -59,8 +61,8 @@ class FSUViewTestCases:  # pylint: disable=too-few-public-methods
                 ),
             ]
 
-            devices = [Device.objects.first(), Device.objects.last()]
-            location = Location.objects.first()
+            devices = factory.random.randgen.sample(list(Device.objects.all()), 2)
+            location = factory.random.randgen.choice(Location.objects.all())
             statuses = {
                 "device": Status.objects.get(name="Active"),
                 "location": Status.objects.get(name="Available"),
@@ -98,13 +100,11 @@ class FSUViewTestCases:  # pylint: disable=too-few-public-methods
                 "location": None,
             }
 
-            status_available = Status.objects.get(name="Available")
-            status_active = Status.objects.get(name="Active")
             cls.csv_data = (
                 "device,location,name,fsu_type,status",
-                f"{devices[1].pk},,test_{model_name}_A,{fsu_types[1].id},{status_active.pk}",
-                f"{devices[1].pk},,test_{model_name}_B,{fsu_types[1].id},{status_active.pk}",
-                f",{location.pk},test_{model_name}_C,{fsu_types[1].id},{status_available.pk}",
+                f"{devices[1].pk},,test_{model_name}_A,{fsu_types[1].id},{statuses["device"].pk}",
+                f"{devices[1].pk},,test_{model_name}_B,{fsu_types[1].id},{statuses["device"].pk}",
+                f",{location.pk},test_{model_name}_C,{fsu_types[1].id},{statuses["location"].pk}",
             )
 
         @override_settings(EXEMPT_VIEW_PERMISSIONS=[])
